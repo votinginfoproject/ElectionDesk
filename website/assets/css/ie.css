@@ -1,0 +1,29 @@
+header,nav,article,footer,section,aside,figure,figcaption{display:block}
+
+
+ul {
+	list-style-image:none;
+	list-style-type:none;
+	margin-left:0;
+	padding-left:0;
+}
+
+.main-topics .checkbox {
+	display: block;
+	height: 75px;
+	float: left;
+}
+
+.main-topics .checkbox .input-checkbox {
+	display: none;
+}
+
+.check-ins, .voters {
+ filter: alpha(opacity = 45);
+}
+
+.main-topics .checkbox input:checked + label {
+	background: black;
+	color: red;
+	border: 10px solid green;
+}

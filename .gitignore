@@ -1,0 +1,12 @@
+# CodeIgniter
+website/application/logs/log-*.php
+website/application/logs/!index.html
+website/application/cache/*
+website/application/cache/!index.html
+.htaccess
+
+# Mac OS X
+.DS_Store
+
+# General
+/config.php

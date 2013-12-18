@@ -1,0 +1,26 @@
+{
+  "name": "electiondesk/consumer",
+  "description": "ElectionDesk Social Media Consumer for Datasift and individual API's",
+  "authors": [
+    {
+      "name": "Mathias Hansen",
+      "email": "me@codemonkey.io"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "../config.php"
+    ],
+    "psr-0": {
+      "Consumer": "lib/"
+    }
+  },
+  "require": {
+    "endroid/twitter": "dev-master",
+    "monolog/monolog": "1.6.*@dev",
+    "illuminate/container": "v4.1.0",
+    "illuminate/support": "v4.1.0",
+    "illuminate/events": "v4.1.0",
+    "illuminate/database": "v4.1.4"
+  }
+}
