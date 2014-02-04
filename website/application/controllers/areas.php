@@ -12,13 +12,14 @@ class Areas extends CI_Controller {
         }
 
         $this->stencil->slice('head');
+
+        $this->load->model('user_polygons_model');
 	}
   
 	function index()
 	{
 		$data['body_id'] = 'areas';
-
-		$this->input->post('lat');
+		$data['polygons'] = $this->user_polygons_model->get_by_user_id($this->tank_auth->get_user_id());
 		
 		$this->stencil->layout('default_layout');
 		$this->stencil->title('Areas');
@@ -27,31 +28,34 @@ class Areas extends CI_Controller {
 
 	function upload()
 	{
-		echo '<pre>';
 		require_once APPPATH.'third_party/ShapeFile.php';
+		require_once APPPATH.'third_party/Simplify.php';
 
 		$options = array('noparts' => false);
-		$shp = new ShapeFile($_FILES['shp_file']['tmp_name'], $_FILES['dbf_file']['tmp_name'], $options); 
 
-		//Dump the ten first records
-		$i = 0;
-		while ($record = $shp->getNext() and $i<10) {
-			$dbf_data = $record->getDbfData();
-			$shp_data = $record->getShpData();
-			//Dump the information
-			var_dump($dbf_data);
-			var_dump($shp_data);
+		try {
+			$shp = new ShapeFile($_FILES['shp_file']['tmp_name'], null, $options); 
 
-			var_dump($record->getError());
-			$i++;
+			$polygons = array();
+
+			while ($record = $shp->getNext()) {
+				$shpData = $record->getShpData();
+
+				foreach ($shpData['parts'] as $part) {
+					$polygons[] = Simplify::line($part['points'], count($part['points']) / 1000000);
+				}
+			}
+		} catch (Exception $e) {
+			$this->session->set_flashdata('error', $e->getMessage());
 		}
-		echo '</pre>';
 
-		exit;
+		$this->user_polygons_model->save(array(
+			'user_id' => $this->tank_auth->get_user_id(),
+			'name' => $_FILES['shp_file']['name'],
+			'points' => json_encode($polygons)
+		));
 
 		redirect('/areas');
-
-		exit;
 	}
 }
 /* End of file areas.php */

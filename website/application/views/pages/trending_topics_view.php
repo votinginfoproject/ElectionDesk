@@ -92,7 +92,7 @@
 		<section id="response">
 			<p>Reply from <select name="accounts" id="accountswitcher">
 				<?php foreach ($accounts as $account): ?>
-					<<option value="<?php echo $account->id; ?>"<?php if ($account->is_primary == 1) echo ' selected="selected"' ?>>@<?php echo $account->name; ?></option>
+					<option value="<?php echo $account->id; ?>"<?php if ($account->is_primary == 1) echo ' selected="selected"' ?>>@<?php echo $account->name; ?></option>
 				<?php endforeach; ?>
 			</select></p>
 
