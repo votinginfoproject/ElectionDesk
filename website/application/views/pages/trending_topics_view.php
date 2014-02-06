@@ -1,5 +1,6 @@
-
-
+<script language="javascript">
+var geofencePolygons = <?php echo $polygons_object; ?>;
+</script>
 
 <section class="tab-list">
 	<div class="bookmarks"><?php echo anchor('trending/bookmarks', 'Bookmarks'); ?></div>

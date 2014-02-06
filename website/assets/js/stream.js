@@ -147,6 +147,8 @@ var addSubFilter = function(filter, save) {
 	_gaq.push(['_trackEvent', 'Filter', 'Create', filter]);
 }
 
+var geofenceEnabled = true;
+
 // Poll for new messages in the stream
 var updateStream = function() {
 	if (!is_paused) {
@@ -173,6 +175,23 @@ var updateStream = function() {
 					return;
 				} else {
 					used_ids.push(message._id.$id);
+				}
+
+				// Make sure message is within geofence (if enabled)
+				if (geofenceEnabled) {
+					var found = false;
+					if (message.internal.location) {
+						for (var i = 0; i < geofencePolygons; i++) {
+							if (isPointInPoly(geofencePolygons[i], { x: message.internal.location.coords[1], y: message.internal.location.coords[0] })) {
+								found = true;
+								break;
+							}
+						}
+					}
+
+					if (!found) {
+						return;
+					}
 				}
 
 				// Build message and add it to the feed stream
@@ -359,6 +378,14 @@ var attachButtonEvents = function () {
 
 		return false;
 	});
+}
+
+var isPointInPoly = function(poly, pt) {
+    for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+        ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
+        && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+        && (c = !c);
+    return c;
 }
 
 

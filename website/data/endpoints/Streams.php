@@ -94,7 +94,7 @@ class Streams extends EndpointBase
 				'query' => $query
 			);
 
-			// Run command and change output to be the same as usual oMongoDB queries
+			// Run command and change output to be the same as usual MongoDB queries
 			$results = $db->command($command);
 			$results = $results['results'];
 

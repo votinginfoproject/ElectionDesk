@@ -57,6 +57,34 @@ class Areas extends CI_Controller {
 
 		redirect('/areas');
 	}
+
+	function draw()
+	{
+		$points = json_decode($this->input->post('points'));
+		$polygons = array(array());
+
+		foreach ($points as $point) {
+			$polygons[0][] = array('x' => $point->e, 'y' => $point->d);
+		}
+
+		$this->user_polygons_model->save(array(
+			'user_id' => $this->tank_auth->get_user_id(),
+			'name' => $this->input->post('name'),
+			'points' => json_encode($polygons)
+		));
+
+		redirect('/areas');
+	}
+
+	function delete()
+	{
+		$this->user_polygons_model->delete_if_user_id(
+			$this->input->get('id'),
+			$this->tank_auth->get_user_id()
+		);
+
+		redirect('/areas');
+	}
 }
 /* End of file areas.php */
 /* Location: ./application/controllers/areas.php */

@@ -37,6 +37,12 @@ class User_polygons_model extends CI_Model {
 		$this->db->delete($this->table_name);
 	}
 
+	function delete_if_user_id($id, $user_id) {
+		$this->db->where('id', $id);
+		$this->db->where('user_id', $user_id);
+		$this->db->delete($this->table_name);
+	}
+
 	function delete_by_user_id($user_id) {
 		$this->db->where('user_id', $user_id);
 		$this->db->delete($this->table_name);

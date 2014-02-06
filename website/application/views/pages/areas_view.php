@@ -54,19 +54,47 @@
 			drawMarkers = [];
 
 		$('#drawbtn').click(function () {
-			drawPolygon = new google.maps.Polygon({
-				strokeColor: '#0000FF',
-				strokeOpacity: 0.8,
-				strokeWeight: 2,
-				fillColor: '#0000FF',
-				fillOpacity: 0.35
-			});
-			drawPolygon.setMap(map);
-			drawPolygon.setPaths(new google.maps.MVCArray([drawPolyPoints]));
+			if ($('#drawbtn').data('editing') == true) {
+				var name = prompt('What do you want to call this area?');
+				if (name) {
+					$('#drawname').val(name);
+					$('#drawpoints').val(JSON.stringify(drawPolyPoints.getArray()));
+					$('#draw-form').submit();
+				}
 
-			drawClickListener = google.maps.event.addListener(map, 'click', mapClicked);
+				$('#drawcancelbtn').addClass('hide');
+				$('#drawbtn')
+					.data('editing', false)
+					.val('Saving...');
+			} else {
+				drawPolygon = new google.maps.Polygon({
+					strokeColor: '#0000FF',
+					strokeOpacity: 0.8,
+					strokeWeight: 2,
+					fillColor: '#0000FF',
+					fillOpacity: 0.35
+				});
+				drawPolygon.setMap(map);
+				drawPolygon.setPaths(new google.maps.MVCArray([drawPolyPoints]));
 
-			$('#drawbtn').val('Save area');
+				drawClickListener = google.maps.event.addListener(map, 'click', mapClicked);
+
+				$('#drawcancelbtn').removeClass('hide');
+				$('#drawbtn')
+					.data('editing', true)
+					.val('Save area');
+			}
+		});
+
+		$('#drawcancelbtn').click(function () {
+			google.maps.event.removeListener(drawClickListener);
+			drawPolyPoints = new google.maps.MVCArray;
+			drawPolygon = null;
+			drawMarkers = [];
+
+			$('#drawbtn')
+				.data('editing', false)
+				.val('Start');
 		});
 
 		function mapClicked(event) {
@@ -117,16 +145,22 @@
 
 		<div>
 	    	<h2>Create new area</h2>
+	    	<?php echo form_open('areas/draw', array('id' => 'draw-form')); ?>
+	    	<input type="hidden" name="name" id="drawname" value="">
+	    	<input type="hidden" name="points" id="drawpoints" value="">
 			<input type="button" id="drawbtn" value="Start" />
+			<input type="button" id="drawcancelbtn" class="hide" value="Cancel" />
+			<?php echo form_close(); ?>
+
 			<p>Click on the map to define points of the polygon, click on a marker to remove it or drag it to change its position.</p>
 		</div>
 
 		<div>
 	    	<h2>Areas</h2>
 	    	<?php if (count($polygons) > 0): ?>
-	    	<ul>
+	    	<ul class="areas-list">
 	    		<?php foreach ($polygons as $polygon): ?>
-	    		<li><a href="#"><?php echo $polygon->name; ?></a></li>
+	    		<li><strong><?php echo $polygon->name; ?></strong> <a href="/areas/delete?id=<?php echo $polygon->id; ?>">Delete</a></li>
 		    	<?php endforeach; ?>
 	    	</ul>
 		    <?php else: ?>
