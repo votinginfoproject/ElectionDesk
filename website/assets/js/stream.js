@@ -147,15 +147,13 @@ var addSubFilter = function(filter, save) {
 	_gaq.push(['_trackEvent', 'Filter', 'Create', filter]);
 }
 
-var geofenceEnabled = true;
-
 // Poll for new messages in the stream
 var updateStream = function() {
 	if (!is_paused) {
 		// Build URL based on criterias
 		var url = stream_server + '/streams?sources=' + sources.join(',') + '&after=' + current_time
 			+ '&filters=' + filters.join(',') + '&subfilters=' + encodeURIComponent(subfilters.join(','));
-		if (use_geo_near) {
+		if (use_geo_near && distance != 'area') {
 			url += '&near=' + near + '&distance=' + encodeURIComponent(distance);
 		}
 		current_time += 3; // Increase current time
@@ -178,11 +176,11 @@ var updateStream = function() {
 				}
 
 				// Make sure message is within geofence (if enabled)
-				if (geofenceEnabled) {
+				if (use_geo_near && distance == 'area') {
 					var found = false;
 					if (message.internal.location) {
-						for (var i = 0; i < geofencePolygons; i++) {
-							if (isPointInPoly(geofencePolygons[i], { x: message.internal.location.coords[1], y: message.internal.location.coords[0] })) {
+						for (var i = 0; i < geofencePolygons.length; i++) {
+							if (isPointInPoly(geofencePolygons[i], { x: message.internal.location.coords[0], y: message.internal.location.coords[1] })) {
 								found = true;
 								break;
 							}

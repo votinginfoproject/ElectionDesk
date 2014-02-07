@@ -7,6 +7,12 @@ abstract class Consumer
 
 	public function geocode($address)
     {
+        $address = trim($address);
+
+        if (empty($address)) {
+            return NULL;
+        }
+
         if (GEOCODING_SERVICE == 'GOOGLE') {
             $url = 'http://maps.googleapis.com/maps/api/geocode/json?address='. urlencode($address) .'&sensor=false&key=' . urlencode(GOOGLE_API_KEY);
             $content = @file_get_contents($url);
@@ -65,6 +71,31 @@ abstract class Consumer
             $location = $result->geometry->coordinates;
             $lat = $location[1];
             $lon = $location[0];
+        }
+        elseif (GEOCODING_SERVICE == 'GEOCODIO')
+        {
+            $url = 'http://api.geocod.io/v1/geocode?q='. urlencode($address) .'&api_key=' . urlencode(GEOCODIO_API_KEY);
+            
+            $content = @file_get_contents($url);
+            if (!$content) {
+                return NULL;
+            }
+            
+            $data = json_decode($content);
+
+            if (!isset($data->results) || count($data->results) <= 0)
+                return NULL;
+
+            $result = $data->results[0];
+
+            // Determine state and county
+            $state = $result->address_components->state;
+            $county = '';
+            $country = 'USA';
+
+            // Determine location
+            $lat = $result->location->lat;
+            $lon = $result->location->lng;
         }
         else
         {
