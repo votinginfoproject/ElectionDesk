@@ -160,13 +160,6 @@ var updateStream = function() {
 
 		// Fetch the messages
 		$.get(url, function(data) {
-			if (!feed_stream_loaded && data.length > 0) {	
-				feed_stream_loaded = true;
-				
-				// Reset feed stream
-				$("#feed-stream").html('');
-			}
-
 			$.each(data, function (index, message) {
 				// Make sure message is not already shown
 				if ($.inArray(message._id.$id, used_ids) != -1) {
@@ -190,6 +183,13 @@ var updateStream = function() {
 					if (!found) {
 						return;
 					}
+				}
+
+				if (!feed_stream_loaded && data.length > 0) {	
+					feed_stream_loaded = true;
+					
+					// Reset feed stream
+					$("#feed-stream").html('');
 				}
 
 				// Build message and add it to the feed stream
