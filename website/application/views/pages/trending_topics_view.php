@@ -76,7 +76,9 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
 			<option value="25">Within 25 miles</option>
 			<option value="50">Within 50 miles</option>
 			<option value="100">Within 100 miles</option>
+			<?php if ($polygons_object != '[]'): ?>
 			<option value="area">Within defined area</option>
+			<?php endif; ?>
 		</select>
 		<p><em>You can define a custom area on the <a href="/areas">area settings</a> page.</em></p><br />
 	   </div>
