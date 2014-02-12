@@ -227,3 +227,16 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   KEY `email` (`email`,`password`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+# Dump of table user_polygons
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user_polygons`;
+CREATE TABLE `user_polygons` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `points` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
