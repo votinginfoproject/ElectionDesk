@@ -1,5 +1,6 @@
-
-
+<script language="javascript">
+var geofencePolygons = <?php echo $polygons_object; ?>;
+</script>
 
 <section class="tab-list">
 	<div class="bookmarks"><?php echo anchor('trending/bookmarks', 'Bookmarks'); ?></div>
@@ -38,7 +39,6 @@
 			<a href="#" class="google-toggle on">Google+</a>
 			<a href="#" class="pause off">Pause</a>
 			<a href="#" class="play on">Play</a>
-
 		</section><!-- end feed-controls -->
 	</section><!-- end trending-topics -->
 	
@@ -76,7 +76,9 @@
 			<option value="25">Within 25 miles</option>
 			<option value="50">Within 50 miles</option>
 			<option value="100">Within 100 miles</option>
+			<option value="area">Within defined area</option>
 		</select>
+		<p><em>You can define a custom area on the <a href="/areas">area settings</a> page.</em></p><br />
 	   </div>
 
 		<h3>Filters</h3>
@@ -92,7 +94,7 @@
 		<section id="response">
 			<p>Reply from <select name="accounts" id="accountswitcher">
 				<?php foreach ($accounts as $account): ?>
-					<<option value="<?php echo $account->id; ?>"<?php if ($account->is_primary == 1) echo ' selected="selected"' ?>>@<?php echo $account->name; ?></option>
+					<option value="<?php echo $account->id; ?>"<?php if ($account->is_primary == 1) echo ' selected="selected"' ?>>@<?php echo $account->name; ?></option>
 				<?php endforeach; ?>
 			</select></p>
 

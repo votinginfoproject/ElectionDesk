@@ -41,7 +41,7 @@
 		<div class="inner">
 			<div class="left-col">
 				<p class="our-partners">Our Partners</p>
-				<a href="http://www.foursquare.com" class="pew">PEW</a>
+				<a href="http://www.pewtrusts.org" class="pew">PEW</a>
 				<a href="https://votinginfoproject.org/" class="vip">Voting Information Project</a>
 				<a href="http://www.foursquare.com" class="foursquare">Foursquare</a>
 				<a href="http://www.facebook.com" class="facebook">Facebook</a>

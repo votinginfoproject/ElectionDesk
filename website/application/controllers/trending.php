@@ -49,6 +49,14 @@ class Trending extends CI_Controller {
         $this->load->model('user_accounts_model');
         $data['accounts'] = $this->user_accounts_model->get_by_user_id($this->tank_auth->get_user_id(), 'TWITTER');
 
+        $this->load->model('user_polygons_model');
+        $polygons = $this->user_polygons_model->get_by_user_id($this->tank_auth->get_user_id());
+        $polygonsArr = array();
+        foreach ($polygons as $polygonItem) {
+            $polygonsArr = array_merge($polygonsArr, json_decode($polygonItem->points));
+        }
+        $data['polygons_object'] = json_encode($polygonsArr);
+
         // Output view
         $data['states'] = $this->config->item('states');
         $this->stencil->paint('trending_topics_view', $data);

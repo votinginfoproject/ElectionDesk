@@ -153,7 +153,7 @@ var updateStream = function() {
 		// Build URL based on criterias
 		var url = stream_server + '/streams?sources=' + sources.join(',') + '&after=' + current_time
 			+ '&filters=' + filters.join(',') + '&subfilters=' + encodeURIComponent(subfilters.join(','));
-		if (use_geo_near) {
+		if (use_geo_near && distance != 'area') {
 			url += '&near=' + near + '&distance=' + encodeURIComponent(distance);
 		}
 		current_time += 3; // Increase current time
@@ -173,6 +173,23 @@ var updateStream = function() {
 					return;
 				} else {
 					used_ids.push(message._id.$id);
+				}
+
+				// Make sure message is within geofence (if enabled)
+				if (use_geo_near && distance == 'area') {
+					var found = false;
+					if (message.internal.location) {
+						for (var i = 0; i < geofencePolygons.length; i++) {
+							if (isPointInPoly(geofencePolygons[i], { x: message.internal.location.coords[0], y: message.internal.location.coords[1] })) {
+								found = true;
+								break;
+							}
+						}
+					}
+
+					if (!found) {
+						return;
+					}
 				}
 
 				// Build message and add it to the feed stream
@@ -359,6 +376,14 @@ var attachButtonEvents = function () {
 
 		return false;
 	});
+}
+
+var isPointInPoly = function(poly, pt) {
+    for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+        ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
+        && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+        && (c = !c);
+    return c;
 }
 
 
