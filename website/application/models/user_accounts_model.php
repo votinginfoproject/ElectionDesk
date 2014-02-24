@@ -79,5 +79,12 @@ class User_accounts_model extends CI_Model {
 		$this->db->where('is_primary', 1);
 		$this->db->delete($this->table_name);
 	}
+
+	function count_connections($type) {
+		$this->db->where('type', $type);
+		$query = $this->db->get($this->table_name);
+
+		return $query->num_rows();
+	}
 	
 }

@@ -51,12 +51,14 @@ class Admin extends CI_Controller {
 			
 			$data['twitter_stream_total'] = $db->interactions->find(array('interaction.type' => 'twitter'))->count();
 			$data['facebook_stream_total'] = $db->interactions->find(array('interaction.type' => 'facebook'))->count();
+			$data['google_stream_total'] = $db->interactions->find(array('interaction.type' => 'google'))->count();
 	
 	
 	
 	
 		$this->load->model('auth/users');
 		$this->load->model('user_profiles_model');
+		$this->load->model('user_accounts_model');
 		$this->load->model('tickets_model');
 		
 		$user_id = $this->tank_auth->get_user_id();
@@ -78,9 +80,9 @@ class Admin extends CI_Controller {
 		$data['total_facebook_posts'] = $this->user_profiles_model->count_facebook_posts();
 		
 		//count social connections
-		$data['facebook_connects'] = $this->user_profiles_model->count_connections('facebook_accesstoken');
-		$data['google_connects'] = $this->user_profiles_model->count_connections('google_accesstoken');
-		$data['twitter_connects'] = $this->user_profiles_model->count_connections('twitter_accesstoken');
+		$data['facebook_connects'] = $this->user_accounts_model->count_connections('FACEBOOK');
+		$data['google_connects'] = $this->user_accounts_model->count_connections('GOOGLE');
+		$data['twitter_connects'] = $this->user_accounts_model->count_connections('TWITTER');
 		
 		//count all user
 		$data['total_users'] = $this->users->count_all();
