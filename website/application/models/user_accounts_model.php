@@ -82,9 +82,7 @@ class User_accounts_model extends CI_Model {
 
 	function count_connections($type) {
 		$this->db->where('type', $type);
-		$query = $this->db->get($this->table_name);
-
-		return $query->num_rows();
+		return $this->db->get($this->table_name)->num_rows();
 	}
 	
 }
