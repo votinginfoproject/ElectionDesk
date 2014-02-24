@@ -51,7 +51,7 @@ class Admin extends CI_Controller {
 			
 			$data['twitter_stream_total'] = $db->interactions->find(array('interaction.type' => 'twitter'))->count();
 			$data['facebook_stream_total'] = $db->interactions->find(array('interaction.type' => 'facebook'))->count();
-			$data['google_stream_total'] = $db->interactions->find(array('interaction.type' => 'google'))->count();
+			$data['google_stream_total'] = $db->interactions->find(array('interaction.type' => 'googleplus'))->count();
 	
 	
 	

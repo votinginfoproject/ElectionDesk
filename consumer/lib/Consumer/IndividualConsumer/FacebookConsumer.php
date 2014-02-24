@@ -10,7 +10,8 @@ class FacebookConsumer extends IndividualConsumer
 
 		$parameters = array(
 			'q' => str_replace(PHP_EOL, ' ', $filter->query_simple),
-			'type' => 'post'
+			'type' => 'post',
+			'access_token' => FACEBOOK_APP_ACCESS_TOKEN
 		);
 
 		$url = 'https://graph.facebook.com/search?' . http_build_query($parameters);

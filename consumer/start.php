@@ -46,9 +46,9 @@ if (USE_DATASIFT) {
 
 } else {
     $consumers = array(
+        new Consumer\IndividualConsumer\FacebookConsumer(),
         new Consumer\IndividualConsumer\TwitterConsumer(),
-        new Consumer\IndividualConsumer\GoogleConsumer(),
-        new Consumer\IndividualConsumer\FacebookConsumer()
+        new Consumer\IndividualConsumer\GoogleConsumer()
     );
 
     // Get all active filters
