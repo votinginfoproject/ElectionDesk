@@ -10,8 +10,8 @@
 /* Access tokens */
 $config['twitter'] = array(
     '_tokens' => array(
-        'consumer_key' => (ENVIRONMENT == 'development') ? '__TWITTER_DEV_KEY_GOES_HERE__' : '__TWITTER_PROD_KEY_GOES_HERE__',
-        'consumer_secret' => (ENVIRONMENT == 'development') ? '__TWITTER_DEV_SECRET_GOES_HERE__' : '__TWITTER_PROD_SECRET_GOES_HERE__'
+        'consumer_key' => TWITTER_CONSUMER_KEY,
+        'consumer_secret' => TWITTER_CONSUMER_SECRET
         //'access_key' => '',
         //'access_secret' => '',
     ),
