@@ -11,9 +11,9 @@
 $config['twitter'] = array(
     '_tokens' => array(
         'consumer_key' => TWITTER_CONSUMER_KEY,
-        'consumer_secret' => TWITTER_CONSUMER_SECRET
-        //'access_key' => '',
-        //'access_secret' => '',
+        'consumer_secret' => TWITTER_CONSUMER_SECRET,
+        'access_key' => TWITTER_ACCESSTOKEN,
+        'access_secret' => TWITTER_ACCESSTOKEN_SECRET
     ),
     '_force_login' => false, /* Do we force the user to login */
     '_token_session' => 'twitter_oauth_tokens', /* Session name */
