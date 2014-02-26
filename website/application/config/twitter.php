@@ -30,10 +30,10 @@ $config['twitter'] = array(
     'cache_timeout' => 60, /* Timeout in seconds */
     
     /* Most of these things shouldn't change */
-    '_access_token_url' => 'http://api.twitter.com/oauth/access_token',
-    '_api_url' => 'http://api.twitter.com/1.1',
-    '_authorization_url' => 'http://api.twitter.com/oauth/authorize',
-    '_request_token_url' => 'http://api.twitter.com/oauth/request_token',
+    '_access_token_url' => 'https://api.twitter.com/oauth/access_token',
+    '_api_url' => 'https://api.twitter.com/1.1',
+    '_authorization_url' => 'https://api.twitter.com/oauth/authorize',
+    '_request_token_url' => 'https://api.twitter.com/oauth/request_token',
     '_signature_method' => 'HMAC-SHA1',
     '_version' => '1.0',
     '_method' => 'json',
