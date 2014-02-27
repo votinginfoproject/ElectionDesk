@@ -1,4 +1,11 @@
 <?php
+
+use Engage\QueryTextParser\Parser;
+use Engage\QueryTextParser\Exceptions\ParserException;
+use Engage\QueryTextParser\Data\Group;
+use Engage\QueryTextParser\Data\GroupComparison;
+use Engage\QueryTextParser\Data\Partial;
+
 class Streams extends EndpointBase
 {
 	private $earthRadius = 3959;
@@ -51,30 +58,23 @@ class Streams extends EndpointBase
 			$filter = (int)$filter;
 		}
 
-		// Subfilters
-		if (array_key_exists('subfilters', $_GET)) {
-			$subfilters = explode(',', $_GET['subfilters']);
-		} else {
-			$subfilters = array();
-		}
-
 		// Fetch streams from database
 		$date = new MongoDate($time);
 		$query = array(
 			'interaction.created_at' => array('$gt' => $date),
-			'internal.filter_id' => array('$in' => $filters),
-			'$or' => $sources_exist
+			'internal.filter_id' => array('$in' => $filters)
 		);
 
-		// Apply subfilters
-		if (count($subfilters) > 0) {
-			$subfiltersQuery = array();
-			foreach ($subfilters as $subfilter) {
-				$subfiltersQuery[] = array('interaction.content' => new MongoRegex("/". $subfilter ."/i"));
-			}
-			$query['$and'] = $subfiltersQuery;
-		}
+		// Apply subfilter
+		if (array_key_exists('subfilter', $_GET) && !empty($_GET['subfilter'])) {
+			$parser = new Parser();
+			$result = $parser->parse($_GET['subfilter']);
+			$subfilterQuery = $this->buildSubfilterQuery($result);
 
+			$query['$and'] = array($subfilterQuery, array('$or' => $sources_exist));
+		} else {
+			$query['$or'] = $sources_exist;
+		}
 
 		// Geo near
 		if (array_key_exists('near', $_GET) && array_key_exists('distance', $_GET) && is_numeric($_GET['distance'])) {
@@ -136,5 +136,28 @@ class Streams extends EndpointBase
 			$i++;
 		}
 		echo ']';
+	}
+
+	/**
+	 * Recursively build a mongodb-compatible
+	 * filter query based on a query text
+	 * parsed search query
+	 * @param  Engage\QueryTextParser\Data\Group or Engage\QueryTextParser\Data\Partial $result Group or Partial object
+	 * @return array Array for mongodb query
+	 */
+	private function buildSubfilterQuery($result) {
+		if ($result instanceof Group) {
+			$key = '$' . strtolower($result->type);
+
+			$return = array($key => array());
+
+			foreach ($result->children as $child) {
+				$return[$key][] = $this->buildSubfilterQuery($child);
+			}
+
+			return $return;
+		} elseif ($result instanceof Partial) {
+			return array('interaction.content' => new MongoRegex("/". $result->text ."/i"));
+		}
 	}
 }

@@ -86,11 +86,14 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
 		<h3>Filters</h3>
 		<form class="search" id="filter-form">
 			<input type="text" class="search-bar" placeholder="Filter the current stream">
-			<input type="submit" value="GO" class="submit">
+			<input type="submit" value="Apply" class="submit">
+			<input type="button" value="Reset" class="reset">
 		</form>
 		<div class="clear"></div>
 		<form class="filters">
-			<div class="no-filters">No filters have been created yet</div>
+			<div class="description">You can use AND/OR operators as well as parenthesis. Ex., <code>ballot OR (vote AND "turned away")</code></div>
+			<div class="no-filters">No filter is currently applied</div>
+			<div class="filter"></div>
 		</form>
 			
 		<section id="response">

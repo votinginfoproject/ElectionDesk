@@ -1,0 +1,13 @@
+{
+  "name": "electiondesk/websie",
+  "description": "ElectionDesk Social Media Dashboard",
+  "authors": [
+    {
+      "name": "Mathias Hansen",
+      "email": "mathias@engagedc.com"
+    }
+  ],
+  "require": {
+    "engage/query-text-parser": "dev-master"
+  }
+}

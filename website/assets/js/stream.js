@@ -5,11 +5,10 @@ var update_interval = 3;
 var sources = ['twitter', 'facebook', 'googleplus'];
 var current_time;
 var filters = [];
-var subfilters = [];
+var subfilter = '';
 var near = null;
 var distance;
 var is_paused = false;
-var subfilter_id = 1;
 var used_ids = [];
 var default_cookie_settings = {
 	expires: 7
@@ -17,18 +16,12 @@ var default_cookie_settings = {
 var feed_stream_loaded = false;
 
 var restoreSession = function() {
-	// Subfilters
+	// subfilter
 	try {
-		var cookie = $.cookie('subfilters');
+		var cookie = $.cookie('subfilter');
 		if (cookie !== null) {
-			var data = JSON.parse(cookie);
-			$.each(data, function (index, filter) {
-				addSubFilter(filter, false);
-			});
+			setSubFilter(cookie, false);
 		}
-		
-		
-		
 	} catch (err) {
 
 	}
@@ -98,53 +91,37 @@ var restoreSession = function() {
 	}
 }
 
-var addSubFilter = function(filter, save) {
+var setSubFilter = function(filter, save) {
 	// Set default value for save
 	if (save === undefined)
 		save = true;
 
 	// Require some input
-	if (filter.length <= 0)
-		return;
+	if (filter.length <= 0) {
+		// Show "no filters" message
+		$(".filters .no-filters").show();
 
-	$("#filter-form .search-bar").val('');
-	subfilters.push(filter);
+		_gaq.push(['_trackEvent', 'Filter', 'Delete', subfilter]);
+	} else {
+		// Make sure no filters message is hidden
+		$(".filters .no-filters").hide();
 
-	// Add a new checkbox
-	$(".filters").append('<section class="checkbox">' +
-		'<input type="checkbox" id="subfilter-' + subfilter_id + '" checked="checked">' +
-		'<label for="subfilter-' + subfilter_id + '">' + filter + '</label>' +
-	'</section>');
-	subfilter_id++;
+		_gaq.push(['_trackEvent', 'Filter', 'Create', filter]);
+	}
+
+	// Clear query field
+	$("#filter-form .search-bar").val(filter);
+
+	// Update current filter text
+	$(".filters .filter").html((filter.length > 0) ? ('Current filter: ' + filter) : '');
 
 	// Store filters in cookie?
 	if (save) {
-		$.cookie('subfilters', JSON.stringify(subfilters), default_cookie_settings);
+		$.cookie('subfilter', filter, default_cookie_settings);
 	}
 
-	// Make sure no filters message is hidden
-	$(".filters .no-filters").hide();
-
-	$(".filters section input").unbind("click").click(function () {
-		var subfilter_query = $(this).parent().find('label').html();
-
-		// Remove filter from list
-		var index = subfilters.indexOf(subfilter_query);
-		if (index != -1) subfilters.splice(index, 1);
-
-		// Store filters in cookie
-		$.cookie('subfilters', JSON.stringify(subfilters), default_cookie_settings);
-
-		// Remove checkbox and label
-		$(this).parent().remove();
-
-		// Show message if no filters are present now
-		if ($(".filters section").length <= 0) {
-			$(".filters .no-filters").show();
-		}
-	});
-
-	_gaq.push(['_trackEvent', 'Filter', 'Create', filter]);
+	// Store the new filter in local variable
+	subfilter = filter;
 }
 
 // Poll for new messages in the stream
@@ -152,7 +129,7 @@ var updateStream = function() {
 	if (!is_paused) {
 		// Build URL based on criterias
 		var url = stream_server + '/streams?sources=' + sources.join(',') + '&after=' + current_time
-			+ '&filters=' + filters.join(',') + '&subfilters=' + encodeURIComponent(subfilters.join(','));
+			+ '&filters=' + filters.join(',') + '&subfilter=' + encodeURIComponent(subfilter);
 		if (use_geo_near && distance != 'area') {
 			url += '&near=' + near + '&distance=' + encodeURIComponent(distance);
 		}
@@ -399,7 +376,13 @@ $(function() {
 	// Implement filter form
 	$("#filter-form").submit(function () {
 		var query = $("#filter-form .search-bar").val();
-		addSubFilter(query);
+		setSubFilter(query);
+
+		return false;
+	});
+
+	$("#filter-form .reset").click(function () {
+		setSubFilter('');
 
 		return false;
 	});
