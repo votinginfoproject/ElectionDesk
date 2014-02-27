@@ -257,7 +257,7 @@ var attachButtonEvents = function () {
 			if (data.error) {
 				alert('Could not follow user: ' + data.error);
 			} else {
-				alert('You are now following @' + username)
+				alert('You are now following @' + username);
 			}
 		});
 
