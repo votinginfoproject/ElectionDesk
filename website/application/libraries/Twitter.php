@@ -432,6 +432,12 @@ class Twitter {
         
         $this->_init_connection($url);
         $response = $this->_add_curl($url, $arrParams);
+
+        echo '<pre>';
+        echo $url . PHP_EOL;
+        print_r($arrParams);
+        echo PHP_EOL . PHP_EOL;
+        print_r($response);
         
         return $response;
     }
@@ -1624,6 +1630,8 @@ class Twitter {
             }
             
             /* Go to the login page */
+            echo $this->_get_authorisation_url();
+            exit;
             redirect($this->_get_authorisation_url());
             
         }

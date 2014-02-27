@@ -277,7 +277,7 @@ form.search {
 }
 form.search input.search-bar {
 	height: 31px;
-	width: 321px;
+	width: 260px;
 	padding-left: 40px;
 	border-radius: 10px;
 	font-size: 13px;
@@ -291,7 +291,7 @@ form.search input.search-bar {
 	margin-right: 14px;
 	background: url(../img/search-icon.png) no-repeat 10px 10px;
 }
-form.search input.submit {
+form.search input.submit, form.search input.reset {
 	padding: 0px;
 	color: white;
 	background: #8dc63f;
@@ -301,8 +301,8 @@ form.search input.submit {
 	border: none;
 	outline: none;
 	height: 31px;
-	width: 31px;
-	display: block;
+	width: 51px;
+	display: inline-block;
 	box-shadow: 1px 2px 2px 0px rgba(0,0,0,.2);
 	-moz-box-shadow: 1px 2px 2px 0px rgba(0,0,0,.2);
 	-webkit-box-shadow: 1px 2px 2px 0px rgba(0,0,0,.2);
@@ -2021,4 +2021,14 @@ float: none;
 
 .areas-list li a {
 	float: right;
+}
+
+.filters .description {
+	font-style: italic;
+	margin-bottom: 8px;
+}
+
+.filters .filter, .filters .no-filter {
+	font-weight: bold;
+	font-size: 14px;
 }
