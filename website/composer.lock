@@ -1,0 +1,61 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "69604f1748edc8cf2766b285e3753619",
+    "packages": [
+        {
+            "name": "engage/query-text-parser",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/EngageDC/query-text-parser.git",
+                "reference": "5bfedb500f4bc7c99bd69c6e31ef04bfc538d2dd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/EngageDC/query-text-parser/zipball/5bfedb500f4bc7c99bd69c6e31ef04bfc538d2dd",
+                "reference": "5bfedb500f4bc7c99bd69c6e31ef04bfc538d2dd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Engage\\QueryTextParser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Mathias Hansen",
+                    "email": "mathias@engagedc.com"
+                }
+            ],
+            "description": "The Query Text Parser library performs search query text parsing",
+            "time": "2014-02-25 22:02:54"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "engage/query-text-parser": 20
+    },
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
+}

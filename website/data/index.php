@@ -2,6 +2,7 @@
 // Change directory
 chdir(dirname(__FILE__));
 
+require(__DIR__ . '/../vendor/autoload.php');
 require('endpoints/EndpointBase.php');
 
 // Set default timezone
