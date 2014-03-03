@@ -53,7 +53,7 @@ class Settings extends CI_Controller {
 		foreach ($data['accounts'] as $account) {
 			if (is_null($account->name)) {
 				if ($account->type == 'TWITTER') {
-					$this->twitter->set_db_accesstoken(null, unserialize($account->access_token));
+					$this->twitter->set_db_accesstoken(unserialize($account->access_token));
 					$didUpdate = true;
 				}
 			}
@@ -151,7 +151,6 @@ class Settings extends CI_Controller {
 	}	
 	
 	function twitter() {
-		$this->twitter->set_callback(site_url('settings'));
 		$this->twitter->login();
     }
 	

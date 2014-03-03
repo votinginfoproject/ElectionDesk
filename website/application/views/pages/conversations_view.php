@@ -3,7 +3,7 @@
 	<div class="subhead">
 		<h3>Conversations</h3>
 		<p>Follow conversations with people.</p>
-		<p>Switch account <select name="accounts" onchange="document.location.href='/settings/select_primary?id=' + this.value;">
+		<p>Switch account to reply from <select name="accounts" onchange="document.location.href='/settings/select_primary?id=' + this.value;">
 			<?php foreach ($accounts as $account): ?>
 				<<option value="<?php echo $account->id; ?>"<?php if ($account->is_primary == 1) echo ' selected="selected"' ?>>@<?php echo $account->name; ?></option>
 			<?php endforeach; ?>
