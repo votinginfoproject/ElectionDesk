@@ -85,7 +85,7 @@
 					<li><?php echo anchor('admin', 'Admin'); ?></li>
 					<?php endif; ?>
 				</ul>
-				<p>&copy; Copyright 2012-2013 Voting Information Project. All Rights Reserved.</p>
+				<p>&copy; Copyright 2012-<?php echo date('Y'); ?> Voting Information Project. All Rights Reserved.</p>
 			</div>
 		</div>
 	</footer>

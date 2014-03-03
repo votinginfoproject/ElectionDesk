@@ -23,6 +23,8 @@ if (!function_exists('relative_time')) {
             return $numberOfUnits . ' ' . $text . (($numberOfUnits > 1) ? 's' : '');
         }
 
+        return 'about a minute';
+
     }
 
 }

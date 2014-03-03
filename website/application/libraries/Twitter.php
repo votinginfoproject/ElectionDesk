@@ -4,8 +4,6 @@
  * Twitter
  * 
  * A Word on Caching:
- *  Most of the requests to the Twitter API are cached. To
- *  see how this works, refer to the _get_cache() method and
  *  the CI caching documentation.  This makes it both quicker
  *  and reduces the risk of Twitter stopping your service as
  *  most are limited.
@@ -20,114 +18,108 @@
  * @uses CI Session library
  * @author Simon Emms <simon@simonemms.com>
  */
+
+/**
+ * Twitter class
+ *
+ * @author      Tijs Verkoyen <php-twitter@verkoyen.eu>
+ * @version     2.3.1
+ * @copyright   Copyright (c), Tijs Verkoyen. All rights reserved.
+ * @license     BSD License
+ */
 class Twitter {
+
+    // internal constant to enable/disable debugging
+    const DEBUG = true;
+
+    // url for the twitter-api
+    const API_URL = 'https://api.twitter.com/1.1';
+    const SECURE_API_URL = 'https://api.twitter.com';
+
+    // port for the twitter-api
+    const API_PORT = 443;
+    const SECURE_API_PORT = 443;
+
+    // current version
+    const VERSION = '2.3.1';
+
+    /**
+     * A cURL instance
+     *
+     * @var resource
+     */
+    protected $curl;
+
+    /**
+     * The consumer key
+     *
+     * @var string
+     */
+    protected $consumerKey;
+
+    /**
+     * The consumer secret
+     *
+     * @var string
+     */
+    protected $consumerSecret;
+
+    /**
+     * The oAuth-token
+     *
+     * @var string
+     */
+    protected $oAuthToken = '';
+
+    /**
+     * The oAuth-token-secret
+     *
+     * @var string
+     */
+    protected $oAuthTokenSecret = '';
+
+    /**
+     * The timeout
+     *
+     * @var int
+     */
+    protected $timeOut = 10;
+
+    /**
+     * The user agent
+     *
+     * @var string
+     */
+    protected $userAgent;
     
     
-    /* Set in the config file */
-    protected $_connection,
-        $_tokens,
-        $_api_url,
-        $_callback,
-        $_curl,
-        $_arrRequests,
-        $_arrResponses,
-        $_mch,
-        $_token_session,
-        $_user_url,
-        $_search_url,
-        $_request_token_url,
-        $_authorization_url;
-    
-    
-    /* Timeout in seconds */
-    protected $cache_timeout = 300;
-    
-    
-    /* Do we force the login */
-    protected $_force_login = false;
-    
-    
-    /* List of errors */
-    protected $_arrErrors = array();
-    
-    
-    /* Are we debugging */
-    protected $_debug = false;
-    
-    
-    /* Opens links in a new window */
-    protected $_open_in_new_window = true;
-    
-    /* Cache method */
-    protected $_cache_method = false;
-    
-    
-    /* Target name */
-    protected $_new_window_target = '_blank';
-    
-    
-    /* Where errors live */
-    protected $_error_message = null;
-    
-    
-    /* Properties for the cURL - used when decoding the response */
-    protected $_arrProperties = array(
-        'code' => CURLINFO_HTTP_CODE,
-        'time' => CURLINFO_TOTAL_TIME,
-        'length' => CURLINFO_CONTENT_LENGTH_DOWNLOAD,
-        'type' => CURLINFO_CONTENT_TYPE,
-    );
-    
-    
-    
-    public function __construct() {
+    /**
+     * Default constructor
+     */
+    public function __construct()
+    {
         /* Load the config */
         $this->load->config('twitter');
         
         $this->load->helper('url');
-        
+
         $arrConfig = $this->config->item('twitter');
-        
-        if(is_array($arrConfig) && count($arrConfig) > 0) {
-            foreach($arrConfig as $key => $value) {
-                if($key == '_cache_method') {
-                    if(!is_array($value) || !array_key_exists('adapter', $value) || empty($value['adapter'])) {
-                        /* Invalid cache method */
-                        $value = false;
-                    }
-                }
-                $this->$key = $value;
-            }
-        }
-        
-        /* Parse login details */
+
+        $this->setConsumerKey($arrConfig['consumer_key']);
+        $this->setConsumerSecret($arrConfig['consumer_secret']);
+
         $this->_check_login();
     }
-    
-    
-    
-    
-    
-    
-    
+
     /**
-     * Destruct
-     * 
-     * Shows errors 
+     * Default destructor
      */
-    public function __destruct() {
-        if($this->_debug && count($this->_arrErrors) > 0) {
-            echo '<pre>'.print_r($this->_arrErrors, true).'</pre>';exit;
-        }
+    public function __destruct()
+    {
+        if($this->curl != null) curl_close($this->curl);
     }
-    
-    
-    
-    
-    
-    
-    
-    /**
+
+     /**
      * __get
      *
      * Allows models to access CI's loaded classes using the same
@@ -140,1055 +132,725 @@ class Twitter {
         $CI =& get_instance();
         return $CI->$key;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Add cURL
-     * 
-     * Add cURL stuff
-     * 
-     * @param string $url
-     * @param array $arrParams
-     * @return mixed
-     */
-    protected function _add_curl($url, $arrParams = array()) {
-        if(!empty($arrParams['oauth'])) {
-            $this->_add_oauth_headers($this->_curl, $url, $arrParams['oauth']);
-        }
 
-        $ch = $this->_curl;
+    private function _check_login() {
+        // Oauth token
+        $token = $this->input->get('oauth_token');
 
-        $key = (string) $ch;
-        $this->_arrRequests[$key] = $ch;
-        
-        if(is_null($this->_mch)) {
-            $this->_mch = curl_multi_init();
-        }
+        // Verifier token
+        $verifier = $this->input->get('oauth_verifier');
 
-        $response = curl_multi_add_handle($this->_mch, $ch);
+        // Request access token
+        if ($token && $verifier) {
+            $accessToken = Twitter::oAuthAccessToken($token, $verifier);
 
-        if($response === CURLM_OK || $response === CURLM_CALL_MULTI_PERFORM) {
-            do {
-                $mch = curl_multi_exec($this->_mch, $active);
-            } while($mch === CURLM_CALL_MULTI_PERFORM);
-
-            return $this->_get_response($key);
+            $this->set_db_accesstoken($accessToken);
         } else {
-            return $response;
-        }
-    }
-    
-    
-    
-    
-    
-    
-    /**
-     * Add OAuth Headers
-     * 
-     * Add the headers to the OAuth connection
-     * 
-     * @param resource $ch
-     * @param string $url
-     * @param array $arrHeaders
-     */
-    protected function _add_oauth_headers(&$ch, $url, $arrHeaders) {
-        $_h = array('Expect:');
-        $arrUrl = parse_url($url);
-        $oauth = 'Authorization: OAuth realm="'.$arrUrl['path'].'",';
-        
-        if(count($arrHeaders) > 0) {
-            foreach($arrHeaders as $name => $value ) {
-                $oauth .= "{$name}=\"{$value}\",";
+            $arrKeys = $this->get_db_accesstoken();
+                
+            if (is_array($arrKeys) && array_key_exists('oauth_token', $arrKeys)) {
+                $this->setOAuthToken($arrKeys['oauth_token']);
+                $this->setOAuthTokenSecret($arrKeys['oauth_token_secret']);
             }
         }
-        
-        $_h[] = substr($oauth, 0, -1);
-        
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $_h);
     }
     
-    
-    
-    
-    
-    
-    
-    
+ // OAuth resources
     /**
-     * Build XML Array
-     * 
-     * Converts an XML feed into an array
-     * 
-     * @param mixed $arrObjData
-     * @param array $arrSkipIndices
+     * Allows a Consumer application to use an OAuth request_token to request user authorization. 
+     * This method is a replacement fulfills Secion 6.2 of the OAuth 1.0 authentication flow for 
+     * applications using the Sign in with Twitter authentication flow. The method will use the 
+     * currently logged in user as the account to for access authorization unless the force_login 
+     * parameter is set to true
+     *
+     * @param string $token The token.
+     * @param bool[optional] $force Force the authentication.
+     * @param string[optional] $screen_name Prefill the username input box of the OAuth login.
+     */
+    public function oAuthAuthenticate($token, $force = false, $screen_name = false)
+    {
+        $url = self::SECURE_API_URL . '/oauth/authenticate?oauth_token=' . $token;
+        if ($force) {
+            $url .= '&force_login=true';
+        }
+        if ($screen_name) {
+            $url .= '&screen_name=' . $screen_name;
+        }
+
+        header('Location: ' . $url);
+    }
+
+    /**
+     * Will redirect to the page to authorize the applicatione
+     *
+     * @param string $token The token.
+     */
+    public function oAuthAuthorize($token)
+    {
+        header('Location: ' . self::SECURE_API_URL .
+               '/oauth/authorize?oauth_token=' . $token);
+    }
+
+    /**
+     * Allows a Consumer application to exchange the OAuth Request Token for an OAuth Access Token.
+     * This method fulfills Secion 6.3 of the OAuth 1.0 authentication flow.
+     *
+     * @param  string $token    The token to use.
+     * @param  string $verifier The verifier.
      * @return array
      */
-    protected function _build_xml_array($arrObjData, $arrSkipIndices = array()) {
-        
-        $arrData = array();
+    public function oAuthAccessToken($token, $verifier)
+    {
+        // init var
+        $parameters = array();
+        $parameters['oauth_token'] = (string) $token;
+        $parameters['oauth_verifier'] = (string) $verifier;
 
-        // if input is object, convert into array
-        if(is_object($arrObjData)) {
-            $arrObjData = get_object_vars($arrObjData);
+        // make the call
+        $response = $this->doOAuthCall('access_token', $parameters);
+
+        // set some properties
+        if (isset($response['oauth_token'])) {
+            $this->setOAuthToken($response['oauth_token']);
+        }
+        if (isset($response['oauth_token_secret'])) {
+            $this->setOAuthTokenSecret($response['oauth_token_secret']);
         }
 
-        if(is_array($arrObjData)) {
-            foreach($arrObjData as $index => $value) {
-                if(is_object($value) || is_array($value)) {
-                    $value = $this->_build_xml_array($value, $arrSkipIndices); // recursive call
-                }
-                if(in_array($index, $arrSkipIndices)) {
-                    continue;
-                }
-                $arrData[$index] = $value;
-            }
-        }
-        return $arrData;
-        
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Check Login
-     * 
-     * Saves the login data
-     */
-    protected function _check_login() {
-        if($this->input->get('oauth_token') !== false) {
-            /* Get from the string */
-            $token = $this->input->get('oauth_token');
-            
-            $this->_set_access_key($token);
-            
-            $arrTokens = $this->_get_access_token();
-            
-            $arrKeys = array(
-                'oauth_token',
-                'oauth_token_secret',
-                'user_id',
-                'screen_name',
-            );
-
-            /* Set the data */
-            if(array_keys_exist($arrKeys, $arrTokens)) {
-                $this->_set_access_key($arrTokens['oauth_token']);
-                $this->_set_access_secret($arrTokens['oauth_token_secret']);
-                $this->_set_access_userId($arrTokens['user_id']);
-                $this->_set_access_username($arrTokens['screen_name']);
-            }
-            
-            /* Redirect without the GET strings */
-            redirect(current_url());
-        }
-        
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Decode Response
-     * 
-     * Decode the response from the server
-     * 
-     * @param object $objData 
-     * @return array
-     */
-    protected function _decode_response($objData) {
-        /* Decode the data based on type */
-        $arrResponse = array();
-        if(preg_match('/(json)/', $objData->type)) {
-            /* Decode a JSON string */
-            $arrResponse = _object_to_array(json_decode($objData->data));
-        } elseif(preg_match('/(xml)/', $objData->type)) {
-            /* Decode an XML string */
-            $objXML = new SimpleXMLElement($objData->data, null, false);
-            $arrResponse = $this->_build_xml_array($objXML);
-            
-            /* Make the last element the array */
-            $arrResponse = $arrResponse[end(array_keys($arrResponse))];
-        } else {
-            /* Text string */
-            if(isset($objData->data)) {
-                parse_str($objData->data, $arrResponse);
-            }
-        }
-        return $arrResponse;
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Encode RFC3986
-     * 
-     * Encode the string in RFC3986
-     * 
-     * @param string $string
-     * @return string
-     */
-    protected function _encode_rfc3986($string) {
-        return str_replace('+', ' ', str_replace('%7E', '~', rawurlencode(($string))));
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Generate Nonce
-     * 
-     * Generate the none string
-     * 
-     * @return string
-     */
-    protected function _generate_nonce() { return md5(uniqid(rand(), true)); }
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Generate Signature
-     * 
-     * Generates the signature
-     * 
-     * @param string $method
-     * @param string $url
-     * @param array $arrParams
-     * @return string
-     */
-    protected function _generate_signature($method = null, $url = null, $arrParams = null) {
-        
-        if(empty($method) || empty($url)) { return false; }
-        
-        $concatenatedParams = '';
-        if(count($arrParams) > 0) {
-            foreach($arrParams as $k => $v) {
-                $v = $this->_encode_rfc3986($v);
-                $concatenatedParams .= "{$k}={$v}&";
-            }
-            
-            $concatenatedParams = $this->_encode_rfc3986(substr($concatenatedParams, 0, -1));
-        }
-        
-        $normalizedUrl = $this->_encode_rfc3986($this->_normalize_url($url));
-        $method = $this->_encode_rfc3986($method); // don't need this but why not?
-        
-        $signatureBaseString = "{$method}&{$normalizedUrl}&{$concatenatedParams}";
-        
-        return $this->_sign_string($signatureBaseString);
-        
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Get
-     * 
-     * Performs a GET request
-     * 
-     * @param string $url
-     * @param array $arrParams
-     * @return array
-     */
-    protected function _get($url, $arrParams) {
-        if(isset($arrParams['request']) && count($arrParams['request']) > 0 ) {
-            $url .= '?';
-            foreach($arrParams['request'] as $k => $v ) {
-                $url .= "{$k}={$v}&";
-            }
-
-            $url = substr($url, 0, -1);
-        }
-        
-        $this->_init_connection($url);
-        $response = $this->_add_curl($url, $arrParams);
-        
+        // return
         return $response;
     }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Gett Access Token
-     * 
-     * Gets the access tokens from Twitter
-     * 
-     * @return array
-     */
-    protected function _get_access_token() {
-        $arrData = $this->_http_request('GET', $this->_access_token_url, array('_cache' => false, 'oauth_verifier' => $_GET['oauth_verifier']));
-        
-        return $arrData['data'];
-    }
-    
-    
-    
-    
-    
-    
-    /**
-     * Get Authorization URL
-     * 
-     * Gets the URL which Twitter uses to
-     * authorize the application.  Sets to
-     * force login if required
-     * 
-     * @return string
-     */
-    protected function _get_authorisation_url() {
-        $arrData = $this->_get_request_token();
-        
-        $arrGet = array();
-        /* Add the token */
-        if(array_key_exists('oauth_token', $arrData)) {
-            $arrGet['oauth_token'] = $arrData['oauth_token'];
-        }
-        
-        /* Do we force login */
-        if($this->_force_login) { $arrGet['force_login'] = 1; }
-        
-        /* Build the URL */
-        $arrUrl = array(
-            $this->_authorization_url,
-            http_build_query($arrGet),
-        );
-        
-        return implode('?', $arrUrl);
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Get Response
-     * 
-     * Gets the response from the API
-     * 
-     * @param string $key
-     * @return array
-     */
-    protected function _get_response($key = null) {
-        if(is_null($key)) { return false; }
-        
-        if(is_array($this->_arrResponses) && array_key_exists($key, $this->_arrResponses)) {
-            return $this->_arrResponses[$key];
-        } else {
-            $running = null;
-            
-            do {
-                $response = curl_multi_exec($this->_mch, $running_curl);
-                
-                if(is_null($running) === false && $running_curl != $running) {
-                    $this->_set_response($key);
-                    
-                    if(is_array($this->_arrResponses) && array_key_exists($key, $this->_arrResponses)) {
-                        
-                        /* Convert to an object - reduces errors if key not present */
-                        $objData = (object) $this->_arrResponses[$key];
-                        
-                        /* Decode the response */
-                        $arrResponse = $this->_decode_response($objData);
-                        
-                        /* If not 200, throw an error */
-                        if($objData->code != 200) {
-                            $message = '';
-                            /* How do we do errors */
-                            if($this->_debug) {
-                                /* Output errors */
-                                if(array_key_exists('error', $arrResponse)) {
-                                    $message = ' - ';
-                                    $message .= $arrResponse['error'];
-                                } else {
-                                    $message = $objData->data;
-                                }
-                                throw new Twitter_Exception($objData->code.' | Request failed'.$message);
-                            }
-                        }
-                        
-                        $arrReturn = array(
-                            'data' => $arrResponse, /* The data lives here */
-                            '_raw' => $objData, /* Used for debugging purposes */
-                        );
-                        
-                        return $arrReturn;
-                        
-                    }
-                }
-                
-                $running = $running_curl;
-            } while($running_curl > 0);
-        }
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Get Cache
-     * 
-     * Gets the cache of the feed
-     * 
-     * @param string $method
-     * @param string $url
-     * @param array $arrParams
-     * @return mixed
-     */
-    protected function _get_cache($method, $url, $arrParams) {
-        
-        if($this->_cache_method !== false) {
-            /* Load the cache driver */
-            $this->load->driver('cache', $this->_cache_method);
-
-            /* Get the name */
-            $name = $this->_get_cache_name($method, $url, $arrParams);
-
-            $arrData = $this->cache->get('twitter_'.$name);
-
-            if($arrData === false) {
-                return null;
-            } else {
-                return $arrData;
-            }
-        }
-        
-        return null;
-        
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Get Cache Name
-     * 
-     * Gets the name for the cache
-     * 
-     * @param string $method
-     * @param string $url
-     * @param array $arrParams
-     * @return string
-     */
-    protected function _get_cache_name($method, $url, $arrParams) {
-        
-        $arrCache = array(
-            $method,
-            $url,
-            $arrParams,
-        );
-        
-        $name = md5(serialize($arrCache));
-        
-        return $name;
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Get Error
-     * 
-     * Checks the return array from Twitter for an
-     * error
-     * 
-     * @param array $arrResult
-     * @return string/false
-     */
-    protected function _get_error($arrResult) {
-        
-        /* Default to no error */
-        $error = false;
-        if(is_array($arrResult)) {
-            if (array_key_exists('error', $arrResult)) {
-                /* Has error - return the message */
-                $error = $arrResult['error'];
-            } elseif (array_key_exists('errors', $arrResult)) {
-                /* Has error - return the message */
-                $error = $arrResult['errors'];
-            }
-
-            if ($error !== false) {            
-                /* Save the error message */
-                $this->_error_message = $error;
-            }
-        }
-        
-        return $error;
-        
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Get Request Token
-     * 
-     * Gets the request token to allow us
-     * to login
-     * 
-     * @return array
-     */
-    protected function _get_request_token() {
-        $arrData = $this->_http_request('GET', $this->_request_token_url, array('_cache' => false));
-        
-        return $arrData['data'];
-    }
-
-
-
-
-
-
-
 
     /**
-     * HTTP Request
-     * 
-     * Performs an HTTP request
-     * 
-     * @param string $method
-     * @param string $url
-     * @param array $arrParams
-     * @return resource/null
+     * Allows a Consumer application to obtain an OAuth Request Token to request user authorization.
+     * This method fulfills Secion 6.1 of the OAuth 1.0 authentication flow.
+     *
+     * @param  string[optional] $callbackURL The callback URL.
+     * @return array            An array containg the token and the secret
      */
-    protected function _http_request($method = null, $url = null, $arrParams = null) {
-        if(empty($method) || empty($url)) { return null; }
-        
-        /* Add OAuth signature - not for public calls */
-        $arrParams = $this->_prepare_parameters($method, $url, $arrParams);
-        
-        /* Check for no cache instruction */
-        $cache = true;
-        if(is_array($arrParams['request']) && array_key_exists('_cache', $arrParams['request'])) {
-            $cache = $arrParams['request']['_cache'];
-            /* Ensure either int or bool */
-            if(is_numeric($cache)) {
-                $cache = (int) $cache;
-            } else {
-                $cache = (bool) $cache;
-            }
-            unset($arrParams['request']['_cache']);
-        }
-        
-        if($cache !== false) {
-            /* Check the cache */
-            $arrReturn = $this->_get_cache($method, $url, $arrParams['request']);
-            
-            /* We have cached data - do not recache */
-            if(!is_null($arrReturn)) { $cache = false; }
-        } else {
-            $arrReturn = null;
-        }
-        
-        /* Nothing in cache - get from the API */
-        if(is_null($arrReturn)) {
-        
-            switch($method) {
-                case 'GET':
-                    $arrReturn = $this->_get($url, $arrParams);
-                    break;
+    public function oAuthRequestToken($callbackURL = null)
+    {
+        // init var
+        $parameters = null;
 
-                case 'POST':
-                    $arrReturn = $this->_post($url, $arrParams);
-                    break;
-
-                case 'PUT':
-                    $arrReturn = null;
-                    break;
-
-                case 'DELETE':
-                    $arrReturn = null;
-                    break;
-            }
-        
-        }
-        
-        /* Cache the data */
-        if($cache !== false) {
-            $this->_save_cache($method, $url, $arrParams['request'], $arrReturn, $cache);
-        }
-        
-        return $arrReturn;
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Init Connection
-     * 
-     * Initialize the cURL connection
-     * 
-     * @param string $url 
-     */
-    protected function _init_connection($url) {
-        $this->_curl = curl_init($url);
-        curl_setopt($this->_curl, CURLOPT_RETURNTRANSFER, true);
-    }
-    
-    
-    
-    
-    
-
-    
-    /**
-     * Normalize URL
-     * 
-     * Make sure the URL is in the correct format
-     * 
-     * @param string $url
-     * @return string
-     */
-    protected function _normalize_url($url = NULL) {
-        $arrUrl = parse_url($url);
-
-        if(!isset($arrUrl['port'])) { $arrUrl['port'] = 80; }
-
-        $scheme = strtolower($arrUrl['scheme']);
-        $host = strtolower($arrUrl['host']);
-        $port = intval($arrUrl['port']);
-
-        $retval = "{$scheme}://{$host}";
-
-        if ( $port > 0 && ( $scheme === 'http' && $port !== 80 ) || ( $scheme === 'https' && $port !== 443 ) ) {
-            $retval .= ":{$port}";
+        // set callback
+        if ($callbackURL != null) {
+            $parameters['oauth_callback'] = (string) $callbackURL;
         }
 
-        $retval .= $arrUrl['path'];
+        // make the call
+        $response = $this->doOAuthCall('request_token', $parameters);
 
-        if(!empty($arrUrl['query'])) {
-            $retval .= "?{$arrUrl['query']}";
+        // validate
+        if (!isset($response['oauth_token'], $response['oauth_token_secret'])) {
+            throw new Exception(implode(', ', array_keys($response)));
         }
 
-        return $retval;
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Post
-     * 
-     * Performs a POST request
-     * 
-     * @param string $url
-     * @param array $arrParams
-     * @return array
-     */
-    protected function _post($url, $arrParams) {
-		$post = '';
-        if(is_array($arrParams['request']) && count($arrParams['request']) > 0 ) {
-            foreach($arrParams['request'] as $k => $v) {
-                $post .= $k . "=" . urlencode($v) . "&";
-            }
-            
-            $post = substr($post, 0, -1);
-            
+        // set some properties
+        if (isset($response['oauth_token'])) {
+            $this->setOAuthToken($response['oauth_token']);
         }
-        
-        $this->_init_connection($url);
-        curl_setopt($this->_curl, CURLOPT_POST, 1);
-        curl_setopt($this->_curl, CURLOPT_POSTFIELDS, $post);
-        
-        $response = $this->_add_curl($url, $arrParams);
-        
+        if (isset($response['oauth_token_secret'])) {
+            $this->setOAuthTokenSecret($response['oauth_token_secret']);
+        }
+
+        // return
         return $response;
+    }   
+    
+       /**
+     * Format the parameters as a querystring
+     *
+     * @param  array  $parameters The parameters.
+     * @return string
+     */
+    protected function buildQuery(array $parameters)
+    {
+        // no parameters?
+        if(empty($parameters)) return '';
+
+        // encode the keys
+        $keys = self::urlencode_rfc3986(array_keys($parameters));
+
+        // encode the values
+        $values = self::urlencode_rfc3986(array_values($parameters));
+
+        // reset the parameters
+        $parameters = array_combine($keys, $values);
+
+        // sort parameters by key
+        uksort($parameters, 'strcmp');
+
+        // loop parameters
+        foreach ($parameters as $key => $value) {
+            // sort by value
+            if(is_array($value)) $parameters[$key] = natsort($value);
+        }
+
+        // process parameters
+        foreach ($parameters as $key => $value) {
+            $chunks[] = $key . '=' . str_replace('%25', '%', $value);
+        }
+
+        // return
+        return implode('&', $chunks);
     }
-    
-    
-    
-    
-    
-    
-    
-    
 
     /**
-     * Prepare Parameters
-     * 
-     * Prepares the parameters for the uery
-     * 
-     * @param string $method
-     * @param string $url
-     * @param array $arrParams
-     * @return array
+     * All OAuth 1.0 requests use the same basic algorithm for creating a
+     * signature base string and a signature. The signature base string is
+     * composed of the HTTP method being used, followed by an ampersand ("&")
+     * and then the URL-encoded base URL being accessed, complete with path
+     * (but not query parameters), followed by an ampersand ("&"). Then, you
+     * take all query parameters and POST body parameters (when the POST body is
+     * of the URL-encoded type, otherwise the POST body is ignored), including
+     * the OAuth parameters necessary for negotiation with the request at hand,
+     * and sort them in lexicographical order by first parameter name and then
+     * parameter value (for duplicate parameters), all the while ensuring that
+     * both the key and the value for each parameter are URL encoded in
+     * isolation. Instead of using the equals ("=") sign to mark the key/value
+     * relationship, you use the URL-encoded form of "%3D". Each parameter is
+     * then joined by the URL-escaped ampersand sign, "%26".
+     *
+     * @param  string $url        The URL.
+     * @param  string $method     The method to use.
+     * @param  array  $parameters The parameters.
+     * @return string
      */
-    protected function _prepare_parameters($method = NULL, $url = NULL, $arrParams = NULL) {
-        if(empty($method) || empty($url)) { return FALSE; }
-        
-        $public = false;
-        if(is_array($arrParams) && array_key_exists('public', $arrParams)) {
-            $public = (bool) $arrParams['public'];
-            unset($arrParams['public']);
+    protected function calculateBaseString($url, $method, array $parameters)
+    {
+        // redefine
+        $url = (string) $url;
+        $parameters = (array) $parameters;
+
+        // init var
+        $pairs = array();
+        $chunks = array();
+
+        // sort parameters by key
+        uksort($parameters, 'strcmp');
+
+        // loop parameters
+        foreach ($parameters as $key => $value) {
+            // sort by value
+            if(is_array($value)) $parameters[$key] = natsort($value);
         }
-        
-        $arrOauth = array();
-        
-        if($public === false) {
-            /* Set the main OAuth info */
-            $arrOauth = array(
-                'oauth_consumer_key' => $this->get_consumer_key(),
-                'oauth_token' => $this->get_access_key(),
-                'oauth_nonce' => $this->_generate_nonce(),
-                'oauth_timestamp' => time(),
-                'oauth_signature_method' => $this->_signature_method,
-                'oauth_version' => $this->_version,
+
+        // process queries
+        foreach ($parameters as $key => $value) {
+            // only add if not already in the url
+            if (substr_count($url, $key . '=' . $value) == 0) {
+                $chunks[] = self::urlencode_rfc3986($key) . '%3D' .
+                            self::urlencode_rfc3986($value);
+            }
+        }
+
+        // buils base
+        $base = $method . '&';
+        $base .= urlencode($url);
+        $base .= (substr_count($url, '?')) ? '%26' : '&';
+        $base .= implode('%26', $chunks);
+        $base = str_replace('%3F', '&', $base);
+
+        // return
+        return $base;
+    }
+
+    /**
+     * Build the Authorization header
+     * @later: fix me
+     *
+     * @param  array  $parameters The parameters.
+     * @param  string $url        The URL.
+     * @return string
+     */
+    protected function calculateHeader(array $parameters, $url)
+    {
+        // redefine
+        $url = (string) $url;
+
+        // divide into parts
+        $parts = parse_url($url);
+
+        // init var
+        $chunks = array();
+
+        // process queries
+        foreach ($parameters as $key => $value) {
+            $chunks[] = str_replace(
+                '%25', '%',
+                self::urlencode_rfc3986($key) . '="' . self::urlencode_rfc3986($value) . '"'
             );
         }
-        
-        /* Get the callback URL */
-        $callback = $this->get_callback();
-        
-        /* Set the callback URL */
-        if(!empty($callback)) { $arrOauth['oauth_callback'] = $callback; }
-	
-        /* Reset the callback URL */
-        $this->set_callback(null);
-        
-        array_walk($arrOauth, array($this, '_encode_rfc3986'));
-        
-        $arrEncoded = array_merge($arrOauth, (array) $arrParams);
-        
-        unset($arrEncoded['_cache']);
-			
-        ksort($arrEncoded);
-        
-        $arrOauth['oauth_signature'] = $this->_encode_rfc3986($this->_generate_signature($method, $url, $arrEncoded));
-        
-        $arrReturn = array(
-            'request' => $arrParams,
-            'oauth' => $arrOauth,
-        );
-        
-        return $arrReturn;
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Save Cache
-     * 
-     * Saves the cache
-     * 
-     * @param string $method
-     * @param string $url
-     * @param array $arrParams
-     * @param array $arrReturn
-     * @param bool/float $cache_override
-     */
-    protected function _save_cache($method, $url, $arrParams, $arrReturn, $cache_override) {
-        
-        /* Do we cache - should be done anyway, but double-checking */
-        if($this->_cache_method !== false) {
-            /* Get the cache name */
-            $name = $this->_get_cache_name($method, $url, $arrParams);
-            
-            $cache_timeout = $this->cache_timeout;
-            if(is_int($cache_override)) {
-                $cache_timeout = $cache_override;
-            }
 
-            /* Save the array */
-            $this->cache->save('twitter_'.$name, $arrReturn, $cache_timeout);
+        // build return
+        $return = 'Authorization: OAuth realm="' . $parts['scheme'] . '://' .
+                  $parts['host'] . $parts['path'] . '", ';
+        $return .= implode(',', $chunks);
+
+        // prepend name and OAuth part
+        return $return;
+    }
+
+    /**
+     * Make an call to the oAuth
+     * @todo    refactor me
+     *
+     * @param  string          $method     The method.
+     * @param  array[optional] $parameters The parameters.
+     * @return array
+     */
+    protected function doOAuthCall($method, array $parameters = null)
+    {
+        // redefine
+        $method = (string) $method;
+
+        // append default parameters
+        $parameters['oauth_consumer_key'] = $this->getConsumerKey();
+        $parameters['oauth_nonce'] = md5(microtime() . rand());
+        $parameters['oauth_timestamp'] = time();
+        $parameters['oauth_signature_method'] = 'HMAC-SHA1';
+        $parameters['oauth_version'] = '1.0';
+
+        // calculate the base string
+        $base = $this->calculateBaseString(
+            self::SECURE_API_URL . '/oauth/' . $method, 'POST', $parameters
+        );
+
+        // add sign into the parameters
+        $parameters['oauth_signature'] = $this->hmacsha1(
+            $this->getConsumerSecret() . '&' . $this->getOAuthTokenSecret(),
+            $base
+        );
+
+        // calculate header
+        $header = $this->calculateHeader(
+            $parameters,
+            self::SECURE_API_URL . '/oauth/' . $method
+        );
+
+        // set options
+        $options[CURLOPT_URL] = self::SECURE_API_URL . '/oauth/' . $method;
+        $options[CURLOPT_PORT] = self::SECURE_API_PORT;
+        $options[CURLOPT_USERAGENT] = $this->getUserAgent();
+        if (ini_get('open_basedir') == '' && ini_get('safe_mode' == 'Off')) {
+            $options[CURLOPT_FOLLOWLOCATION] = true;
         }
-        
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Set Access Key
-     * 
-     * Sets the access key
-     * 
-     * @param string $key
-     */
-    protected function _set_access_key($key) {
-        
-        /* Get the data */
-        $arrTokens = $this->_update_access('access_key', $key);
-        
-        /* Save it to the session */
-        $this->set_db_accesstoken($this->_token_session, $arrTokens);
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Set Access Secret
-     * 
-     * Sets the secret code
-     * 
-     * @param string $key
-     */
-    protected function _set_access_secret($key) {
-        
-        /* Get the data */
-        $arrTokens = $this->_update_access('access_secret', $key);
-        
-        /* Save it to the session */
-        $this->set_db_accesstoken($this->_token_session, $arrTokens);
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Set User ID
-     * 
-     * Sets the userId
-     * 
-     * @param string $id
-     */
-    protected function _set_access_userId($id) {
-        
-        /* Get the data */
-        $arrTokens = $this->_update_access('userId', $id);
-        
-        /* Save it to the session */
-        $this->set_db_accesstoken($this->_token_session, $arrTokens);
-        
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Set User ID
-     * 
-     * Sets the userId
-     * 
-     * @param string $user
-     */
-    protected function _set_access_username($user) {
-        
-        /* Get the data */
-        $arrTokens = $this->_update_access('username', $user);
-        
-        /* Save it to the session */
-        $this->set_db_accesstoken($this->_token_session, $arrTokens);
-        
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Set Response
-     * 
-     * Set the responses from the server
-     * 
-     * @param string $key 
-     */
-    protected function _set_response($key) {
-        while($done = curl_multi_info_read($this->_mch)) {
-            $key = (string) $done['handle'];
-            
-            $this->_arrResponses[$key]['data'] = curl_multi_getcontent($done['handle']);
-            
-            foreach($this->_arrProperties as $curl_key => $value) {
-                $this->_arrResponses[$key][$curl_key] = curl_getinfo($done['handle'], $value);
-                
-                curl_multi_remove_handle($this->_mch, $done['handle']);
-            }
+        $options[CURLOPT_RETURNTRANSFER] = true;
+        $options[CURLOPT_TIMEOUT] = (int) $this->getTimeOut();
+        $options[CURLOPT_SSL_VERIFYPEER] = false;
+        $options[CURLOPT_SSL_VERIFYHOST] = false;
+        $options[CURLOPT_HTTPHEADER] = array('Expect:');
+        $options[CURLOPT_POST] = true;
+        $options[CURLOPT_POSTFIELDS] = $this->buildQuery($parameters);
+
+        // init
+        $this->curl = curl_init();
+
+        // set options
+        curl_setopt_array($this->curl, $options);
+
+        // execute
+        $response = curl_exec($this->curl);
+        $headers = curl_getinfo($this->curl);
+
+        // fetch errors
+        $errorNumber = curl_errno($this->curl);
+        $errorMessage = curl_error($this->curl);
+
+        // error?
+        if ($errorNumber != '') {
+            throw new Exception($errorMessage, $errorNumber);
         }
+
+        // init var
+        $return = array();
+
+        // parse the string
+        parse_str($response, $return);
+
+        // return
+        return $return;
     }
-    
-    
-    
-    
-    
-    
+
     /**
-     * Sign String
-     * 
-     * Signs the string
-     * 
-     * @param string $string
+     * Make the call
+     *
+     * @param  string           $url           The url to call.
+     * @param  array[optional]  $parameters    Optional parameters.
+     * @param  bool[optional]   $authenticate  Should we authenticate.
+     * @param  bool[optional]   $method        The method to use. Possible values are GET, POST.
+     * @param  string[optional] $filePath      The path to the file to upload.
+     * @param  bool[optional]   $expectJSON    Do we expect JSON.
+     * @param  bool[optional]   $returnHeaders Should the headers be returned?
      * @return string
      */
-    protected function _sign_string($string) {
-        $retval = FALSE;
-        switch($this->_signature_method ) {
-            case 'HMAC-SHA1':
-                $key = $this->_encode_rfc3986($this->get_consumer_secret()) . '&' . $this->_encode_rfc3986($this->get_access_secret());
-                $retval = base64_encode(hash_hmac('sha1', $string, $key, true));
-                break;
-        }
-        return $retval;
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Update Access
-     * 
-     * Updates the login session
-     * 
-     * @param string $key
-     * @param string $value
-     * @return array
-     */
-    protected function _update_access($key = null, $value = null) {
-        
-        if(!is_null($key)) {
-            $arrSession = $this->get_db_accesstoken($this->_token_session);
+    protected function doCall(
+        $url, array $parameters = null, $authenticate = false, $method = 'GET',
+        $filePath = null, $expectJSON = true, $returnHeaders = false
+    )
+    {
+        // allowed methods
+        $allowedMethods = array('GET', 'POST');
 
-            /* Are we creating, updating or deleting */
-            if(!is_null($value)) {
-                /* Create/update */
-                if(is_array($arrSession)) {
-                    $arrSession[$key] = $value;
-                } else {
-                    $arrSession = array(
-                        $key => $value,
-                    );
-                }
-            } else {
-                /* Deleting */
-                unset($arrSession[$key]);
+        // redefine
+        $url = (string) $url . '.json';
+        $parameters = (array) $parameters;
+        $authenticate = (bool) $authenticate;
+        $method = (string) $method;
+        $expectJSON = (bool) $expectJSON;
+
+        // validate method
+        if (!in_array($method, $allowedMethods)) {
+            throw new Exception(
+                'Unknown method (' . $method . '). Allowed methods are: ' .
+                implode(', ', $allowedMethods)
+            );
+        }
+
+        // append default parameters
+        $oauth['oauth_consumer_key'] = $this->getConsumerKey();
+        $oauth['oauth_nonce'] = md5(microtime() . rand());
+        $oauth['oauth_timestamp'] = time();
+        $oauth['oauth_token'] = $this->getOAuthToken();
+        $oauth['oauth_signature_method'] = 'HMAC-SHA1';
+        $oauth['oauth_version'] = '1.0';
+
+        // set data
+        $data = $oauth;
+        if(!empty($parameters)) $data = array_merge($data, $parameters);
+
+        // calculate the base string
+        $base = $this->calculateBaseString(
+            self::API_URL . '/' . $url, $method, $data
+        );
+
+        // based on the method, we should handle the parameters in a different way
+        if ($method == 'POST') {
+            // file provided?
+            if ($filePath != null) {
+                // build a boundary
+                $boundary = md5(time());
+
+                // process file
+                $fileInfo = pathinfo($filePath);
+
+                // set mimeType
+                $mimeType = 'application/octet-stream';
+                if ($fileInfo['extension'] == 'jpg' || $fileInfo['extension'] == 'jpeg') {
+                    $mimeType = 'image/jpeg';
+                } elseif($fileInfo['extension'] == 'gif') $mimeType = 'image/gif';
+                elseif($fileInfo['extension'] == 'png') $mimeType = 'image/png';
+
+                // init var
+                $content = '--' . $boundary . "\r\n";
+
+                // set file
+                $content .= 'Content-Disposition: form-data; name=image; filename="' .
+                            $fileInfo['basename'] . '"' . "\r\n";
+                $content .= 'Content-Type: ' . $mimeType . "\r\n";
+                $content .= "\r\n";
+                $content .= file_get_contents($filePath);
+                $content .= "\r\n";
+                $content .= "--" . $boundary . '--';
+
+                // build headers
+                $headers[] = 'Content-Type: multipart/form-data; boundary=' . $boundary;
+                $headers[] = 'Content-Length: ' . strlen($content);
+
+                // set content
+                $options[CURLOPT_POSTFIELDS] = $content;
             }
-        } else {
-            /* Return blank array */
-            $arrSession = array();
-        }
-        
-        return $arrSession;
-        
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Call
-     * 
-     * Call the API and return the data
-     * 
-     * '_cache' => false in the $arrArgs will not allow
-     * the call to be cached
-     * 
-     * @param string $method
-     * @param string $path
-     * @param array $arrArgs
-     * @param bool $public
-     * @param bool $debug
-     * @return array
-     */
-    public function call($method, $path, $arrArgs = null, $public = false, $debug = false) {
-        $ext = strtolower($this->_method);
-        
-        $arrResponse = $this->_http_request(strtoupper($method), $this->_api_url.'/'.$path.'.'.$ext, $arrArgs);
 
-        if(is_null($arrResponse)) {
-            return array();
-        } elseif($debug === true || array_key_exists('data', $arrResponse) === false) {
-            echo '<pre>'.print_r($arrResponse['_raw'], true).'</pre>';exit;
+            // no file
+            else $options[CURLOPT_POSTFIELDS] = $this->buildQuery($parameters);
+
+            // enable post
+            $options[CURLOPT_POST] = true;
         } else {
-            return $arrResponse['data'];
+            // add the parameters into the querystring
+            if(!empty($parameters)) $url .= '?' . $this->buildQuery($parameters);
+            $options[CURLOPT_POST] = false;
+        }
+
+        // add sign into the parameters
+        $oauth['oauth_signature'] = $this->hmacsha1(
+            $this->getConsumerSecret() . '&' . $this->getOAuthTokenSecret(),
+            $base
+        );
+
+        $headers[] = $this->calculateHeader($oauth, self::API_URL . '/' . $url);
+        $headers[] = 'Expect:';
+
+        // set options
+        $options[CURLOPT_URL] = self::API_URL . '/' . $url;
+        $options[CURLOPT_PORT] = self::API_PORT;
+        $options[CURLOPT_USERAGENT] = $this->getUserAgent();
+        if (ini_get('open_basedir') == '' && ini_get('safe_mode' == 'Off')) {
+            $options[CURLOPT_FOLLOWLOCATION] = true;
+        }
+        $options[CURLOPT_RETURNTRANSFER] = true;
+        $options[CURLOPT_TIMEOUT] = (int) $this->getTimeOut();
+        $options[CURLOPT_SSL_VERIFYPEER] = false;
+        $options[CURLOPT_SSL_VERIFYHOST] = false;
+        $options[CURLOPT_HTTP_VERSION] = CURL_HTTP_VERSION_1_1;
+        $options[CURLOPT_HTTPHEADER] = $headers;
+
+        // init
+        if($this->curl == null) $this->curl = curl_init();
+
+        // set options
+        curl_setopt_array($this->curl, $options);
+
+        // execute
+        $response = curl_exec($this->curl);
+        $headers = curl_getinfo($this->curl);
+
+        // fetch errors
+        $errorNumber = curl_errno($this->curl);
+        $errorMessage = curl_error($this->curl);
+
+        // return the headers
+        if($returnHeaders) return $headers;
+
+        // we don't expext JSON, return the response
+        if(!$expectJSON) return $response;
+
+        // replace ids with their string values, added because of some
+        // PHP-version can't handle these large values
+        $response = preg_replace('/id":(\d+)/', 'id":"\1"', $response);
+
+        // we expect JSON, so decode it
+        $json = @json_decode($response, true);
+
+        // validate JSON
+        if ($json === null) {
+            // should we provide debug information
+            if (self::DEBUG) {
+                // make it output proper
+                echo '<pre>';
+
+                // dump the header-information
+                var_dump($headers);
+
+                // dump the error
+                var_dump($errorMessage);
+
+                // dump the raw response
+                var_dump($response);
+
+                // end proper format
+                echo '</pre>';
+            }
+
+            // throw exception
+            throw new Exception('Invalid response.');
+        }
+
+        // any errors
+        if (isset($json['errors'])) {
+            // should we provide debug information
+            if (self::DEBUG) {
+                // make it output proper
+                echo '<pre>';
+
+                // dump the header-information
+                var_dump($headers);
+
+                // dump the error
+                var_dump($errorMessage);
+
+                // dump the raw response
+                var_dump($response);
+
+                // end proper format
+                echo '</pre>';
+            }
+
+            // throw exception
+            if (isset($json['errors'][0]['message'])) {
+                throw new Exception($json['errors'][0]['message']);
+            } elseif (isset($json['errors']) && is_string($json['errors'])) {
+                throw new Exception($json['errors']);
+            } else throw new Exception('Invalid response.');
+        }
+
+        // any error
+        if (isset($json['error'])) {
+            // should we provide debug information
+            if (self::DEBUG) {
+                // make it output proper
+                echo '<pre>';
+
+                // dump the header-information
+                var_dump($headers);
+
+                // dump the raw response
+                var_dump($response);
+
+                // end proper format
+                echo '</pre>';
+            }
+
+            // throw exception
+            throw new Exception($json['error']);
+        }
+
+        // return
+        return $json;
+    }
+
+    /**
+     * Get the consumer key
+     *
+     * @return string
+     */
+    protected function getConsumerKey()
+    {
+        return $this->consumerKey;
+    }
+
+    /**
+     * Get the consumer secret
+     *
+     * @return string
+     */
+    protected function getConsumerSecret()
+    {
+        return $this->consumerSecret;
+    }
+
+    /**
+     * Get the oAuth-token
+     *
+     * @return string
+     */
+    protected function getOAuthToken()
+    {
+        return $this->oAuthToken;
+    }
+
+    /**
+     * Get the oAuth-token-secret
+     *
+     * @return string
+     */
+    protected function getOAuthTokenSecret()
+    {
+        return $this->oAuthTokenSecret;
+    }
+
+    /**
+     * Get the timeout
+     *
+     * @return int
+     */
+    public function getTimeOut()
+    {
+        return (int) $this->timeOut;
+    }
+
+    /**
+     * Get the useragent that will be used. Our version will be prepended to yours.
+     * It will look like: "PHP Twitter/<version> <your-user-agent>"
+     *
+     * @return string
+     */
+    public function getUserAgent()
+    {
+        return (string) 'PHP Twitter/' . self::VERSION . ' ' . $this->userAgent;
+    }
+
+    /**
+     * Set the consumer key
+     *
+     * @param string $key The consumer key to use.
+     */
+    protected function setConsumerKey($key)
+    {
+        $this->consumerKey = (string) $key;
+    }
+
+    /**
+     * Set the consumer secret
+     *
+     * @param string $secret The consumer secret to use.
+     */
+    protected function setConsumerSecret($secret)
+    {
+        $this->consumerSecret = (string) $secret;
+    }
+
+    /**
+     * Set the oAuth-token
+     *
+     * @param string $token The token to use.
+     */
+    public function setOAuthToken($token)
+    {
+        $this->oAuthToken = (string) $token;
+    }
+
+    /**
+     * Set the oAuth-secret
+     *
+     * @param string $secret The secret to use.
+     */
+    public function setOAuthTokenSecret($secret)
+    {
+        $this->oAuthTokenSecret = (string) $secret;
+    }
+
+    /**
+     * Set the timeout
+     *
+     * @param int $seconds The timeout in seconds.
+     */
+    public function setTimeOut($seconds)
+    {
+        $this->timeOut = (int) $seconds;
+    }
+
+    /**
+     * Get the useragent that will be used. Our version will be prepended to yours.
+     * It will look like: "PHP Twitter/<version> <your-user-agent>"
+     *
+     * @param string $userAgent Your user-agent, it should look like <app-name>/<app-version>.
+     */
+    public function setUserAgent($userAgent)
+    {
+        $this->userAgent = (string) $userAgent;
+    }
+
+    /**
+     * Build the signature for the data
+     *
+     * @param  string $key  The key to use for signing.
+     * @param  string $data The data that has to be signed.
+     * @return string
+     */
+    protected function hmacsha1($key, $data)
+    {
+        return base64_encode(hash_hmac('SHA1', $data, $key, true));
+    }
+
+    /**
+     * URL-encode method for internal use
+     *
+     * @param  mixed  $value The value to encode.
+     * @return string
+     */
+    protected static function urlencode_rfc3986($value)
+    {
+        if (is_array($value)) {
+            return array_map(array(__CLASS__, 'urlencode_rfc3986'), $value);
+        } else {
+            $search = array('+', ' ', '%7E', '%');
+            $replace = array('%20', '%20', '~', '%25');
+
+            return str_replace($search, $replace, urlencode($value));
         }
     }
-    
-    
-    
-    
-    
-    
-    /**
-     * Enable Debugging
-     */
-    public function debug() { $this->_debug = true; }
-    
-    
-    
     
     
     
@@ -1211,7 +873,7 @@ class Twitter {
     public function fetch_home_timeline(array $arrParams = array()) {
         $url = 'statuses/home_timeline';
         if(!array_key_exists('include_entities', $arrParams)) { $arrParams['include_entities'] = 'true'; }
-        $arrData = $this->call('get', $url, $arrParams);
+        $arrData = $this->doCall($url, $arrParams, true);
         return $arrData;
     }
     
@@ -1235,7 +897,7 @@ class Twitter {
     public function fetch_mentions(array $arrParams = array()) {
         $url = 'statuses/mentions_timeline';
         if(!array_key_exists('include_entities', $arrParams)) { $arrParams['include_entities'] = 'true'; }
-        $arrData = $this->call('get', $url, $arrParams);
+        $arrData = $this->doCall($url, $arrParams, true);
         return $arrData;
     }
     
@@ -1261,7 +923,7 @@ class Twitter {
     public function fetch_public_timeline(array $arrParams = array()) {
         $url = 'statuses/public_timeline';
         if(!array_key_exists('include_entities', $arrParams)) { $arrParams['include_entities'] = 'true'; }
-        $arrData = $this->call('get', $url, $arrParams);
+        $arrData = $this->doCall($url, $arrParams, true);
         return $arrData;
     }
     
@@ -1287,7 +949,7 @@ class Twitter {
     public function fetch_retweeted_by_me(array $arrParams = array()) {
         $url = 'statuses/retweeted_by_me';
         if(!array_key_exists('include_entities', $arrParams)) { $arrParams['include_entities'] = 'true'; }
-        $arrData = $this->call('get', $url, $arrParams);
+        $arrData = $this->doCall($url, $arrParams, true);
         return $arrData;
     }
     
@@ -1313,7 +975,7 @@ class Twitter {
     public function fetch_retweets_of_me(array $arrParams = array()) {
         $url = 'statuses/retweets_of_me';
         if(!array_key_exists('include_entities', $arrParams)) { $arrParams['include_entities'] = 'true'; }
-        $arrData = $this->call('get', $url, $arrParams);
+        $arrData = $this->doCall($url, $arrParams, true);
         return $arrData;
     }
     
@@ -1339,7 +1001,7 @@ class Twitter {
     public function fetch_retweeted_to_me(array $arrParams = array()) {
         $url = 'statuses/retweeted_to_me';
         if(!array_key_exists('include_entities', $arrParams)) { $arrParams['include_entities'] = 'true'; }
-        $arrData = $this->call('get', $url, $arrParams);
+        $arrData = $this->doCall($url, $arrParams, true);
         return $arrData;
     }
     
@@ -1369,205 +1031,9 @@ class Twitter {
         
         $url = 'statuses/user_timeline';
         if(!array_key_exists('include_entities', $arrParams)) { $arrParams['include_entities'] = 'true'; }
-        $arrData = $this->call('get', $url, $arrParams);
+        $arrData = $this->doCall($url, $arrParams, true);
         return $arrData;
     }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Get Access Key
-     * 
-     * Gets the access key
-     * 
-     * @return string/null
-     */
-    public function get_access_key() {
-        /* Check the config first */
-        $access_key = false;
-        if(is_array($this->_tokens) && array_key_exists('access_key', $this->_tokens) && !empty($this->_tokens['access_key'])) {
-            $access_key = $this->_tokens['access_key'];
-        }
-        
-        if($access_key === false) {
-            /* Not set in the system - check for a session/cookie */
-            $access_key = null;
-            $arrKeys = $this->get_db_accesstoken($this->_token_session);
-            
-            if(is_array($arrKeys) && array_key_exists('access_key', $arrKeys)) {
-                $access_key = $arrKeys['access_key'];
-            }
-        }
-        
-        return $access_key;
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Get Access Secret
-     * 
-     * Gets the secret key
-     * 
-     * @return string
-     */
-    public function get_access_secret() {
-        /* Check the config first */
-        $access_secret = false;
-        if(is_array($this->_tokens) && array_key_exists('access_secret', $this->_tokens) && !empty($this->_tokens['access_secret'])) {
-            $access_secret = $this->_tokens['access_secret'];
-        }
-        
-        if($access_secret === false) {
-            /* Not set in the system - check for a session/cookie */
-            $access_secret = null;
-            $arrKeys = $this->get_db_accesstoken($this->_token_session);
-            
-            if(is_array($arrKeys) && array_key_exists('access_secret', $arrKeys)) {
-                $access_secret = $arrKeys['access_secret'];
-            }
-        }
-        
-        return $access_secret;
-    }
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Get Callback
-     * 
-     * Gets the callback URL
-     * 
-     * @return string
-     */
-    public function get_callback() {
-        return $this->_callback;
-    }
-    
-    
-    
-    
-    
-    
-    /**
-     * Get Consumer Key
-     * 
-     * Gets the consumer key
-     * 
-     * @return string
-     */
-    public function get_consumer_key() { return $this->_tokens['consumer_key']; }
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Get Consumer Secret
-     * 
-     * Gets the consumer secret
-     * 
-     * @return string
-     */
-    public function get_consumer_secret() { return $this->_tokens['consumer_secret']; }
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Get Error
-     * 
-     * Gets the errors - used for API error messages
-     * that can be returned to users
-     * 
-     * @return string
-     */
-    public function get_error() {
-        $error = $this->_error_message;
-        $this->_error_message = null;
-        
-        return $error;
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Get UserId
-     * 
-     * Gets the userId.  Returns null if not
-     * logged in
-     * 
-     * @return number
-     */
-    public function get_userId() {
-        
-        $arrKeys = $this->get_db_accesstoken($this->_token_session);
-            
-        if(is_array($arrKeys) && array_key_exists('userId', $arrKeys)) {
-            return $arrKeys['userId'];
-        }
-        
-        /* Not set */
-        return null;
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Get Username
-     * 
-     * Gets the logged-in username or null
-     * if not set
-     * 
-     * @return string
-     */
-    public function get_username() {
-        
-        $arrKeys = $this->get_db_accesstoken($this->_token_session);
-            
-        if(is_array($arrKeys) && array_key_exists('username', $arrKeys)) {
-            return $arrKeys['username'];
-        }
-        
-        /* Not set */
-        return null;
-        
-    }
-    
-    
-    
-    
-    
-    
 
     /**
      * Is Logged In
@@ -1578,12 +1044,12 @@ class Twitter {
      */
     public function is_logged_in() {
         
-        $access_key = $this->get_access_key();
-        $access_secret = $this->get_access_secret();
+        $access_key = $this->getOAuthToken();
+        $access_secret = $this->getOAuthTokenSecret();
         
         $logged_in = false;
         
-        if(!is_null($access_key) && !is_null($access_secret)) {
+        if(!empty($access_key) && !empty($access_secret)) {
             /* Set as true */
             $logged_in = true;
         }
@@ -1615,18 +1081,12 @@ class Twitter {
         if ($account) {   
             $CI->user_accounts_model->update($account->id, array('is_primary' => 0));
         }
+            
+        // Reqest tokens
+        $tokens = Twitter::oAuthRequestToken();
 
-        /* Check we're not logged in */
-        if($this->is_logged_in() === false) {
-            
-            if(is_null($this->get_callback())) {
-                $this->set_callback();
-            }
-            
-            /* Go to the login page */
-            redirect($this->_get_authorisation_url());
-            
-        }
+        // Redirect to twitter
+        Twitter::oAuthAuthenticate($tokens['oauth_token']);
     }
     
     
@@ -1643,7 +1103,7 @@ class Twitter {
      * given your app the tokens
      */
     public function logout() {
-        $this->set_db_accesstoken($this->_token_session, null);
+        $this->set_db_accesstoken(null);
     }
     
     
@@ -1906,16 +1366,10 @@ class Twitter {
         /* Add the tweet into the paramaters */
         $arrParams['status'] = $tweet;
         
-        /* Don't cache it */
-        $arrParams['_cache'] = false;
         
-        $arrResult = $this->call('POST', $url, $arrParams);
+        $arrResult = $this->doCall($url, $arrParams, true, 'POST');
 
-        /* Check for an error */
-        $error = $this->_get_error($arrResult);
-        
-        /* Return array (no error - posted) or false (error - not posted) */
-        return $error === false ? $arrResult : false;        
+        return $arrResult;      
     }
 
     public function follow($username, array $arrParams = array()) {
@@ -1925,56 +1379,25 @@ class Twitter {
         /* Add the username into the paramaters */
         $arrParams['screen_name'] = $username;
         
-        /* Don't cache it */
-        $arrParams['_cache'] = false;
         
-        $arrResult = $this->call('POST', $url, $arrParams);
+        $arrResult = $this->doCall($url, $arrParams, true, 'POST');
 
-        /* Check for an error */
-        $error = $this->_get_error($arrResult);
-        
-        /* Return array (no error - posted) or false (error - not posted) */
-        return $error === false ? $arrResult : false;        
+        return $arrResult;      
     }
 
     public function retweet($tweet_id) {
         
         $url = 'statuses/retweet/' . $tweet_id;
         
-        /* Don't cache it */
-        $arrParams['_cache'] = false;
         
-        $arrResult = $this->call('POST', $url, $arrParams);
+        $arrResult = $this->doCall($url, $arrParams, true, 'POST');
         
-        /* Check for an error */
-        $error = $this->_get_error($arrResult);
-        
-        /* Return array (no error - posted) or false (error - not posted) */
-        return $error === false ? $arrResult : false;        
+        return $arrResult;      
     }
     
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Set Callback
-     * 
-     * Sets the callback URL
-     * 
-     * @param string $url
-     */
-    public function set_callback($url = null) {
-        if(is_null($url)) { $url = current_url(); }
-        $this->_callback = $url;
-    }
-    
-    function set_db_accesstoken($key, $access_token) {
+    function set_db_accesstoken($access_token) {
         $CI =& get_instance();
-        
+
         $user_id = $CI->tank_auth->get_user_id();
         $CI->load->model('user_accounts_model');
         
@@ -1982,9 +1405,9 @@ class Twitter {
             'access_token' => serialize($access_token)
         );
 
-        if (is_array($access_token) && array_key_exists('username', $access_token)) {
-            $data['name'] = $access_token['username'];
-            $data['account_identifier'] = $access_token['userId'];
+        if (is_array($access_token) && array_key_exists('screen_name', $access_token)) {
+            $data['name'] = $access_token['screen_name'];
+            $data['account_identifier'] = $access_token['user_id'];
         }
 
         $accounts = $CI->user_accounts_model->get_by_user_id($user_id, 'TWITTER', NULL, true);
@@ -2013,7 +1436,7 @@ class Twitter {
         }
     }
 
-    function get_db_accesstoken($key){
+    function get_db_accesstoken() {
         $CI =& get_instance();
         $user_id = $CI->tank_auth->get_user_id();
         $CI->load->model('user_accounts_model');
@@ -2029,77 +1452,14 @@ class Twitter {
 
         return $returnObject;
     }
-    
-}
 
-
-
-
-
-
-
-class Twitter_Exception extends Exception {
-    
-    public function __toString() {
-        echo '<pre>'.print_r($this->getMessage(), true).'</pre>';exit;
-    }
-
-}
-
-
-
-    
-    
-    
-    
-    
-/**
- * Object To Array
- * 
- * Convert an object to an array
- * 
- * @param mixed $object
- * @return array 
- */
-if(!function_exists('_object_to_array')) {
-    function _object_to_array($object) {
-        if(!is_object($object) && !is_array($object)) {
-            return $object;
+    function get_username() {
+        $accessToken = $this->get_db_accesstoken();
+        if (!$accessToken) {
+            return NULL;
         }
-        if(is_object($object)) {
-            $object = get_object_vars($object);
-        }
-        return array_map( '_object_to_array', $object );
+        
+        return $accessToken['screen_name'];
     }
+    
 }
-
-
-
-
-
-
-
-
-/**
- * Array Keys Exist
- *
- * Does the array_key_exist function for many
- * keys
- *
- * @param array $arrKey
- * @param array $arrArray
- * @return bool
- */
-if(!function_exists('array_keys_exist')) {
-    function array_keys_exist($arrKey, $arrArray) {
-        if(count($arrKey) > 0) {
-            foreach($arrKey as $key) {
-                if(!array_key_exists($key, $arrArray)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-}
-?>

@@ -109,7 +109,7 @@ class Conversations extends CI_Controller {
 
         	// @ (AT) tweets to this user account
         	$sender = $mention['user']['screen_name'];
-        	$time = strtotime($mention['created_at']);
+        	$time = strtotime($mention['created_at'])->sec;
         	$conversations_data[$sender]['list'][] = array(
         		'twitter_message_id' => $mention['id_str'],
 				'message' => $mention['text'],
