@@ -208,7 +208,7 @@ section.tab-list div a {
 	width: 450px;
 	float: left;
 }
-.feed-controls p {
+.feed-controls p, .muted {
 	color: #d1d1d1;
 }
 .feed-controls a {
@@ -472,19 +472,20 @@ li.trending-topics a.active,
 li.trending-topics a:hover {
 	color: #8dc63f;
 }
-li.check-ins a svg {
+li.history a svg {
 	display: block;
-	width: 80px;
-	margin: 0px auto 30px;
+	width: 120px;
+	height: 120px;
+	margin: -27px auto 4px;
 	fill: #77818a;
 }
-li.check-ins a.active svg,
-li.check-ins a:hover svg {
-	fill: #77818a; /* Active color: #FFA300 */
+li.history a.active svg,
+li.history a:hover svg {
+	fill: #FFA300;
 }
-li.check-ins a:hover,
-li.check-ins a.active {
-	color: #77818a; /* Active color: #FFA300 */
+li.history a:hover,
+li.history a.active {
+	color: #FFA300;
 }
 .checkbox.inactive label {
 	color: #CF311C;
@@ -500,6 +501,7 @@ li.check-ins a.active {
 .entry {
 	padding: 20px 10px 20px 20px;
 	border-bottom: 1px solid #cccccc;
+	clear: both;
 }
 .entry.reply-state {
 	background: #f9fafa;
@@ -526,7 +528,7 @@ li.check-ins a.active {
 .entry .profile-pic {
 	float: left;
 	margin-right: 10px;
-	margin-bottom: 45px;
+	margin-bottom: 0;
 	width: 48px;
 	height: 48px;
 }
@@ -1839,8 +1841,8 @@ li.data a:hover svg {
 	padding-top: 100px;
 }
 
-.ie7 .voters, .ie8 .check-ins {
-	background: url(../img/checkins.png) center center no-repeat;
+.ie7 .voters, .ie8 .history {
+	background: url(../img/history.png) center center no-repeat;
 	margin-top: 20px;
 	height: 80px;
 	padding-top: 100px;
@@ -2031,4 +2033,27 @@ float: none;
 .filters .filter, .filters .no-filter {
 	font-weight: bold;
 	font-size: 14px;
+}
+
+#history form.search {
+	width: 100%;
+	float: left;
+	margin-bottom: 0;
+}
+
+#history .search-bar {
+	width: 620px;
+}
+
+#history #feed-stream #loading {
+	display: none;
+}
+
+#history .search-query {
+	height: 55px;
+	margin-bottom: 20px;
+}
+
+#history .feed {
+	width: 100%;
 }

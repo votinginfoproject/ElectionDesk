@@ -53,7 +53,7 @@
 					<?php echo (isset($unread_messages_count) && $unread_messages_count > 0) ? '<span class="unread-messages">' . $unread_messages_count . '</span>' : ''; ?>
 				</a>
 			</li>
-			<li class="check-ins"><a href="#" target="_blank" onclick="return false;"><?php echo svg('check-ins'); ?>Check-Ins</a></li>
+			<li class="history"><a href="<?php echo site_url('history'); ?>" class="<?php if ($body_id == 'history') echo 'active'; ?>"><?php echo svg('history'); ?>Historic posts</a></li>
 			<li class="voters"><a href="<?php echo site_url('voters'); ?>" class="<?php if ($body_id == 'voters') echo 'active'; ?>"><?php echo svg('voters'); ?>Voters</a></li>
 		</ul>
 		</section>
