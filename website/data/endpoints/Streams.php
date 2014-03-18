@@ -46,24 +46,32 @@ class Streams extends EndpointBase
 			$sources_exist[] = array($source => array('$exists' => 'true'));
 		}
 
-		// Time
-		$time = $_GET['after'];
-		if (!is_numeric($time)) {
-			$time = strtotime($time);
-		}
-
 		// Filters
 		$filters = explode(',', $_GET['filters']);
 		foreach ($filters as &$filter) {
 			$filter = (int)$filter;
 		}
-
-		// Fetch streams from database
-		$date = new MongoDate($time);
 		$query = array(
-			'interaction.created_at' => array('$gt' => $date),
 			'internal.filter_id' => array('$in' => $filters)
 		);
+
+		// Time
+		$after = $_GET['after'];
+		if (!is_numeric($after)) {
+			$after = strtotime($after);
+		}
+		$after = new MongoDate($after);
+
+		if (isset($_GET['before'])) {
+			$before = $_GET['before'];
+			if (!is_numeric($before)) {
+				$before = strtotime($before);
+			}
+			$before = new MongoDate($before);
+			$query['interaction.created_at'] = array('$gt' => $after, '$lt' => $before);
+		} else {
+			$query['interaction.created_at'] = array('$gt' => $after);
+		}
 
 		// Apply subfilter
 		if (array_key_exists('subfilter', $_GET) && !empty($_GET['subfilter'])) {
@@ -91,7 +99,8 @@ class Streams extends EndpointBase
 				'near' => array((float)$near[0], (float)$near[1]),
 				'spherical' => true,
 				'maxDistance' => $_GET['distance'] / $this->earthRadius,
-				'query' => $query
+				'query' => $query,
+				'limit' => 500 // Hard limit to 500 entries in one query
 			);
 
 			// Run command and change output to be the same as usual MongoDB queries
@@ -115,7 +124,7 @@ class Streams extends EndpointBase
 				}
 			}
 
-			$results = $db->interactions->find($query);
+			$results = $db->interactions->find($query)->limit(500); // Hard limit to 500 entries at the time
 		}
 
 		// Output JSON data
@@ -123,13 +132,17 @@ class Streams extends EndpointBase
 		$i = 0;
 
 		// Results returned via command is an array instead of a MongoCursor object and thus needs to use count(...) instead
-		$resultsCount = is_object($results) ? $results->count() : count($results);
+		if (is_object($results)) {
+			$results = iterator_to_array($results);
+
+		}
+		$resultsCount = count($results);
 		foreach ($results as $result) {
 			$this->convertDates($result);
 			echo json_encode($result);
 
 			// The last item should not be appended by a comma
-			if ((is_object($results) && $results->hasNext()) || $i < $resultsCount - 1) {
+			if ($i < $resultsCount - 1) {
 				echo ', ';
 			}
 

@@ -3,7 +3,6 @@ var use_geo_near = false;
 
 var sources = ['twitter', 'facebook', 'googleplus'];
 var filters = [];
-var subfilter = '';
 var near = null;
 var distance;
 var default_cookie_settings = {
@@ -12,16 +11,6 @@ var default_cookie_settings = {
 var feed_stream_loaded = false;
 
 var restoreSession = function() {
-	// subfilter
-	try {
-		var cookie = $.cookie('history_subfilter');
-		if (cookie !== null) {
-			setSubFilter(cookie, false);
-		}
-	} catch (err) {
-
-	}
-
 	// Social media sources
 	try {
 		var cookie = $.cookie('history_sources');
@@ -87,50 +76,37 @@ var restoreSession = function() {
 	}
 }
 
-var setSubFilter = function(filter, save) {
-	// Set default value for save
-	if (save === undefined)
-		save = true;
-
-	// Require some input
-	if (filter.length <= 0) {
-		// Show "no filters" message
-		$(".filters .no-filters").show();
-
-		_gaq.push(['_trackEvent', 'Filter', 'Delete', subfilter]);
-	} else {
-		// Make sure no filters message is hidden
-		$(".filters .no-filters").hide();
-
-		_gaq.push(['_trackEvent', 'Filter', 'Create', filter]);
-	}
-
-	// Clear query field
-	$("#filter-form .search-bar").val(filter);
-
-	// Update current filter text
-	$(".filters .filter").html((filter.length > 0) ? ('Current filter: ' + filter) : '');
-
-	// Store filters in cookie?
-	if (save) {
-		$.cookie('history_subfilter', filter, default_cookie_settings);
-	}
-
-	// Store the new filter in local variable
-	subfilter = filter;
-}
-
 // Poll for new messages in the stream
 var updateStream = function() {
+	var query = $("#filter-form .search-bar").val();
+	var after = $('#from_date').val();
+	var before = $('#to_date').val();
+
+	var sourcesStr = sources.join(',');
+	if (sources.length <= 0) {
+		sourcesStr = 'all';
+	}
+
 	// Build URL based on criterias
-	var url = stream_server + '/streams?sources=' + sources.join(',') + '&after=' + current_time
-		+ '&filters=' + filters.join(',') + '&subfilter=' + encodeURIComponent(subfilter);
+	var url = stream_server + '/streams?sources=' + sourcesStr + '&after=' + encodeURIComponent(after)
+		+ '&before=' + encodeURIComponent(before) + '&filters=' + filters.join(',') + '&subfilter=' + encodeURIComponent(query);
 	if (use_geo_near && distance != 'area') {
 		url += '&near=' + near + '&distance=' + encodeURIComponent(distance);
 	}
 
+	$("#feed-stream section").remove();
+	$('#loading').show();
+	$('#feed-stream #results').hide();
+
 	// Fetch the messages
 	$.get(url, function(data) {
+		$('#loading').hide();
+		$('#feed-stream #results').html(((data.length >= 500) ? '500+' : data.length) + ' results').show();
+
+		if (data.length <= 0) {
+			alert('No results, please try a less specific query.');
+		}
+
 		$.each(data, function (index, message) {
 			// Make sure message is within geofence (if enabled)
 			if (use_geo_near && distance == 'area') {
@@ -196,11 +172,6 @@ var updateStream = function() {
 
 			if (message.interaction.type == 'twitter') {
 				actions.append('<li class="follow"><a href="#">Follow</a></li>');
-				actions.append('<li class="reply"><a href="#">Reply</a></li>');
-				actions.append('<li class="retweet"><a href="#">Retweet</a></li>');
-				actions.append('<li class="bookmark"><a href="#">Bookmark</a></li>');
-			} else {
-				actions.append('<li class="bookmark"><a href="#">Bookmark</a></li>');
 			}
 
 			if (message.internal.location && message.internal.location.state) {
@@ -217,11 +188,33 @@ var updateStream = function() {
 
 			section.append(actions);
 
-			$("#feed-stream").prepend(section);
+			// Remove profile pictures that no longer exists
+			section.find('img').error(function () {
+				$(this).remove();
+			});
+
+			$("#feed-stream").append(section);
 		});
 
-		// Only keep 50 latest messages
-		$("#feed-stream section:gt(49)").remove();
+		attachButtonEvents();
+	});
+}
+
+var attachButtonEvents = function () {
+	// Follow button
+	$(".actions .follow a").unbind('click').click(function () {
+		var section = $(this).parent().parent().parent();
+		var username = section.find("a").html().substr(1); // Get username but remove '@'
+
+		$.post('/tweet/follow', { username: username }, function(data) {
+			if (data.error) {
+				alert('Could not follow user: ' + data.error);
+			} else {
+				alert('You are now following @' + username);
+			}
+		});
+
+		return false;
 	});
 }
 
@@ -245,14 +238,7 @@ $(function() {
 
 	// Implement filter form
 	$("#filter-form").submit(function () {
-		var query = $("#filter-form .search-bar").val();
-		setSubFilter(query);
-
-		return false;
-	});
-
-	$("#filter-form .reset").click(function () {
-		setSubFilter('');
+		updateStream();
 
 		return false;
 	});
@@ -269,8 +255,6 @@ $(function() {
 		}
 
 		$.cookie('history_filters', JSON.stringify(filters), default_cookie_settings);
-
-		_gaq.push(['_trackEvent', 'Topic', $(this).is(':checked') ? 'Checked' : 'Unchecked', filter_id]);
 	});
 
 	// Distance selector dropdown

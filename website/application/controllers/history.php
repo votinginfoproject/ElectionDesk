@@ -29,23 +29,13 @@ class History extends CI_Controller {
 		$this->load->model('read_messages_model');
 		$this->load->model('message_replies_model');
 		$this->load->helper('relative_time_helper');
-
-		// Initialize database
-		try {
-		    $m = new \Mongo('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
-			$db = $m->selectDB(MONGODB_DATABASE);
-		} catch (MongoConnectionException $e) {
-		    echo json_encode(array('error' => 'Database connection failed, please try again later'));
-			exit;
-		}
-
-		//$db->interactions->find(...)
 	}
 
 	public function index()
 	{
         $this->stencil->title('My Desk');
-        $this->stencil->js(array('scripts', 'history'));
+        $this->stencil->js(array('scripts', 'history', '../jquery-simple-datetimepicker/jquery.simple-dtpicker.js'));
+        $this->stencil->css(array('../jquery-simple-datetimepicker/jquery.simple-dtpicker.css'));
 
         $data['body_id'] = 'history';
 

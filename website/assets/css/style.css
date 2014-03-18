@@ -2045,7 +2045,7 @@ float: none;
 	width: 620px;
 }
 
-#history #feed-stream #loading {
+#history #feed-stream #loading, #history #feed-stream #results {
 	display: none;
 }
 
