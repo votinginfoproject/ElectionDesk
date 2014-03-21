@@ -1013,6 +1013,7 @@ footer {
 footer .left-col {
 	width: 565px;
 	float: left;
+	padding-top: 25px;
 }
 footer .right-col {
 	width: 395px;
@@ -1045,48 +1046,8 @@ footer .right-col a {
 footer .left-col a {
 	display: block;
 	width: 100px;
-	text-indent: -9999px;
 	float: left;
 	margin-right: 15px;
-}
-footer .our-partners {
-	display: block;
-	float: none;
-}
-footer a.foursquare {
-	background: url(../img/foursquare-logo.png) no-repeat;
-	height: 66px;
-	background-size:75px 21px;
-	width: 75px;
-	margin-top: -8px;
-}
-footer a.facebook {
-	background: url(../img/facebook-logo.png) no-repeat;
-	height: 66px;
-	background-size:75px 24px;
-	width: 75px;
-	margin-top: -8px;
-}
-footer a.google {
-	background: url(../img/google-logo.png) no-repeat;
-	height: 66px;
-	background-size:75px 27px;
-	width: 75px;
-	margin-top: -8px;
-}
-footer a.vip {
-	background: url(../img/vip-logo.png) 0px -7px no-repeat;
-	height: 66px;
-	margin-top: -21px;
-	width: 100px;
-	background-size:100px 55px;
-}
-footer a.pew {
-	background: url(../img/pew-logo.png) 0px 6px no-repeat;
-	height: 66px;
-	margin-top: -21px;
-	width: 100px;
-	background-size:100px 37px;
 }
 .thumbnail {
 	display: block;
@@ -1882,100 +1843,6 @@ li.data a:hover svg {
 .ie .entry {
 	clear: both;
 }
-
-/*
-.ie .footer .right-col {
-	width: 395px;
-	float: left;
-}
-
-.ie .footer .right-col ul {
-	margin-top: 30px;
-}
-
-.ie .footer p {
-	font-size: 12px;
-	display: block;
-	color: #A5A5A5;
-	padding-top: 10px;
-	margin-bottom: 15px;
-	clear: both;
-}
-
-.ie .footer .right-col li {
-	float: left;
-	margin: 0 16px 0 0px;
-	padding: 0 10px 0 0;
-	border-right: 1px solid #A5A5A5;
-}
-
-.ie .footer .right-col a {
-	text-decoration: none;
-	color: #A5A5A5;
-}
-
-.ie .footer .left-col {
-	width: 565px;
-	float: left;
-}
-
-.ie .footer .our-partners {
-display: block;
-float: none;
-}
-
-.ie .footer a.pew {
-	background: url(../img/pew-logo.png) 0px 6px no-repeat;
-	height: 66px;
-	margin-top: -21px;
-	width: 100px;
-	background-size: 100px 37px;
-}
-
-.ie .footer a.vip {
-	background: url(../img/vip-logo.png) 0px -7px no-repeat;
-	height: 66px;
-	margin-top: -21px;
-	width: 100px;
-	background-size: 100px 55px;
-}
-
-.ie .footer a.foursquare {
-	background: url(../img/foursquare-logo.png) no-repeat;
-	height: 66px;
-	background-size: 75px 21px;
-	width: 75px;
-	margin-top: -8px;
-}
-
-.ie .footer a.facebook {
-	background: url(../img/facebook-logo.png) no-repeat;
-	height: 66px;
-	background-size: 75px 24px;
-	width: 75px;
-	margin-top: -8px;
-}
-
-.ie .footer a.google {
-	background: url(../img/google-logo.png) no-repeat;
-	height: 66px;
-	background-size: 75px 27px;
-	width: 75px;
-	margin-top: -8px;
-}
-
-.ie .ie-footer {
-	margin-top: 20px;
-	background: #F3F3F4;
-	width: 100%;
-	min-width: 960px;
-	height: 130px;
-	display: block;
-}
-
-
-
-*/
 
 .loading-map {
 	position: absolute;
