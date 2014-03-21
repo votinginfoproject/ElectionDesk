@@ -68,12 +68,7 @@
 	<footer>
 		<div class="inner">
 			<div class="left-col">
-				<p class="our-partners">Our Partners</p>
-				<a href="http://www.pewtrusts.org" class="pew">PEW</a>
-				<a href="https://votinginfoproject.org/" class="vip">Voting Information Project</a>
-				<a href="http://www.foursquare.com" class="foursquare">Foursquare</a>
-				<a href="http://www.facebook.com" class="facebook">Facebook</a>
-				<a href="http://www.google.com" class="google">Google</a>
+				<a href="http://votinginfoproject.org" target="_blank"><img src="/assets/img/vip_logo.png" alt="Voting Information Project"></a>
 			</div>
 			<div class="right-col">
 				<ul>

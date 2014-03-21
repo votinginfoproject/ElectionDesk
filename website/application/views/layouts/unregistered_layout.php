@@ -48,7 +48,7 @@
 	<footer>
 		<div class="inner">
 			<div class="left-col">
-				<a href="http://votinginfoproject.org"><img src="/assets/img/vip_logo.png" alt="Voting Information Project"></a>
+				<a href="http://votinginfoproject.org" target="_blank"><img src="/assets/img/vip_logo.png" alt="Voting Information Project"></a>
 			</div>
 			<div class="right-col">
 				<ul>

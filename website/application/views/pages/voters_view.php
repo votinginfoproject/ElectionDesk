@@ -1,21 +1,10 @@
 <div id="container">
 	
 	<div class="subhead">
-		<h3>Voters</h3>
+		<h3>All time voter statistics</h3>
 	</div><!-- end subhead -->
 	
-	<div class="content">
-		<!--
-		<ul class="map-key">
-			<li>Percentile:</li>
-			<li class="ten">10%</li>
-			<li class="thirty">30%</li>
-			<li class="sixty">60%</li>
-			<li class="ninty">90%</li>
-		</ul>
-		<div class="clear"></div>
-		-->
-		
+	<div class="content">	
 		
 		<script>
 			google.load('visualization', '1', {packages: ['geomap']});
@@ -23,7 +12,7 @@
 			function drawVisualization() {
 				//0-100 to emulate percent here
 				var data = google.visualization.arrayToDataTable([
-					['state', 'Tweets by Location'],
+					['state', 'Messages from state'],
 					<?php 
 					$i = 0;
 					$comma = ',';
@@ -99,22 +88,4 @@ var list_english = [
 	
 	];
 </script>
-	<?php /*
-	<div class="happy-sad">
-		<h5><?php echo $sad_face; ?>%</h5>
-		<h5><?php echo $happy_face; ?>%</h5>
-	</div>
-
-	<div class="gender">
-		<h5><span><?php echo $male; ?></span><br> percent</h5>
-		<h5><span><?php echo $female; ?></span><br> percent</h5>
-	</div>
-	
-	<div class="klout-score">
-		<h5>Average<br>
-		Klout<br>
-		Score</h5>
-		<h4><?php echo $klout; ?></h4>
-	</div>
-	*/?>
 </div>
