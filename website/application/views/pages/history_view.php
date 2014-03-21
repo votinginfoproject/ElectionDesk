@@ -65,10 +65,10 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
 	</section>
 
 	<section class="filter-date">
-		<label for="from_date">Start Date:</label>
-		<input type="text" name="from_date" id="from_date" value="<?php echo date('Y'); ?>-01-01 12:00">
+		<p class="muted">Please specify a date range:</p>
 
-		<label for="to_date">End Date:</label>
+		<input type="text" name="from_date" id="from_date" value="<?php echo date('Y'); ?>-01-01 12:00">
+		-
 		<input type="text" name="to_date" id="to_date" value="<?php echo date('Y-m-d', time()) ?> 12:00">
 
 		<script type="text/javascript">

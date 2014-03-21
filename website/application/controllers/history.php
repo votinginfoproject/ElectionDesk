@@ -34,7 +34,7 @@ class History extends CI_Controller {
 	public function index()
 	{
         $this->stencil->title('My Desk');
-        $this->stencil->js(array('scripts', 'history', '../jquery-simple-datetimepicker/jquery.simple-dtpicker.js'));
+        $this->stencil->js(array('scripts', 'http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js', 'history', '../jquery-simple-datetimepicker/jquery.simple-dtpicker.js'));
         $this->stencil->css(array('../jquery-simple-datetimepicker/jquery.simple-dtpicker.css'));
 
         $data['body_id'] = 'history';

@@ -7,8 +7,7 @@ var near = null;
 var distance;
 var default_cookie_settings = {
 	expires: 7
-}
-var feed_stream_loaded = false;
+};
 
 var restoreSession = function() {
 	// Social media sources
@@ -82,6 +81,11 @@ var updateStream = function() {
 	var after = $('#from_date').val();
 	var before = $('#to_date').val();
 
+	// Require before and after to be set
+	if (before.length <= 0 || after.length <= 0) {
+		return;
+	}
+
 	var sourcesStr = sources.join(',');
 	if (sources.length <= 0) {
 		sourcesStr = 'all';
@@ -96,12 +100,12 @@ var updateStream = function() {
 
 	$("#feed-stream section").remove();
 	$('#loading').show();
-	$('#feed-stream #results').hide();
+	$('#results').hide();
 
 	// Fetch the messages
 	$.get(url, function(data) {
 		$('#loading').hide();
-		$('#feed-stream #results').html(((data.length >= 500) ? '500+' : data.length) + ' results').show();
+		$('#results').show().html(((data.length >= 500) ? '500+' : data.length) + ' results');
 
 		if (data.length <= 0) {
 			alert('No results, please try a less specific query.');
@@ -125,13 +129,6 @@ var updateStream = function() {
 				}
 			}
 
-			if (!feed_stream_loaded && data.length > 0) {	
-				feed_stream_loaded = true;
-				
-				// Reset feed stream
-				$("#feed-stream").html('');
-			}
-
 			// Build message and add it to the feed stream
 			var section = $('<section>');
 			section.addClass('entry');
@@ -147,6 +144,12 @@ var updateStream = function() {
 			img.attr('alt', message.interaction.author.name);
 			img.addClass('profile-pic');
 			section.append(img);
+
+			var timestamp = $('<time>')
+				.attr('datetime', message.interaction.created_at)
+				.attr('pubdate', 'pubdate')
+				.html(moment(message.interaction.created_at).format('LLL'));
+			section.append(timestamp);
 
 			var link = $('<a>');
 			if (message.interaction.type == 'facebook') {
