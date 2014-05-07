@@ -7,6 +7,7 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
 </section>
 
 <div class="content">
+	<div class="alert-message-topics hide"><img src="/assets/img/warning.png" alt="Warning"> Please select one of the topics or create a custom filter to see targeted results.</div>
 	<section class="main-topics">
 		<?php
 		$i = 1;
@@ -30,7 +31,8 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
 		endforeach;
 		?>
 	</section>
-
+	
+	<div class="alert-message-social hide"><img src="/assets/img/warning.png" alt="Warning"> Please select at least one social media type in order to view results.</div>		
 	<section class="trending-topics">
 		<section class="feed-controls">
 			<p>Toggle social media types:</p>

@@ -1930,3 +1930,18 @@ li.data a:hover svg {
 #history .feed {
 	width: 100%;
 }
+
+.alert-message-topics, .alert-message-social {
+	font-weight: bold;
+}
+
+.alert-message-topics img, .alert-message-social img {
+	width: 16px;
+	height: 16px;
+	margin-bottom: -3px;
+}
+
+.alert-message-social {
+	margin-top: 14px;
+	margin-bottom: -10px;
+}
