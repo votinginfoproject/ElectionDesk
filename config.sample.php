@@ -20,8 +20,7 @@ if (
 
 if (ENVIRONMENT == 'production') {
 	define('USE_DATASIFT', TRUE);
-	define('GEOCODING_SERVICE', 'INTERNAL'); // Can be GEOCODIO, GOOGLE or INTERNAL
-	define('INTERNAL_GEOCODING_URL', 'http://127.0.0.1:8081/geocode.json?q=%s');
+	define('GEOCODING_SERVICE', 'GEOCODIO'); // Can be GEOCODIO or GOOGLE
 	define('GEOCODIO_API_KEY', '');
 
 	// DataSift
@@ -50,8 +49,7 @@ if (ENVIRONMENT == 'production') {
 	define('MONGODB_PASSWORD', '');
 } else {
 	define('USE_DATASIFT', FALSE);
-	define('GEOCODING_SERVICE', 'GOOGLE'); // Can be GEOCODIO, GOOGLE or INTERNAL
-	define('INTERNAL_GEOCODING_URL', '');
+	define('GEOCODING_SERVICE', 'GEOCODIO'); // Can be GEOCODIO or GOOGLE
 	define('GEOCODIO_API_KEY', '');
 
 	// DataSift

@@ -47,31 +47,6 @@ abstract class Consumer
             $lat = $location->lat;
             $lon = $location->lng;
         }
-        elseif (GEOCODING_SERVICE == 'INTERNAL')
-        {
-            $url = sprintf(INTERNAL_GEOCODING_URL, urlencode($address));
-            $content = @file_get_contents($url);
-            if (!$content) {
-                return NULL;
-            }
-            
-            $data = json_decode($content);
-
-            if (count($data->features) <= 0)
-                return NULL;
-
-            $result = $data->features[0];
-
-            // Determine state and county
-            $state = (isset($result->properties->state) ? $result->properties->state : '');
-            $county = '';
-            $country = 'USA';
-
-            // Determine location
-            $location = $result->geometry->coordinates;
-            $lat = $location[1];
-            $lon = $location[0];
-        }
         elseif (GEOCODING_SERVICE == 'GEOCODIO')
         {
             $url = 'http://api.geocod.io/v1/geocode?q='. urlencode($address) .'&api_key=' . urlencode(GEOCODIO_API_KEY);
@@ -90,7 +65,7 @@ abstract class Consumer
 
             // Determine state and county
             $state = $result->address_components->state;
-            $county = '';
+            $county = isset($result->address_components->county) ? $result->address_components->county : '';
             $country = 'USA';
 
             // Determine location
@@ -116,41 +91,69 @@ abstract class Consumer
 
     public function reverse_geocode($lat, $lon)
     {
-        $url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng='. $lat .','. $lon .'&sensor=false&key=' . urlencode(GOOGLE_API_KEY);
-        $content = @file_get_contents($url);
-        if (!$content) {
-            return NULL;
-        }
-
-        $data = json_decode($content);
-
-        if ($data->status != 'OK' || count($data->results) <= 0)
-            return NULL;
-
-        $result = $data->results[0];
-
-        // Determine state and county
-        $state = null;
-        $county = null;
-        $country = null;
-
-        foreach ($result->address_components as $component) {
-            if (in_array('administrative_area_level_1', $component->types)) {
-                $state = $component->short_name;
-            } elseif (in_array('country', $component->types)) {
-                $country = $component->short_name;
-            } elseif (in_array('administrative_area_level_2', $component->types)) {
-                $county = $component->long_name;
+        if (GEOCODING_SERVICE == 'GOOGLE') {
+            $url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng='. $lat .','. $lon .'&sensor=false&key=' . urlencode(GOOGLE_API_KEY);
+            $content = @file_get_contents($url);
+            if (!$content) {
+                return NULL;
             }
-        }
-        
-        // Set result
-        $result = array(
-            'state' => $state,
-            'county' => $county,
-            'country' => $country,
-        );
 
-        return $result;
+            $data = json_decode($content);
+
+            if ($data->status != 'OK' || count($data->results) <= 0)
+                return NULL;
+
+            $result = $data->results[0];
+
+            // Determine state and county
+            $state = null;
+            $county = null;
+            $country = null;
+
+            foreach ($result->address_components as $component) {
+                if (in_array('administrative_area_level_1', $component->types)) {
+                    $state = $component->short_name;
+                } elseif (in_array('country', $component->types)) {
+                    $country = $component->short_name;
+                } elseif (in_array('administrative_area_level_2', $component->types)) {
+                    $county = $component->long_name;
+                }
+            }
+            
+            // Return result
+            return array(
+                'state' => $state,
+                'county' => $county,
+                'country' => $country,
+            );
+
+        }
+        elseif (GEOCODING_SERVICE == 'GEOCODIO')
+        {
+            $url = 'http://api.geocod.io/v1/reverse?q='. $lat .','. $lon .'&api_key=' . urlencode(GEOCODIO_API_KEY);
+            
+            $content = @file_get_contents($url);
+            if (!$content) {
+                return NULL;
+            }
+            
+            $data = json_decode($content);
+
+            if (!isset($data->results) || count($data->results) <= 0)
+                return NULL;
+
+            $result = $data->results[0];
+
+            // Return result
+            return array(
+                'state' => $result->address_components->state,
+                'county' => isset($result->address_components->county) ? $result->address_components->county : '',
+                'country' => 'USA',
+            );
+        }
+        else
+        {
+            throw new Exception('Invalid geocoding service: ' . GEOCODING_SERVICE);
+        }
     }
 }
