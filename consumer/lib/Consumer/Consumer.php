@@ -31,6 +31,7 @@ abstract class Consumer
         $m->addServer('localhost', 11211);
 
         if ($result = $m->get(sha1($address)) && $m->getResultCode() != \Memcached::RES_NOTFOUND) {
+            echo 'Loading ' . $address . ' from cache' . PHP_EOL;
             return $result;
         }
 
@@ -111,7 +112,6 @@ abstract class Consumer
 
         // Save in cache
         $m->set(sha1($address), $result);
-        var_dump($m->get(sha1($address)));
 
         return $result;
     }
