@@ -1,10 +1,9 @@
-<?php
-namespace Consumer\IndividualConsumer;
+<?php namespace Consumer\IndividualConsumer;
 
 use Consumer\Log;
 
-class FacebookConsumer extends IndividualConsumer
-{
+class FacebookConsumer extends IndividualConsumer {
+	
 	public function consume($filter) {
 		parent::consume($filter);
 

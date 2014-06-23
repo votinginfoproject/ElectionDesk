@@ -1,11 +1,10 @@
-<?php
-namespace Consumer\IndividualConsumer;
+<?php namespace Consumer\IndividualConsumer;
 
 use Consumer\Log;
 use Consumer\Model\Filter;
 
-class TwitterConsumer extends IndividualConsumer
-{
+class TwitterConsumer extends IndividualConsumer {
+
 	private $maxPages = 20;
 
 	public function consume($filter) {

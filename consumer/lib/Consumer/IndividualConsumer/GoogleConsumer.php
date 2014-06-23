@@ -1,10 +1,9 @@
-<?php
-namespace Consumer\IndividualConsumer;
+<?php namespace Consumer\IndividualConsumer;
 
 use Consumer\Log;
 
-class GoogleConsumer extends IndividualConsumer
-{
+class GoogleConsumer extends IndividualConsumer {
+
 	private $maxPages = 10;
 
 	public function consume($filter) {

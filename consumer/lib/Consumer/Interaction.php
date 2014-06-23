@@ -1,8 +1,7 @@
-<?php
-namespace Consumer;
+<?php namespace Consumer;
 
-class Interaction
-{
+class Interaction {
+	
 	private static $db = NULL;
 
 	private static function boot()

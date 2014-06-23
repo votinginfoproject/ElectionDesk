@@ -1,12 +1,11 @@
-<?php
-namespace Consumer;
+<?php namespace Consumer;
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 
-class Log
-{
+class Log {
+	
 	private static $monolog = NULL;
 
 	private static $levels = array(

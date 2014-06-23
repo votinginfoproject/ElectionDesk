@@ -1,8 +1,6 @@
-<?php
-namespace Consumer;
+<?php namespace Consumer;
 
-class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEventHandler
-{
+class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEventHandler {
     private $user;
     private $filter;
 

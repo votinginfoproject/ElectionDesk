@@ -1,12 +1,10 @@
-<?php
-namespace Consumer;
+<?php namespace Consumer;
 
-abstract class Consumer
-{
+abstract class Consumer {
+    
 	abstract function consume($filter);
 
-	public function geocode($address)
-    {
+	public function geocode($address) {
         $address = trim($address);
 
         if (empty($address)) {

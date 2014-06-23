@@ -1,8 +1,7 @@
 <?php
 // Set default timezone
-if (function_exists('date_default_timezone_set'))
-{
-     date_default_timezone_set('America/New_York');
+if (function_exists('date_default_timezone_set')) {
+	date_default_timezone_set('America/New_York');
 }
 
 // Check for CLI request from production server
@@ -15,11 +14,15 @@ if (
 ) {
 	define('ENVIRONMENT', 'production'); // Default EC2 hostnames start with "ip-"
 } else {
-	$efine('ENVIRONMENT', 'development');
+	define('ENVIRONMENT', 'development');
 }
 
 if (ENVIRONMENT == 'production') {
-	define('USE_DATASIFT', TRUE);
+	// Consumers
+	// Valid values: twitter, facebook, google, datasift, gnip
+	define('CONSUMERS', 'twitter,facebook,google');
+
+	// Geocoding
 	define('GEOCODING_SERVICE', 'GEOCODIO'); // Can be GEOCODIO or GOOGLE
 	define('GEOCODIO_API_KEY', '');
 
@@ -48,7 +51,11 @@ if (ENVIRONMENT == 'production') {
 	define('MONGODB_DATABASE', 'electiondesk');
 	define('MONGODB_PASSWORD', '');
 } else {
-	define('USE_DATASIFT', FALSE);
+	// Consumers
+	// Valid values: twitter, facebook, google, datasift, gnip
+	define('CONSUMERS', 'twitter,facebook,google');
+
+	// Geocoding
 	define('GEOCODING_SERVICE', 'GEOCODIO'); // Can be GEOCODIO or GOOGLE
 	define('GEOCODIO_API_KEY', '');
 
