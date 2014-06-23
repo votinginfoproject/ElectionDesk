@@ -64,7 +64,7 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
         if ($interaction['interaction']['type'] == 'twitter') {
             // If we have a tweet location
             if (array_key_exists('geo', $interaction['twitter'])) {        
-                $location = $this->reverse_geocode(
+                $location = $this->reverseGeocode(
                     $interaction['twitter']['geo']['latitude'],
                     $interaction['twitter']['geo']['longitude']
                 );

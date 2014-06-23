@@ -89,7 +89,7 @@ abstract class Consumer
         return $result;
     }
 
-    public function reverse_geocode($lat, $lon)
+    public function reverseGeocode($lat, $lon)
     {
         if (GEOCODING_SERVICE == 'GOOGLE') {
             $url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng='. $lat .','. $lon .'&sensor=false&key=' . urlencode(GOOGLE_API_KEY);

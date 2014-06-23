@@ -78,7 +78,7 @@ class TwitterConsumer extends IndividualConsumer
 
 	            // If we have a tweet location
 	            if (!is_null($status->geo)) {        
-	                $location = $this->reverse_geocode(
+	                $location = $this->reverseGeocode(
 	                	$status->geo->coordinates[0],
 	                	$status->geo->coordinates[1]
 	                );
