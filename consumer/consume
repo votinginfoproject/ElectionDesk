@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 require('vendor/autoload.php');
 
@@ -46,8 +47,8 @@ if (USE_DATASIFT) {
 
 } else {
     $consumers = array(
-        new Consumer\IndividualConsumer\FacebookConsumer(),
         new Consumer\IndividualConsumer\TwitterConsumer(),
+        new Consumer\IndividualConsumer\FacebookConsumer(),
         new Consumer\IndividualConsumer\GoogleConsumer()
     );
 
