@@ -525,6 +525,10 @@ li.history a.active {
 .entry a:hover {
 	text-decoration: underline;
 }
+.entry .time {
+	float: right;
+	margin-top: -17px;
+}
 .entry .profile-pic {
 	float: left;
 	margin-right: 10px;

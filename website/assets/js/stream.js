@@ -212,6 +212,9 @@ var updateStream = function() {
 				}
 				section.append(link);
 
+				var time = $('<span>').addClass('time').html(message.interaction.created_at.split(' ')[1]);
+				section.append(time);
+
 				var paragraph = $('<p>');
 				paragraph.html(message.interaction.content);
 				section.append(paragraph);
