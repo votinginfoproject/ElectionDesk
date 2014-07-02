@@ -23,10 +23,10 @@ class ListenCommand extends Command {
         foreach (explode(',', CONSUMERS) as $consumerName) {
             $consumerName = ucfirst(strtolower($consumerName));
 
-            $processes[$consumerName] = new \Symfony\Component\Process\Process('./consume consume ' . $consumerName);
+            $processes[$consumerName] = new \Symfony\Component\Process\Process('./consume work ' . $consumerName);
             $processes[$consumerName]->start();
 
-            $output->writeln('Started ' . $consumerName);
+            $output->writeln('<info>'. $consumerName .':</info> Started');
         }
 
         while (true) {
@@ -37,9 +37,9 @@ class ListenCommand extends Command {
                     $output->write('<info>'. $name .':</info> ' . $processOutput);
                 }
 
-                // Restart process if necessary
+                // Start the process again if necessary
                 if (!$process->isRunning()) {
-                    $output->writeln('<info>'. $name .':</info> Restarted');
+                    $output->writeln('<info>'. $name .':</info> Started');
                     $process->start();
                 }
 

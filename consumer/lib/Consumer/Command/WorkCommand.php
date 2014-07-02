@@ -6,12 +6,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ConsumeCommand extends Command {
+class WorkCommand extends Command {
 
     protected function configure()
     {
         $this
-            ->setName('consume')
+            ->setName('work')
             ->setDescription('Starts a single consumer')
             ->addArgument(
                 'consumer',
@@ -23,7 +23,7 @@ class ConsumeCommand extends Command {
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $consumerName = $input->getArgument('consumer');
+        $consumerName = ucfirst(strtolower($input->getArgument('consumer')));
 
     	// Define class names
         $classNameIndividual = '\\Consumer\\IndividualConsumer\\' . $consumerName . 'Consumer';
