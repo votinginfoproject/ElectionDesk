@@ -2,7 +2,7 @@
 
 $config['stream_server'] = 'https://electiondesk.us/data';
 
-$config['admin_email'] = 'info@electiondesk.us';
+$config['admin_email'] = 'help@helpdesk.electiondesk.us';
 
 $config['wait_time_api_key'] = '__WAIT_TIME_API_KEY_GOES_HERE__';
 
