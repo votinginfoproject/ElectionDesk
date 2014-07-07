@@ -67,7 +67,9 @@ class Pages extends CI_Controller {
 			
 			if ($this->form_validation->run() == FALSE)
 			{
-				$this->stencil->paint('help_view');
+				$this->session->set_flashdata('message', '<div class="success-message flash-message">Sorry, the letters in the picture doesn\'t match. Please try again.</div>');
+				
+				redirect('help', 'location');
 			}
 			else
 			{
