@@ -47,6 +47,10 @@ if (ENVIRONMENT == 'production') {
 	define('MONGODB_USERNAME', 'electiondesk');
 	define('MONGODB_DATABASE', 'electiondesk');
 	define('MONGODB_PASSWORD', '');
+
+	// ReCAPTCHA
+	define('RECAPTCHA_PUBLIC', '');
+	define('RECAPTCHA_PRIVATE', '');
 } else {
 	define('USE_DATASIFT', FALSE);
 	define('GEOCODING_SERVICE', 'GEOCODIO'); // Can be GEOCODIO or GOOGLE
@@ -76,4 +80,8 @@ if (ENVIRONMENT == 'production') {
 	define('MONGODB_USERNAME', 'electiondesk');
 	define('MONGODB_DATABASE', 'electiondesk');
 	define('MONGODB_PASSWORD', '');
+
+	// ReCAPTCHA
+	define('RECAPTCHA_PUBLIC', '');
+	define('RECAPTCHA_PRIVATE', '');
 }
