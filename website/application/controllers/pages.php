@@ -51,13 +51,19 @@ class Pages extends CI_Controller {
 
 		require(APPPATH . '/libraries/recaptchalib.php');
 
+		if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+			$this->stencil->paint('help_view');
+			return;
+		}
+
 		$resp = recaptcha_check_answer (RECAPTCHA_PRIVATE,
                             $_SERVER['REMOTE_ADDR'],
                             $this->input->post('recaptcha_challenge_field'),
                             $this->input->post('recaptcha_response_field'));
 
 		if (!$resp->is_valid) {
-			$this->stencil->paint('help_view');
+			$this->session->set_flashdata('message', '<div class="error-message flash-message">Sorry, the letters in the picture doesn\'t match. Please try again.</div>');
+			redirect('help', 'location');
 		} else {	
 			$this->form_validation->set_rules('first_name', 'First Name', 'trim|strip_tags|xss_clean|required|max_length[255]');
 			$this->form_validation->set_rules('last_name', 'Last Name', 'trim|strip_tags|xss_clean|required|max_length[255]');
@@ -67,9 +73,7 @@ class Pages extends CI_Controller {
 			
 			if ($this->form_validation->run() == FALSE)
 			{
-				$this->session->set_flashdata('message', '<div class="success-message flash-message">Sorry, the letters in the picture doesn\'t match. Please try again.</div>');
-				
-				redirect('help', 'location');
+				$this->stencil->paint('help_view');
 			}
 			else
 			{
