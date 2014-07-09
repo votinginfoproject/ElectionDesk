@@ -411,7 +411,7 @@ $(function() {
 
 	// Get the start time
 	$.get(stream_server + '/time', function(data) {
-		current_time = data.current_time.unix - update_interval - (60 * 5);
+		current_time = data.current_time.unix - update_interval - (60 * 10);
 		updateStream();
 	});
 
