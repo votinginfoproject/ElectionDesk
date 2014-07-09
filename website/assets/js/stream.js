@@ -181,6 +181,13 @@ var updateStream = function() {
 					$("#feed-stream").html('');
 				}
 
+				var formattedTime = timeSince(new Date(message.interaction.created_at));
+
+				// Don't show posts from the "future" yet
+				if (formattedTime.charAt(0) == '-') {
+					return;
+				}
+
 				// Build message and add it to the feed stream
 				var section = $('<section>');
 				section.addClass('entry');
@@ -212,7 +219,7 @@ var updateStream = function() {
 				}
 				section.append(link);
 
-				var time = $('<span>').addClass('time').html(message.interaction.created_at.split(' ')[1]);
+				var time = $('<span>').addClass('time').html(formattedTime);
 				section.append(time);
 
 				var paragraph = $('<p>');
@@ -543,3 +550,25 @@ $(function() {
 		});
 	});
 });
+
+/**
+ * Credits: https://gist.github.com/timuric/11386129
+ */
+function timeSince(timeStamp) {
+	var secondsPast = (current_time + update_interval + 60) - (timeStamp.getTime() / 1000);
+	if (secondsPast < 60) {
+		return parseInt(secondsPast) + 's ago';
+	}
+	if (secondsPast < 3600) {
+		return parseInt(secondsPast/60) + 'm ago';
+	}
+	if (secondsPast <= 86400) {
+		return parseInt(secondsPast/3600) + 'h ago';
+	}
+	if (secondsPast > 86400) {
+		day = timeStamp.getDate();
+		month = timeStamp.toDateString().match(/ [a-zA-Z]*/)[0].replace(" ", "");
+		year = timeStamp.getFullYear() == new Date(current_time).getFullYear() ? "" :  " " + timeStamp.getFullYear();
+		return day + " " + month + year;
+	}
+}
