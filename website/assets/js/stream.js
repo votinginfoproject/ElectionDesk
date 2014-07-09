@@ -411,7 +411,7 @@ $(function() {
 
 	// Get the start time
 	$.get(stream_server + '/time', function(data) {
-		current_time = data.current_time.unix - update_interval - 60;
+		current_time = data.current_time.unix - update_interval - (60 * 5);
 		updateStream();
 	});
 
@@ -555,7 +555,7 @@ $(function() {
  * Credits: https://gist.github.com/timuric/11386129
  */
 function timeSince(timeStamp) {
-	var secondsPast = (current_time + update_interval + 60) - (timeStamp.getTime() / 1000);
+	var secondsPast = current_time - (timeStamp.getTime() / 1000);
 	if (secondsPast < 60) {
 		return parseInt(secondsPast) + 's ago';
 	}
