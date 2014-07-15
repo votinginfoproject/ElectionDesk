@@ -182,6 +182,7 @@ var updateStream = function() {
 				}
 
 				var createdDate = Date.parse(message.interaction.created_at);
+				console.log(createdDate);
 				var formattedTime = timeSince(createdDate);
 
 				// Don't show posts from the "future" yet
