@@ -181,7 +181,8 @@ var updateStream = function() {
 					$("#feed-stream").html('');
 				}
 
-				var formattedTime = timeSince(new Date(message.interaction.created_at));
+				var createdDate = Date.parse(message.interaction.created_at);
+				var formattedTime = timeSince(createdDate);
 
 				// Don't show posts from the "future" yet
 				if (formattedTime.charAt(0) == '-') {
