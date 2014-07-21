@@ -9,6 +9,11 @@
 	</ul>
 </section>
 
+ <script type="text/javascript">
+ var RecaptchaOptions = {
+    theme : 'clean'
+ };
+ </script>
 <?php
 echo $this->session->flashdata('message');
 
@@ -58,6 +63,8 @@ $message = array(
 if (form_error('message')) $message['class'] = 'error';
 echo form_label('Message', 'message');
 echo form_textarea($message);
+
+echo recaptcha_get_html(RECAPTCHA_PUBLIC);
 
 echo form_submit(array('name' => 'submit', 'class' => 'submit', 'value' => 'Submit a Ticket'));
 

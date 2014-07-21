@@ -422,7 +422,7 @@
                                                     <tr>
                                                         <td valign="top" width="350">
                                                             <div mc:edit="std_footer">
-																<em>Copyright &copy; 2012. Election Desk, All rights reserved.</em>
+																<em>Copyright &copy; 2012-<?php echo date('Y'); ?>. Election Desk, All rights reserved.</em>
 																<br />
 																<a href="https://electiondesk.us">https://electiondesk.us</a>
                                                             </div>

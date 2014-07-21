@@ -124,7 +124,7 @@ class Streams extends EndpointBase
 				}
 			}
 
-			$results = $db->interactions->find($query)->limit(500); // Hard limit to 500 entries at the time
+			$results = $db->interactions->find($query)->sort(array('interaction.created_at' => 1))->limit(500); // Hard limit to 500 entries at the time
 		}
 
 		// Output JSON data

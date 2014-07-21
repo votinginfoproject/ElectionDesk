@@ -50,6 +50,10 @@ if (ENVIRONMENT == 'production') {
 	define('MONGODB_USERNAME', 'electiondesk');
 	define('MONGODB_DATABASE', 'electiondesk');
 	define('MONGODB_PASSWORD', '');
+
+	// ReCAPTCHA
+	define('RECAPTCHA_PUBLIC', '');
+	define('RECAPTCHA_PRIVATE', '');
 } else {
 	// Consumers
 	// Valid values: twitter, facebook, google, datasift, gnip
@@ -83,4 +87,8 @@ if (ENVIRONMENT == 'production') {
 	define('MONGODB_USERNAME', 'electiondesk');
 	define('MONGODB_DATABASE', 'electiondesk');
 	define('MONGODB_PASSWORD', '');
+
+	// ReCAPTCHA
+	define('RECAPTCHA_PUBLIC', '');
+	define('RECAPTCHA_PRIVATE', '');
 }
