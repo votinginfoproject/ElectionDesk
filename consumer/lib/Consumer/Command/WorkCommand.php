@@ -20,7 +20,7 @@ class WorkCommand extends Command {
             )
             ->addArgument(
                 'filter',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 'id'
             )
         ;
@@ -28,24 +28,26 @@ class WorkCommand extends Command {
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $consumerName = ucfirst(strtolower($input->getArgument('consumer')));
+    	$consumer = \Consumer\Consumer::resolve($input->getArgument('consumer'));
 
-    	// Define class names
-        $classNameIndividual = '\\Consumer\\IndividualConsumer\\' . $consumerName . 'Consumer';
-        $className = '\\Consumer\\' . $consumerName . 'Consumer';
+        $consumerName = get_class($consumer);
 
-        // Add consumer class to list
-        if (class_exists($classNameIndividual)) {
-            $consumer = new $classNameIndividual;
-        } elseif (class_exists($className)) {
-            $consumer = new $className;
+        if ($consumer instanceof \Consumer\IndividualConsumer\IndividualConsumer) {
+            $filter = \Consumer\Model\Filter::find($input->getArgument('filter'));
+            $output->writeln('Consuming "'. $consumerName .'" with filter "'. $filter->title .'"');
+
+            $consumer->consume($filter);
+        } elseif ($consumer instanceof \Consumer\GnipConsumer) {
+            $endpoints = explode('|', GNIP_ENDPOINTS);
+            $index = $input->getArgument('filter');
+
+            $output->writeln('Consuming "'. $consumerName .'" (Index ' . $index . ')');
+            $consumer->setEndpoint($endpoints[$index]);
+            $consumer->consume(\Consumer\Model\Filter::all());
         } else {
-            throw new \RuntimeException('Invalid consumer "'. $consumerName .'"');
+            $output->writeln('Consuming "'. $consumerName .'"');
+            $consumer->consume(\Consumer\Model\Filter::all());
         }
-
-        $filter = \Consumer\Model\Filter::find($input->getArgument('filter'));
-
-        $consumer->consume($filter);
     }
 
 }

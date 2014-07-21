@@ -23,6 +23,7 @@
     "illuminate/events": "v4.1.0",
     "illuminate/database": "v4.1.4",
     "symfony/console": "2.5.*@dev",
-    "symfony/process": "2.5.*@dev"
+    "symfony/process": "2.5.*@dev",
+    "guzzlehttp/guzzle": "~4.0"
   }
 }

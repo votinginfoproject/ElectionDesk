@@ -4,6 +4,25 @@ abstract class Consumer {
     
 	abstract function consume($filter);
 
+    public static function resolve($name) {
+        $consumerName = ucfirst(strtolower($name));
+
+        // Define class names
+        $classNameIndividual = '\\Consumer\\IndividualConsumer\\' . $consumerName . 'Consumer';
+        $className = '\\Consumer\\' . $consumerName . 'Consumer';
+
+        // Add consumer class to list
+        if (class_exists($classNameIndividual)) {
+            $consumer = new $classNameIndividual;
+        } elseif (class_exists($className)) {
+            $consumer = new $className;
+        } else {
+            throw new \RuntimeException('Invalid consumer "'. $consumerName .'"');
+        }
+
+        return $consumer;
+    }
+
 	public function geocode($address) {
         $address = trim($address);
 
@@ -28,7 +47,6 @@ abstract class Consumer {
         $m->addServer('localhost', 11211);
 
         if ($result = $m->get(sha1($address)) && $m->getResultCode() != \Memcached::RES_NOTFOUND) {
-            echo 'Loading ' . $address . ' from cache' . PHP_EOL;
             return $result;
         }
 
@@ -192,7 +210,6 @@ abstract class Consumer {
 
         // Save in cache
         $m->set(sha1($lat . $lon), $result);
-        print_r($result);
 
         return $result;
     }

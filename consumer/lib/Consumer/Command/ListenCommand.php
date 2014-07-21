@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ListenCommand extends Command {
 
     private $processes = [];
-    private $output = [];
+    private $output = null;
 
     protected function configure()
     {
@@ -70,11 +70,22 @@ class ListenCommand extends Command {
 
         // Loop through all active consumers
         foreach (explode(',', CONSUMERS) as $consumerName) {
-            $consumerName = ucfirst(strtolower($consumerName));
+            $consumer = \Consumer\Consumer::resolve($consumerName);
 
-            foreach ($filters as $filter) {
-                $this->processes[$consumerName . ' - Filter ' . $filter->id] = new \Symfony\Component\Process\Process('./consume work ' . $consumerName . ' ' . $filter->id);
-                $this->processes[$consumerName . ' - Filter ' . $filter->id]->start();
+            if ($consumer instanceof \Consumer\IndividualConsumer\IndividualConsumer) {
+                foreach ($filters as $filter) {
+                    $this->processes[$consumerName . ' - Filter ' . $filter->id] = new \Symfony\Component\Process\Process('./consume work ' . $consumerName . ' ' . $filter->id);
+                    $this->processes[$consumerName . ' - Filter ' . $filter->id]->start();
+                }
+            } else if ($consumer instanceof \Consumer\GnipConsumer) {
+                $endpoints = explode('|', GNIP_ENDPOINTS);
+                foreach ($endpoints as $index => $endpoint) {
+                    $this->processes[$consumerName . ' - Index ' . $index] = new \Symfony\Component\Process\Process('./consume work ' . $consumerName . ' ' . $index);
+                    $this->processes[$consumerName . ' - Index ' . $index]->start();
+                }
+            } else {
+                $this->processes[$consumerName] = new \Symfony\Component\Process\Process('./consume work ' . $consumerName);
+                $this->processes[$consumerName]->start();
             }
 
             $this->output->writeln('<info>'. $consumerName .':</info> Started');

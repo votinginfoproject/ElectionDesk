@@ -20,11 +20,16 @@ if (
 if (ENVIRONMENT == 'production') {
 	// Consumers
 	// Valid values: twitter, facebook, google, datasift, gnip
-	define('CONSUMERS', 'twitter,facebook,google');
+	define('CONSUMERS', 'twitter,facebook,google,gnip');
 
 	// Geocoding
 	define('GEOCODING_SERVICE', 'GEOCODIO'); // Can be GEOCODIO or GOOGLE
 	define('GEOCODIO_API_KEY', '');
+
+	// Gnip
+	define('GNIP_ENDPOINTS', 'https://stream.gnip.com:443/accounts/xxx/publishers/automattic/streams/|https://stream.gnip.com:443/accounts/xxx/publishers/disqus/streams/');
+	define('GNIP_USERNAME', '');
+	define('GNIP_PASSWORD', '');
 
 	// DataSift
 	define('DATASIFT_USERNAME', '');
@@ -62,6 +67,11 @@ if (ENVIRONMENT == 'production') {
 	// Geocoding
 	define('GEOCODING_SERVICE', 'GEOCODIO'); // Can be GEOCODIO or GOOGLE
 	define('GEOCODIO_API_KEY', '');
+
+	// Gnip
+	define('GNIP_ENDPOINTS', 'https://stream.gnip.com:443/accounts/xxx/publishers/automattic/streams/|https://stream.gnip.com:443/accounts/xxx/publishers/disqus/streams/');
+	define('GNIP_USERNAME', '');
+	define('GNIP_PASSWORD', '');
 
 	// DataSift
 	define('DATASIFT_USERNAME', '');

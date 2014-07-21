@@ -24,9 +24,9 @@ class Log {
 	 * @return type
 	 */
 	private static function boot()
-	{		
+	{
 		self::$monolog = new Logger('Consumer');
-		self::$monolog->pushHandler(new StreamHandler('php://stdout'));
+		//self::$monolog->pushHandler(new StreamHandler('php://stdout'));
 		self::$monolog->pushHandler(new RotatingFileHandler(__DIR__ . '/../../logs/consumer.log', 7));
 	}
 
