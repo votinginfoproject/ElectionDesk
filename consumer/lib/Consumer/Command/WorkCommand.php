@@ -18,6 +18,11 @@ class WorkCommand extends Command {
                 InputArgument::REQUIRED,
                 'twitter|facebook|google|datasift|gnip'
             )
+            ->addArgument(
+                'filter',
+                InputArgument::REQUIRED,
+                'id'
+            )
         ;
     }
 
@@ -38,9 +43,9 @@ class WorkCommand extends Command {
             throw new \RuntimeException('Invalid consumer "'. $consumerName .'"');
         }
 
-        $output->writeln($consumerName . ' started');
-        sleep(rand(0, 5));
-        $output->writeln($consumerName . ' ended');
+        $filter = \Consumer\Model\Filter::find($input->getArgument('filter'));
+
+        $consumer->consume($filter);
     }
 
 }

@@ -8,6 +8,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListenCommand extends Command {
 
+    private $processes = [];
+    private $output = [];
+
     protected function configure()
     {
         $this
@@ -18,19 +21,15 @@ class ListenCommand extends Command {
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $processes = array();
+        declare(ticks = 1);
 
-        foreach (explode(',', CONSUMERS) as $consumerName) {
-            $consumerName = ucfirst(strtolower($consumerName));
+        $this->output = $output;
 
-            $processes[$consumerName] = new \Symfony\Component\Process\Process('./consume work ' . $consumerName);
-            $processes[$consumerName]->start();
-
-            $output->writeln('<info>'. $consumerName .':</info> Started');
-        }
+        $this->initializeSignalHandler();
+        $this->prepareConsumers();
 
         while (true) {
-            foreach ($processes as $name => $process) {
+            foreach ($this->processes as $name => $process) {
                 $processOutput = $process->getIncrementalOutput();
 
                 if ($processOutput !== false) {
@@ -39,12 +38,46 @@ class ListenCommand extends Command {
 
                 // Start the process again if necessary
                 if (!$process->isRunning()) {
-                    $output->writeln('<info>'. $name .':</info> Started');
+                    $output->writeln('<info>'. $name .':</info> Started again');
                     $process->start();
                 }
 
                 sleep(1);
             }
+        }
+    }
+
+    private function initializeSignalHandler() {
+        $that = $this;
+
+        // Stop all processes if we receive a SIGINT
+        pcntl_signal(SIGINT, function ($signal) use ($that) {
+            $that->output->writeln('<error>Received SIGINIT</error>');
+
+            foreach ($that->processes as $name => $process) {
+                $that->output->writeln('<error>'. $name .' Stopped</error>');
+                unset($that->processes[$name]); // Remove from list
+                $process->stop(5); // Stop process
+            }
+
+            exit(0);
+        });
+    }
+
+    private function prepareConsumers() {
+        // Get all active filters
+        $filters = \Consumer\Model\Filter::where('active', 1)->get();
+
+        // Loop through all active consumers
+        foreach (explode(',', CONSUMERS) as $consumerName) {
+            $consumerName = ucfirst(strtolower($consumerName));
+
+            foreach ($filters as $filter) {
+                $this->processes[$consumerName . ' - Filter ' . $filter->id] = new \Symfony\Component\Process\Process('./consume work ' . $consumerName . ' ' . $filter->id);
+                $this->processes[$consumerName . ' - Filter ' . $filter->id]->start();
+            }
+
+            $this->output->writeln('<info>'. $consumerName .':</info> Started');
         }
     }
 
