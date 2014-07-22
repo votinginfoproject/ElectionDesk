@@ -1,6 +1,6 @@
 <h1>Welcome to ElectionDesk! Thank you for creating an account.</h1>
 
-<h2>Next time you visit, you will use this email address to sign in, and if you ever forget your password, <a href="https://electiondesk.us/auth/forgot_password">click here</a> and follow the directions.</h2>
+<h2>Next time you visit, you will use this email address to sign in, and if you ever forget your password, <a href="http://electiondesk.us/auth/forgot_password">click here</a> and follow the directions.</h2>
 
 <p>To open your ElectionDesk homepage, please follow this link:</p>
 

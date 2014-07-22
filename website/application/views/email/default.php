@@ -424,7 +424,7 @@
                                                             <div mc:edit="std_footer">
 																<em>Copyright &copy; 2012-<?php echo date('Y'); ?>. Election Desk, All rights reserved.</em>
 																<br />
-																<a href="https://electiondesk.us">https://electiondesk.us</a>
+																<a href="http://electiondesk.us">http://electiondesk.us</a>
                                                             </div>
                                                         </td>
                                                         <td valign="top" width="190" id="monkeyRewards">
@@ -436,7 +436,7 @@
                                                     <tr>
                                                         <td colspan="2" valign="middle" id="utility">
                                                             <div mc:edit="std_utility">
-                                                               You are receiving this email to confirm the action noted above. Your email address will not be saved or used for any other purpose. To <a href="https://electiondesk.us/help">unsubscribe</a> from ElectionDesk, submit a ticket indicating your request.
+                                                               You are receiving this email to confirm the action noted above. Your email address will not be saved or used for any other purpose. To <a href="http://electiondesk.us/help">unsubscribe</a> from ElectionDesk, submit a ticket indicating your request.
                                                             </div>
                                                         </td>
                                                     </tr>
