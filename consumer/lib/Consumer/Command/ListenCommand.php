@@ -78,10 +78,10 @@ class ListenCommand extends Command {
                     $this->processes[$consumerName . ' - Filter ' . $filter->id]->start();
                 }
             } else if ($consumer instanceof \Consumer\GnipConsumer) {
-                $endpoints = explode('|', GNIP_ENDPOINTS);
-                foreach ($endpoints as $index => $endpoint) {
-                    $this->processes[$consumerName . ' - Index ' . $index] = new \Symfony\Component\Process\Process('./consume work ' . $consumerName . ' ' . $index);
-                    $this->processes[$consumerName . ' - Index ' . $index]->start();
+                $publishers = explode(',', GNIP_PUBLISHERS);
+                foreach ($publishers as $publisher) {
+                    $this->processes[$consumerName . ' - ' . $publisher] = new \Symfony\Component\Process\Process('./consume work ' . $consumerName . ' ' . $publisher);
+                    $this->processes[$consumerName . ' - ' . $publisher]->start();
                 }
             } else {
                 $this->processes[$consumerName] = new \Symfony\Component\Process\Process('./consume work ' . $consumerName);

@@ -27,7 +27,8 @@ if (ENVIRONMENT == 'production') {
 	define('GEOCODIO_API_KEY', '');
 
 	// Gnip
-	define('GNIP_ENDPOINTS', 'https://stream.gnip.com:443/accounts/xxx/publishers/automattic/streams/|https://stream.gnip.com:443/accounts/xxx/publishers/disqus/streams/');
+	define('GNIP_PUBLISHERS', 'automattic,disqus');
+	define('GNIP_ACCOUNT', ''); // https://api.gnip.com/accounts/XXX/
 	define('GNIP_USERNAME', '');
 	define('GNIP_PASSWORD', '');
 
@@ -69,7 +70,8 @@ if (ENVIRONMENT == 'production') {
 	define('GEOCODIO_API_KEY', '');
 
 	// Gnip
-	define('GNIP_ENDPOINTS', 'https://stream.gnip.com:443/accounts/xxx/publishers/automattic/streams/|https://stream.gnip.com:443/accounts/xxx/publishers/disqus/streams/');
+	define('GNIP_PUBLISHERS', 'automattic,disqus');
+	define('GNIP_ACCOUNT', ''); // https://api.gnip.com/accounts/XXX/
 	define('GNIP_USERNAME', '');
 	define('GNIP_PASSWORD', '');
 

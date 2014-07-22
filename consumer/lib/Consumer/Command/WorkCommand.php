@@ -21,7 +21,7 @@ class WorkCommand extends Command {
             ->addArgument(
                 'filter',
                 InputArgument::OPTIONAL,
-                'id'
+                'id (or endpoint name for a Gnip worker)'
             )
         ;
     }
@@ -38,15 +38,14 @@ class WorkCommand extends Command {
 
             $consumer->consume($filter);
         } elseif ($consumer instanceof \Consumer\GnipConsumer) {
-            $endpoints = explode('|', GNIP_ENDPOINTS);
-            $index = $input->getArgument('filter');
+            $endpoint = $input->getArgument('filter');
 
-            $output->writeln('Consuming "'. $consumerName .'" (Index ' . $index . ')');
-            $consumer->setEndpoint($endpoints[$index]);
-            $consumer->consume(\Consumer\Model\Filter::all());
+            $output->writeln('Consuming "'. $consumerName .'" (' . $endpoint . ')');
+            $consumer->setEndpoint($endpoint);
+            $consumer->consume(\Consumer\Model\Filter::where('active', 1)->get());
         } else {
             $output->writeln('Consuming "'. $consumerName .'"');
-            $consumer->consume(\Consumer\Model\Filter::all());
+            $consumer->consume(\Consumer\Model\Filter::where('active', 1)->get());
         }
     }
 
