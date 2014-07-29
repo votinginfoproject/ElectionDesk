@@ -60,6 +60,11 @@ if (ENVIRONMENT == 'production') {
 	// ReCAPTCHA
 	define('RECAPTCHA_PUBLIC', '');
 	define('RECAPTCHA_PRIVATE', '');
+
+	// WebSocket
+	define('WEBSOCKET_SERVER', 'electiondesk.us');
+	define('WEBSOCKET_SOURCE_PORT', 4244);
+	define('WEBSOCKET_DEST_PORT', 4242);
 } else {
 	// Consumers
 	// Valid values: twitter, facebook, google, datasift, gnip
@@ -103,4 +108,9 @@ if (ENVIRONMENT == 'production') {
 	// ReCAPTCHA
 	define('RECAPTCHA_PUBLIC', '');
 	define('RECAPTCHA_PRIVATE', '');
+
+	// WebSocket
+	define('WEBSOCKET_SERVER', 'electiondesk.local');
+	define('WEBSOCKET_SOURCE_PORT', 4244);
+	define('WEBSOCKET_DEST_PORT', 4242);
 }

@@ -24,6 +24,7 @@ var net = require('net'),
 net.createServer(function (connection) {
     carrier.carry(connection, function(line) {
         var data = JSON.parse(line);
-        io.sockets.in(data.jobIdentifier).volatile.emit('update', data);
+        console.log(data);
+        io.sockets.volatile.emit('update', data);
     });
 }).listen(4244);

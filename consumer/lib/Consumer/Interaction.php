@@ -4,6 +4,22 @@ class Interaction {
 	
 	private static $db = NULL;
 
+	private static $client = null;
+
+    /**
+     * Connect to websocket server listener
+     */
+    private static function ensureStreamConnected() {
+        if (self::$client) {
+            return;
+        }
+        self::$client = @stream_socket_client('tcp://' . WEBSOCKET_SERVER  . ':' . WEBSOCKET_SOURCE_PORT, $errno, $errorMessage, 5);
+
+        if (self::$client === false) {
+            self::$client = null;
+        }
+    }
+
 	private static function boot()
 	{
 		// Initialize database
@@ -52,10 +68,13 @@ class Interaction {
 		// Logging
 		Log::debug($interaction['interaction']['type'] . ': ' . $interaction['interaction']['author']['name']);
 
-		// Insert into database
+		// Insert into database and broadcast to WebSocket server
+		self::ensureStreamConnected();
+
 		try {
 			// Test
 			self::$db->interactions->insert($interaction, array('w' => true));
+			@fwrite(self::$client, json_encode($interaction) . "\n");
 		} catch (\MongoCursorException $e) {
 			if ($e->getCode() != 11000) { // "Duplicate key" errors are ignored
 				Log::error($e->getMessage());
