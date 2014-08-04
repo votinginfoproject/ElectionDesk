@@ -1,0 +1,9 @@
+{
+  "name": "ElctionDesk-WebSocket",
+  "dependencies": {
+    "socket.io": "~1.0.6",
+    "express": "3.x",
+    "carrier": "~0.1.14",
+    "CBuffer": "~0.1.4"
+  }
+}
