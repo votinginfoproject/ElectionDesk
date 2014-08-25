@@ -18,30 +18,35 @@ class Interaction
 		    throw new Exception('MongoDB connection issue: ' . print_r($e, true));
 		}
 		
-		// Posts needs to be unique per each social network
-        self::$db->interactions->ensureIndex(array(
-            'interaction.type' => 1,
-            'interaction.id' => 1,
-        ), array(
-            'unique' => true,
-            'dropDups' => true
-        ));
+		try
+		{
+			// Posts needs to be unique per each social network
+	        self::$db->interactions->ensureIndex(array(
+	            'interaction.type' => 1,
+	            'interaction.id' => 1,
+	        ), array(
+	            'unique' => true,
+	            'dropDups' => true
+	        ));
 
-        // Geospatial index on location
-        self::$db->interactions->ensureIndex(array(
-            'internal.location.coords' => '2d'
-        ));
+	        // Geospatial index on location
+	        self::$db->interactions->ensureIndex(array(
+	            'internal.location.coords' => '2d'
+	        ));
 
-        // For searching for state and county
-        self::$db->interactions->ensureIndex(array(
-            'internal.location.state' => 1,
-            'internal.location.county' => 1
-        ));
+	        // For searching for state and county
+	        self::$db->interactions->ensureIndex(array(
+	            'internal.location.state' => 1,
+	            'internal.location.county' => 1
+	        ));
 
-        // For searching for county
-        self::$db->interactions->ensureIndex(array(
-            'internal.location.county' => '1'
-        ));
+	        // For searching for county
+	        self::$db->interactions->ensureIndex(array(
+	            'internal.location.county' => '1'
+	        ));
+	    } catch (MongoResultException $e) {
+	    	// Ignore
+	    }
 	}
 
 	public static function insert($interaction)
