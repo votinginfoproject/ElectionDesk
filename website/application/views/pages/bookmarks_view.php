@@ -7,6 +7,8 @@
 		
 	<section id="bookmarks-stream" class="feed"><!-- left column -->
 		<?php foreach ($bookmarks as $bookmark) : ?>
+
+			<?php if (isset($bookmark->error)) continue; ?>
 					
 			<?php if ($bookmark->interaction->type == 'twitter') : ?>
 			
@@ -23,12 +25,25 @@
 				</section>
 				
 			<?php elseif ($bookmark->interaction->type == 'facebook') : ?>
-			
 				<section class="entry facebook bookmarked" data-messageid="<?php echo $bookmark->_id->{'$id'}; ?>">
-					<img src="<?php echo $bookmark->facebook->author->avatar; ?>" alt="<?php echo $bookmark->facebook->author->name; ?>" class="profile-pic">
-					<a target="_blank"><?php echo $bookmark->facebook->author->name; ?></a>
+					<img src="<?php echo $bookmark->interaction->author->avatar; ?>" alt="<?php echo $bookmark->interaction->author->name; ?>" class="profile-pic">
+					<a href="<?php echo $bookmark->interaction->link; ?>" target="_blank"><?php echo $bookmark->interaction->author->name; ?></a>
 					<p>
 						<?php echo $bookmark->facebook->message; ?>
+					</p>
+					<ul class="actions">
+						<li class="bookmark">
+							<a href="#">Bookmark</a>
+						</li>
+					</ul>
+				</section>
+
+			<?php elseif ($bookmark->interaction->type == 'googleplus') : ?>
+				<section class="entry googleplus bookmarked" data-messageid="<?php echo $bookmark->_id->{'$id'}; ?>">
+					<img src="<?php echo $bookmark->interaction->author->avatar; ?>" alt="<?php echo $bookmark->interaction->author->name; ?>" class="profile-pic">
+					<a href="<?php echo $bookmark->interaction->link; ?>" target="_blank"><?php echo $bookmark->interaction->author->name; ?></a>
+					<p>
+						<?php echo $bookmark->googleplus->content; ?>
 					</p>
 					<ul class="actions">
 						<li class="bookmark">
@@ -47,7 +62,7 @@
 		<section id="response">
 			<p>Reply from <select name="accounts" id="accountswitcher">
 				<?php foreach ($accounts as $account): ?>
-					<<option value="<?php echo $account->id; ?>"<?php if ($account->is_primary == 1) echo ' selected="selected"' ?>>@<?php echo $account->name; ?></option>
+					<option value="<?php echo $account->id; ?>"<?php if ($account->is_primary == 1) echo ' selected="selected"' ?>>@<?php echo $account->name; ?></option>
 				<?php endforeach; ?>
 			</select></p>
 

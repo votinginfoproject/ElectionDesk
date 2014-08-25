@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-$config['stream_server'] = 'http://electiondesk.us/data';
+$config['stream_server'] = 'http://electiondesk.' . (ENVIRONMENT == 'production' ? 'us' : 'local') . '/data';
 
 $config['admin_email'] = 'help@helpdesk.electiondesk.us';
 
