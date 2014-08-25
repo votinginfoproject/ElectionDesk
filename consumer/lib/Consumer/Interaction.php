@@ -42,7 +42,7 @@ class Interaction
 
 	        // For searching for county
 	        self::$db->interactions->ensureIndex(array(
-	            'internal.location.county' => '1'
+	            'internal.location.county' => 1
 	        ));
 	    } catch (Exception $e) {
 	    	// Ignore
