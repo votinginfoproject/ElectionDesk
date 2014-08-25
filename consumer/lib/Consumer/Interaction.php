@@ -44,7 +44,7 @@ class Interaction
 	        self::$db->interactions->ensureIndex(array(
 	            'internal.location.county' => '1'
 	        ));
-	    } catch (MongoResultException $e) {
+	    } catch (Exception $e) {
 	    	// Ignore
 	    }
 	}
