@@ -224,7 +224,23 @@ var updateStream = function() {
 				section.append(time);
 
 				var paragraph = $('<p>');
-				paragraph.html(message.interaction.content);
+				var content = message.interaction.content;
+
+				// If this is just a share without any content, we shouldn't display it
+				if (!content) {
+					return;
+				}
+
+				if (content.length > 140) {
+					paragraph.html(content.substr(0, 140) + '... ');
+					var readMoreLink = $('<a>').attr('href', '#').html('Read More').click(function () {
+						$(this).parent().html(content);
+						return false;
+					});
+					paragraph.append(readMoreLink);
+				} else {
+					paragraph.html(content);
+				}
 				section.append(paragraph);
 				
 				var actions = $('<ul>');
