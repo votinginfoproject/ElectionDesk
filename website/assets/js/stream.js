@@ -232,15 +232,15 @@ var updateStream = function() {
 				}
 
 				if (content.length > 140) {
-					paragraph.html(content.substr(0, 140) + '... ');
-					var readMoreLink = $('<a>').attr('href', '#').html('Read More').click(function () {
-						$(this).parent().html(content);
-						return false;
-					});
+					paragraph.data('content', content).html(content.substr(0, 140) + '... ');
+					var readMoreLink = $('<a>').attr('href', '#').html('Read More').click(interactionReadMore);
 					paragraph.append(readMoreLink);
 				} else {
 					paragraph.html(content);
 				}
+
+
+
 				section.append(paragraph);
 				
 				var actions = $('<ul>');
@@ -284,6 +284,24 @@ var updateStream = function() {
 
 	// Update stream after update_interval
 	setTimeout(updateStream, update_interval * 1000);
+}
+
+var interactionReadMore = function () {
+	var paragraph = $(this).parent();
+
+	paragraph.html(paragraph.data('content') + ' ');
+
+	var readLessLink = $('<a>').attr('href', '#').html('Read Less').click(function () {
+		paragraph.html(paragraph.data('content').substr(0, 140) + '... ');
+		
+		var readMoreLink = $('<a>').attr('href', '#').html('Read More').click(interactionReadMore);
+		paragraph.append(readMoreLink);
+
+		return false;
+	});
+	paragraph.append(readLessLink);
+
+	return false;
 }
 
 var attachButtonEvents = function () {
