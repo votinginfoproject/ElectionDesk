@@ -196,7 +196,7 @@ var updateStream = function() {
 				section.attr("data-messageid", message._id.$id);
 
 				if (message.interaction.type == 'twitter') {
-					section.attr("data-twitterid", message.twitter.id);
+					section.attr("data-twitterid", message.twitter.id_str);
 				}
 
 				var img = $('<img>');
