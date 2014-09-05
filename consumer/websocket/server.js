@@ -15,17 +15,22 @@ io.on('connection', function (socket) {
             socket.emit('update', item);
         });
     });
+
+    socket.emit('hello');
 });
 
 // Load the TCP Library
 var net = require('net'),
     carrier = require('carrier');
 
-var buffer = CBuffer(10);
+// Save last 25 items
+var buffer = CBuffer(25);
 
 // Start a TCP Server
 net.createServer(function (connection) {
     carrier.carry(connection, function(line) {
+        buffer.push(line);
+
         //try {
             console.log('Sending interaction');
             io.sockets.emit('update', line);
