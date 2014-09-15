@@ -29,7 +29,7 @@ class Admin extends CI_Controller {
 		
 		$this->load->model('tank_auth/users');
 		
-		$data['banned_users'] = $this->users->get_banned_users();
+		$data['users'] = $this->users->get_all_users();
 		
 		
 		
@@ -128,6 +128,19 @@ class Admin extends CI_Controller {
 		$this->email->print_debugger();
 		$this->email->clear();
 		
+	
+		redirect('admin/users', 'location');
+	
+	}
+
+	function disable($user_id = NULL) {
+		if (is_null($user_id)) {
+			redirect('admin', 'location');
+		}
+		
+		$this->load->model('tank_auth/users');
+	
+		$this->users->ban_user($user_id, 'Admin action');		
 	
 		redirect('admin/users', 'location');
 	

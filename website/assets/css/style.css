@@ -1403,6 +1403,11 @@ lh {
 	padding: 5px;
 }
 
+#all-users .user a.disable {
+	color: red;
+	border-color: red;
+}
+
 #all-users .user a:hover {
 	color: orange;
 	border-color: orange;
