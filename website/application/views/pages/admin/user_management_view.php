@@ -1,4 +1,16 @@
-<h2>Enable or Disable Email Accounts</h2>
+<?php
+if ($this->uri->segment(2) == 'pending'):
+?>
+	<h2>Pending users</h2>
+	<a href="/admin/users" class="toggle-pending-users">View active users</a>
+<?php
+else:
+?>
+	<h2>Active users</h2>
+	<a href="/admin/pending" class="toggle-pending-users">View pending users</a>
+<?php
+endif;
+?>
 
 <section id="all-users">
 	

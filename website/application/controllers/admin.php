@@ -29,7 +29,20 @@ class Admin extends CI_Controller {
 		
 		$this->load->model('tank_auth/users');
 		
-		$data['users'] = $this->users->get_all_users();
+		$data['users'] = $this->users->get_unbanned_users();
+		
+		
+		
+		$this->stencil->paint('admin/user_management_view', $data);
+	}
+
+	function pending() {
+		$data['body_id'] = 'users';
+		$this->stencil->title('User Management');
+		
+		$this->load->model('tank_auth/users');
+		
+		$data['users'] = $this->users->get_banned_users();
 		
 		
 		
