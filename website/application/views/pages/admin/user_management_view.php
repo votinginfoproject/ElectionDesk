@@ -9,6 +9,7 @@
 						<?php echo anchor('admin/disable/'.$user->id, 'Disable', array('class' => 'disable')); ?>
 					<?php else: ?>
 						<?php echo anchor('admin/enable/'.$user->id, 'Enable', array('class' => 'enable')); ?>
+						<?php echo anchor('admin/delete/'.$user->id, 'Delete', array('class' => 'disable')); ?>
 					<?php endif; ?>
 
 					<?php echo $user->email; ?> <span class="date-created">(<?php echo date('F j @ g:ia', strtotime($user->created)); ?>)</span>

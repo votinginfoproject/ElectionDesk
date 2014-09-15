@@ -145,6 +145,19 @@ class Admin extends CI_Controller {
 		redirect('admin/users', 'location');
 	
 	}
+
+	function delete($user_id = NULL) {
+		if (is_null($user_id)) {
+			redirect('admin', 'location');
+		}
+		
+		$this->load->model('tank_auth/users');
+	
+		$this->users->delete_user($user_id);
+			
+		redirect('admin/users', 'location');
+	
+	}
 }
 
 /* End of file admin.php */
