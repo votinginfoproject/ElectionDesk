@@ -1,0 +1,49 @@
+
+
+header {
+	height: 88px;
+	margin-top: 44px;
+	margin-bottom: 40px;
+
+	.logo {
+		display: block;
+		width: 140px;
+		height: 88px;
+		float: left;
+		background: no-repeat url(../img/logo-nav.png);
+
+		// Hide text
+		text-indent: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+
+	nav {
+		float: right;
+
+		ul {
+			list-style: none;
+			padding: 0;
+			line-height: 88px;
+
+			li {
+				display: inline-block;
+				margin-right: 41px;
+
+				&.active a, a:hover {
+					color: $primaryColor;
+					border-bottom: 3px solid $secondaryColor;
+					text-decoration: none;
+				}
+
+				a {
+					@extend %titillium-regular;
+					@include letterspacing(100);
+					font-size: 16px;
+					line-height: 18px;
+					color: $primaryColor;
+				}
+			}
+		}
+	}
+}

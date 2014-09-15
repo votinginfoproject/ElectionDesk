@@ -1,0 +1,96 @@
+
+// Body styles and typography
+// Responsive Breakpoints
+// Colors
+// Helper classes
+// (Bootstrap base font size = 14px)
+ 
+// Responsive breakpoints
+
+    $xs: "only screen and (max-width: 767px)";
+    $not-xs: "only screen and (min-width: 768px)";
+    $xs-sm: "only screen and (max-width: 991px)";
+    $xs-md: "only screen and (max-width: 1199px)";
+
+    $sm: "only screen and (min-width: 768px) and (max-width: 991px)";
+    $sm-md: "only screen and (min-width: 768px) and (max-width: 1199px)";
+
+    $md: "only screen and (min-width: 992px) and (max-width: 1199px)";
+    $md-lg: "only screen and (min-width: 992px)";
+
+    $lg: "only screen and (min-width: 1200px)";
+
+// Fonts
+
+  %titillium-regular {
+    font-family: 'Titillium Web', sans-serif;
+    font-weight: 400;
+  }
+  %titillium-semibold {
+    font-family: 'Titillium Web', sans-serif;
+    font-weight: 600;
+  }
+
+
+ 
+// Colors
+
+    $twitterColor: #00aced;
+    $facebookColor: #3b5998;
+    $instagramColor: #517fa4;
+    $youtubeColor: #bb0000;
+
+    $primaryColor: #25aae1;
+    $secondaryColor: #bf1e2e;
+
+
+/*
+ * Body styles and page wrapping
+ */
+
+ html, body{
+   width: 100%;
+   height: 100%;
+ }
+
+
+/*
+ * Typography
+ */
+
+  @mixin antialiase(){
+    -webkit-font-smoothing: antialiased;
+    text-shadow: rgba(0,0,0,.01) 0 0 1px;
+  }
+
+  // Converts px font size to em (DO NOT incluse the unit)
+  @mixin font-size($font-size, $base-size: 14){
+    font-size: ($font-size/$base-size) + 0em;
+  }
+
+  @mixin letterspacing($val) {
+    letter-spacing: ( $val / 1000 ) * 1em;
+  }
+
+  %visuallyhidden {
+    margin: -1px;
+    padding: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip: rect(0, 0, 0, 0);
+    position: absolute;
+  }
+
+
+//Globals
+
+.btn:focus{
+  outline: none!important;
+}
+
+
+
+
+

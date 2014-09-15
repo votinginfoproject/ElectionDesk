@@ -1,0 +1,24 @@
+#topics {
+	ul {
+		list-style: none;
+		padding: 0;
+
+		input[type=checkbox] {
+			@extend %visuallyhidden;
+
+			&:checked + label {
+				background-color: #CECECE;
+			}
+		}
+
+		li {
+			display: inline-block;
+			margin-right: 10px;
+
+			label {
+				padding: 10px 20px;
+				cursor: pointer;
+			}
+		}
+	}
+}

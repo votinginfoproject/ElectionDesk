@@ -10,3 +10,9 @@ website/vendor
 
 # General
 /config.php
+
+# Grunt/SASS/Node
+.sass-cache
+.grunt
+node_modules
+.lock-wscript

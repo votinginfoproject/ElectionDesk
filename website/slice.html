@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ElectionDesk</title>
+
+  <!-- Bootstrap -->
+  <link href="//fonts.googleapis.com/css?family=Titillium+Web:400,600,400italic" rel="stylesheet" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
+  <link href="/assets/css/style.css" rel="stylesheet">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <a class="logo" href="/">ElectionDesk</a>
+
+    <nav>
+      <ul>
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="#">Conversations</a></li>
+        <li><a href="#">Voters</a></li>
+        <li><a href="#">Settings</a></li>
+        <li><a href="#">Logout</a></li>
+        <li class="post"><a href="#">Post</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="topics">
+    <ul>
+      <li>
+        <input type="checkbox" id="wait_time" checked>
+        <label class="btn btn-default" for="wait_time">Wait Time</label>
+      </li>
+      <li>
+        <input type="checkbox" id="polling_location" checked>
+        <label class="btn btn-default" for="polling_location">Polling Location</label>
+      </li>
+      <li>
+        <input type="checkbox" id="adm_issues" checked>
+        <label class="btn btn-default" for="adm_issues">Adm. Issues</label>
+      </li>
+      <li>
+        <input type="checkbox" id="pr_issues" checked>
+        <label class="btn btn-default" for="pr_issues">PR Issues</label>
+      </li>
+      <li>
+        <input type="checkbox" id="voter_id" checked>
+        <label class="btn btn-default" for="voter_id">Voter id</label>
+      </li>
+    </ul>
+  </section>
+
+  <section id="feeds">
+    <h3>Toggle Feeds:</h3>
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-default"><i class="fa fa-twitter"></i></button>
+      <button type="button" class="btn btn-default"><i class="fa fa-facebook"></i></button>
+      <button type="button" class="btn btn-default"><i class="fa fa-google-plus"></i></button>
+      <button type="button" class="btn btn-default"><i class="fa fa-wordpress"></i></button>
+      <button type="button" class="btn btn-default"><i class="fa fa-disqus"></i></button>
+    </div>
+
+    <button type="button" class="btn btn-default"><i class="fa fa-pause"></i></button>
+
+
+    <button type="button" class="btn btn-warning">Bookmarks</button>
+  </section>
+</div>
+
+</body>
+</html>
