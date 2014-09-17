@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ElectionDesk</title>
 
-  <!-- Bootstrap -->
   <link href="//fonts.googleapis.com/css?family=Titillium+Web:400,600,400italic" rel="stylesheet" type="text/css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
   <link href="/assets/css/style.css" rel="stylesheet">
@@ -32,7 +31,7 @@
         <li><a href="#">Voters</a></li>
         <li><a href="#">Settings</a></li>
         <li><a href="#">Logout</a></li>
-        <li class="post"><a href="#">Post</a></li>
+        <li class="btn btn-primary"><a href="#">Post</a></li>
       </ul>
     </nav>
   </header>
@@ -40,24 +39,24 @@
   <section id="topics">
     <ul>
       <li>
-        <input type="checkbox" id="wait_time" checked>
-        <label class="btn btn-default" for="wait_time">Wait Time</label>
+        <input type="checkbox" id="topic_wait_time" checked>
+        <label class="btn btn-default" for="topic_wait_time">Wait Time</label>
       </li>
       <li>
-        <input type="checkbox" id="polling_location" checked>
-        <label class="btn btn-default" for="polling_location">Polling Location</label>
+        <input type="checkbox" id="topic_polling_location" checked>
+        <label class="btn btn-default" for="topic_polling_location">Polling Location</label>
       </li>
       <li>
-        <input type="checkbox" id="adm_issues" checked>
-        <label class="btn btn-default" for="adm_issues">Adm. Issues</label>
+        <input type="checkbox" id="topic_adm_issues">
+        <label class="btn btn-default" for="topic_adm_issues">Adm. Issues</label>
       </li>
       <li>
-        <input type="checkbox" id="pr_issues" checked>
-        <label class="btn btn-default" for="pr_issues">PR Issues</label>
+        <input type="checkbox" id="topic_pr_issues">
+        <label class="btn btn-default" for="topic_pr_issues">PR Issues</label>
       </li>
       <li>
-        <input type="checkbox" id="voter_id" checked>
-        <label class="btn btn-default" for="voter_id">Voter id</label>
+        <input type="checkbox" id="topic_voter_id">
+        <label class="btn btn-default" for="topic_voter_id">Voter id</label>
       </li>
     </ul>
   </section>
@@ -66,14 +65,32 @@
     <h3>Toggle Feeds:</h3>
 
     <div class="btn-group">
-      <button type="button" class="btn btn-default"><i class="fa fa-twitter"></i></button>
-      <button type="button" class="btn btn-default"><i class="fa fa-facebook"></i></button>
-      <button type="button" class="btn btn-default"><i class="fa fa-google-plus"></i></button>
-      <button type="button" class="btn btn-default"><i class="fa fa-wordpress"></i></button>
-      <button type="button" class="btn btn-default"><i class="fa fa-disqus"></i></button>
+      <button type="button" class="btn btn-default">
+        <input type="checkbox" id="feed_twitter">
+        <label for="feed_twitter"><i class="fa fa-twitter"></i></label>
+      </button>
+      <button type="button" class="btn btn-default">
+        <input type="checkbox" id="feed_facebook">
+        <label for="feed_facebook"><i class="fa fa-facebook"></i></label>
+      </button>
+      <button type="button" class="btn btn-default">
+        <input type="checkbox" id="feed_googleplus">
+        <label for="feed_googleplus"><i class="fa fa-google-plus"></i></label>
+      </button>
+      <button type="button" class="btn btn-default">
+        <input type="checkbox" id="feed_wordpress">
+        <label for="feed_wordpress"><i class="fa fa-wordpress"></i></label>
+      </button>
+      <button type="button" class="btn btn-default">
+        <input type="checkbox" id="feed_disqus">
+        <label for="feed_disqus"><i class="icon-disqus-social"></i></label>
+      </button>
     </div>
 
-    <button type="button" class="btn btn-default"><i class="fa fa-pause"></i></button>
+    <button type="button" class="btn btn-default btn-playpause">
+      <input type="checkbox" id="feed_paused">
+      <label for="feed_paused"><i class="fa fa-pause"></i></label>
+    </button>
 
 
     <button type="button" class="btn btn-warning">Bookmarks</button>

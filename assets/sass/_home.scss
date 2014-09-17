@@ -6,8 +6,8 @@
 		input[type=checkbox] {
 			@extend %visuallyhidden;
 
-			&:checked + label {
-				background-color: #CECECE;
+			&:checked + label, &:hover + label {
+				background-color: $secondaryGrayColor;
 			}
 		}
 
@@ -16,9 +16,67 @@
 			margin-right: 10px;
 
 			label {
-				padding: 10px 20px;
+				@extend %titillium-regular;
+				@include letterspacing(100);
+				font-size: 16px;
+				color: #FFF;
+
+				padding: 14px 28px;
 				cursor: pointer;
+				background-color: $primaryGrayColor;
 			}
 		}
+	}
+}
+
+#feeds {
+	margin-top: 33px;
+	width: 587px;
+
+	h3 {
+		@extend %titillium-regular;
+		@include letterspacing(100);
+		font-style: italic;
+		font-size: 14px;
+		line-height: 18px;
+		color: $primaryGrayColor;
+	}
+
+	.btn {
+		padding: 0;
+		height: 50px;
+		color: #FFF;
+		line-height: 50px;
+		font-size: 16px;
+		@extend %titillium-regular;
+		@include letterspacing(100);
+	}
+
+	.btn-default {
+		width: 60px;
+		background-color: $primaryGrayColor;
+		font-size: 19px;
+
+		input[type=checkbox] {
+			@extend %visuallyhidden;
+
+			&:checked + label, &:hover + label {
+				background-color: $primaryColor;
+			}
+		}
+
+		label {
+			display: block;
+			cursor: pointer;
+		}
+	}
+
+	.btn-playpause {
+		margin-left: 11px;
+	}
+
+	.btn-warning {
+		float: right;
+		padding: 0 20px;
 	}
 }

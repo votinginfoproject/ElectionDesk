@@ -3,7 +3,7 @@
 header {
 	height: 88px;
 	margin-top: 44px;
-	margin-bottom: 40px;
+	margin-bottom: 78px;
 
 	.logo {
 		display: block;
@@ -20,6 +20,7 @@ header {
 
 	nav {
 		float: right;
+		margin-top: 7px;
 
 		ul {
 			list-style: none;
@@ -28,14 +29,33 @@ header {
 
 			li {
 				display: inline-block;
-				margin-right: 41px;
+				margin-right: 38px;
 
+				// Button hover
+				&.btn.active, &.btn a:hover {
+					color: #FFF;
+					border-bottom: none;
+				}
+
+				// Regular menu item hover
 				&.active a, a:hover {
 					color: $primaryColor;
 					border-bottom: 3px solid $secondaryColor;
 					text-decoration: none;
 				}
 
+				// Button
+				&.btn {
+					border: none !important;
+					padding: 16px 41px;
+					margin-right: 21px;
+
+					a {
+						color: #FFF;
+					}
+				}
+
+				// Regular menu item
 				a {
 					@extend %titillium-regular;
 					@include letterspacing(100);

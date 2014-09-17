@@ -43,6 +43,9 @@
     $primaryColor: #25aae1;
     $secondaryColor: #bf1e2e;
 
+    $primaryGrayColor: #CCC;
+    $secondaryGrayColor: #959595;
+
 
 /*
  * Body styles and page wrapping
@@ -88,6 +91,10 @@
 
 .btn:focus{
   outline: none!important;
+}
+
+.btn {
+  border: none !important;
 }
 
 
