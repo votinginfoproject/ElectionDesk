@@ -92,7 +92,6 @@
       <label for="feed_paused"><i class="fa fa-pause"></i></label>
     </button>
 
-
     <button type="button" class="btn btn-warning">Bookmarks</button>
   </section>
 
@@ -697,6 +696,49 @@
       </li>
     </ul>
   </section>
+
+  <section id="filters">
+    <h3>Limit Stream by Location or Distance</h3>
+
+    <ul class="limit-options">
+      <li>
+        <input type="radio" name="limit" id="limit_all_posts" checked>
+        <label for="limit_all_posts"><i class="circle"></i> All posts</label>
+      </li>
+      
+      <li>
+        <input type="radio" name="limit" id="limit_state">
+        <label for="limit_state"><i class="circle"></i> Within Washington DC</label>
+      </li>
+      
+      <li>
+        <input type="radio" name="limit" id="limit_radius">
+        <label for="limit_radius"><i class="circle"></i> Within radius</label>
+      </li>
+      
+      <li>
+        <input type="radio" name="limit" id="limit_custom">
+        <label for="limit_custom">
+          <i class="circle"></i> Within custom area
+          <em>You can define a custom area on the <a href="#">area settings</a> page.</em>
+        </label>
+      </li>
+    </ul>
+
+    <h3>Filters</h3>
+    <div class="form-group filter-query-group">
+      <div class="input-group">
+        <div class="input-group-addon"><i class="fa fa-search"></i></div>
+        <input type="text" id="filter-query" name="" class="form-control" placeholder="Filter the current stream">
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-primary">Apply</button>
+
+    <p><em>You can use AND/OR operators as well as parenthesis.<br />
+Ex., ballot OR (vote AND "turned away")</em></p>
+
+  </section>  
 </div>
 
 </body>

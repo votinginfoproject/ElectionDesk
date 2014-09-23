@@ -82,6 +82,7 @@
 }
 
 #stream {
+	float: left;
 	width: 635px;
 	height: (6 * 97px); // 6 interactions
 	overflow-y: auto;
@@ -160,4 +161,96 @@
 			}
 		}
 	}
+}
+
+#filters {
+	float: left;
+	width: 505px;
+
+	h3 {
+		@extend %titillium-semibold;
+		@include letterspacing(100);
+		font-size: 18px;
+		color: $secondaryGrayColor;
+	}
+
+	.limit-options {
+		list-style: none;
+		padding: 0;
+
+		li {
+			.circle {
+				display: inline-block;
+				width: 15px;
+				height: 15px;
+				background-color: #FFF;
+				border: 1px solid $primaryGrayColor;
+				border-radius: 50%;
+			}
+
+			label {
+				@extend %titillium-regular;
+				@include letterspacing(100);
+				font-size: 16px;
+				line-height: 30px;
+				color: $primaryGrayColor;
+				cursor: pointer;
+
+				em {
+					display: block;
+					font-size: 12px;
+					line-height: 18px;
+				}
+			}
+
+			input[type=radio] {
+				@extend %visuallyhidden;
+
+				&:checked + label, &:hover + label {
+					.circle {
+						background-color: $primaryColor;
+						border-color: $primaryColor;
+					}
+				}
+			}
+		}
+	}
+
+	.filter-query-group {
+		width: 260px;
+		float: left;
+
+		.input-group-addon {
+			color: $primaryColor;
+			background: none;
+			border-right: none;
+		}
+
+		.form-control {
+			@extend %titillium-regular;
+			@include letterspacing(100);
+			font-size: 16px;
+
+			border-left: none;
+			box-shadow: none;
+
+			&:focus {
+				border-color: $primaryGrayColor;
+			}
+		}
+	}
+
+	.btn-primary {
+		float: left;
+		margin-left: 8px;
+		@include clearfix();
+	}
+
+	p {
+		@extend %titillium-regular;
+		@include letterspacing(100);
+		font-size: 12px;
+		color: $primaryGrayColor;
+	}
+
 }
