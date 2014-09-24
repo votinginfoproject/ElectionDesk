@@ -6,7 +6,7 @@
 		input[type=checkbox] {
 			@extend %visuallyhidden;
 
-			&:checked + label, &:hover + label {
+			&:checked + label {
 				background-color: $secondaryGrayColor;
 			}
 		}
@@ -60,7 +60,7 @@
 		input[type=checkbox] {
 			@extend %visuallyhidden;
 
-			&:checked + label, &:hover + label {
+			&:checked + label {
 				background-color: $primaryColor;
 			}
 		}
@@ -101,7 +101,8 @@
 			border-bottom: 1px solid $primaryGrayColor;
 			padding: 12px 0 12px 9px;
 
-			> img {
+
+			img.profile-picture {
 				width: 48px;
 				height: 48px;
 				border-radius: 4px;
@@ -110,20 +111,20 @@
 				margin-right: 10px;
 			}
 
-			> a {
+			a.target-link {
 				display: block;
 				color: $primaryColor;
 				font-weight: bold;
 				font-size: 14px;
 			}
 
-			> time {
+			time {
 				float: right;
 				font-size: 13px;
 				color: $primaryGrayColor;
 			}
 
-			> p {
+			p {
 				margin: 0;
 				height: 41px;
 				font-family: Helvetica, Arial, sans-serif;
@@ -206,7 +207,7 @@
 			input[type=radio] {
 				@extend %visuallyhidden;
 
-				&:checked + label, &:hover + label {
+				&:checked + label {
 					.circle {
 						background-color: $primaryColor;
 						border-color: $primaryColor;

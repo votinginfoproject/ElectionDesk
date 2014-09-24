@@ -1,9 +1,5 @@
 'use strict';
 module.exports = function(grunt) {
-  grunt.loadNpmTasks('grunt-contrib-sass');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-autoprefixer');
-
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     sass: {
@@ -33,13 +29,80 @@ module.exports = function(grunt) {
             }
         }
     },
+    jshint: {
+      options: {
+        jshintrc: true
+      },
+      all: [
+        '<%= pkg.env.src_folder %>/js/*.js'
+      ]
+    },
+    uglify: {
+      dist: {
+        files: {
+          '<%= pkg.env.js_folder %>/script.js': [
+            '<%= pkg.env.src_folder %>/js/vendor/*.js',
+            '<%= pkg.env.src_folder %>/js/*.js'
+          ]
+        }
+      },
+      options: {
+        beautify: false,
+        mangle: false
+      }
+    },
     watch: {
       sass: {
         files: [
           '<%= pkg.env.src_folder %>/sass/*.scss'
         ],
-        tasks: ['sass', 'autoprefixer']
+        tasks: ['sass', 'autoprefixer', 'notify:css']
+      },
+      js: {
+        files: [
+          '<%= pkg.env.src_folder %>/js/*.js'
+        ],
+        tasks: ['jshint', 'uglify', 'notify:js']
+      }
+    },
+    clean: {
+      dist: [
+        '<%= pkg.env.js_folder %>/script.js',
+        '<%= pkg.env.css_folder %>/style.css'
+      ]
+    },
+    notify: {
+      css: {
+        options: {
+          title: 'CSS Preprocessing Complete',
+          message: 'LESS compiler finished running'
+        }
+      },
+      js: {
+        options: {
+          title: 'JS Preprocessing Complete',
+          message: 'jshint and uglify finished running'
+        }
       }
     }
   });
+
+  // Load tasks
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-sass');
+  grunt.loadNpmTasks('grunt-autoprefixer');
+  grunt.loadNpmTasks('grunt-notify');
+
+  // Register tasks
+  grunt.registerTask('default', [
+    'clean',
+    'less',
+    'uglify'
+  ]);
+  grunt.registerTask('dev', [
+    'watch'
+  ]);
 };

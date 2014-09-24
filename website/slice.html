@@ -10,15 +10,13 @@
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
   <link href="/assets/css/style.css" rel="stylesheet">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
   <![endif]-->
 </head>
-<body>
+<body ng-app="electiondeskStream" ng-controller="StreamController">
 
 <div class="container">
   <header>
@@ -66,23 +64,23 @@
 
     <div class="btn-group">
       <button type="button" class="btn btn-default">
-        <input type="checkbox" id="feed_twitter">
+        <input type="checkbox" id="feed_twitter" ng-model="sourceQuery.twitter" checked>
         <label for="feed_twitter"><i class="fa fa-twitter"></i></label>
       </button>
       <button type="button" class="btn btn-default">
-        <input type="checkbox" id="feed_facebook">
+        <input type="checkbox" id="feed_facebook" ng-model="sourceQuery.facebook" checked>
         <label for="feed_facebook"><i class="fa fa-facebook"></i></label>
       </button>
       <button type="button" class="btn btn-default">
-        <input type="checkbox" id="feed_googleplus">
+        <input type="checkbox" id="feed_googleplus" ng-model="sourceQuery.googleplus" checked>
         <label for="feed_googleplus"><i class="fa fa-google-plus"></i></label>
       </button>
       <button type="button" class="btn btn-default">
-        <input type="checkbox" id="feed_wordpress">
+        <input type="checkbox" id="feed_wordpress" ng-model="sourceQuery.wordpress" checked>
         <label for="feed_wordpress"><i class="fa fa-wordpress"></i></label>
       </button>
       <button type="button" class="btn btn-default">
-        <input type="checkbox" id="feed_disqus">
+        <input type="checkbox" id="feed_disqus" ng-model="sourceQuery.disqus" checked>
         <label for="feed_disqus"><i class="icon-disqus-social"></i></label>
       </button>
     </div>
@@ -96,6 +94,7 @@
   </section>
 
   <section id="stream">
+    <!--
     <ul>
       <li class="entry twitter">
         <img src="https://pbs.twimg.com/profile_images/494922173816270848/yfkE46j6_normal.jpeg" alt="awesome cakes" class="profile-pic">
@@ -111,588 +110,53 @@
           <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
         </ul>
       </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/416273695884472320/UMBov6ca_normal.jpeg" alt="Craig P Sheppard" class="profile-pic">
-        <time datetime="">17s ago</time>
-        <a href="http://twitter.com/PCGuru07/status/512324830184886272" target="_blank">@PCGuru07</a>
-        <p>RT @Margaret_Curran: In 12 hours, people across Scotland will start voting. Here are 5 questions you should be asking. http://t.co/z330ZHEv…</p>
+    </ul>
+    -->
 
-        <a href="#" class="expand disabled">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-          <li class="location">
-        <a href="https://maps.google.com/maps?q=AL"><i class="fa fa-map-marker"></i> AL</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/497808637008429056/LPllx1G8_normal.png" alt="Andy Barr" class="profile-pic">
-        <time datetime="">17s ago</time>
-        <a href="http://twitter.com/AndyBarr34/status/512325271689900032" target="_blank">@AndyBarr34</a>
-        <p>RT @maryjpitzl: It had to come up: HB2305, seen by foes as vote suppression. @VoteReagan defends portions she wrote, Goddard notes she vote…</p>
+    <ul>
+      <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | orderByCreated | limitTo:50" class="entry {{ interaction.interaction.type }}" data-messageid="{{ interaction._id.$id }}">
+        <div ng-switch="interaction.interaction.type">
+          <!-- Twitter -->
+          <div ng-switch-when="twitter">
+            <img ng-src="{{ interaction.twitter.user.profile_image_url_https }}" alt="{{ interaction.twitter.user.name }}" class="profile-picture">
+            <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
+            <a ng-href="{{ interaction.interaction.link }}" target="_blank" class="target-link">@{{ interaction.interaction.author.username }}</a>
+            <p>{{ interaction.twitter.text }}</p>
 
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/3443686157/d2c8f979857072d5097c160c2abfd7b0_normal.png" alt="R. DuFresne" class="profile-pic">
-        <time datetime="">22s ago</time>
-        <a href="http://twitter.com/Baremid/status/512325310076190720" target="_blank">@Baremid</a>
-        <p>RT @AFSCME: ICYMI - Wisconsin's @GOP Voter Suppression ID law back in place for November http://t.co/w4OasMh8KM #1u #WIunion</p>
+            <a href="#" class="expand">Expand</a>
+            <ul class="actions">
+              <li class="follow"><a href="#"><i class="fa fa-twitter"></i> Follow</a></li>
+              <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
+              <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
+              <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
+            </ul>
+          </div>
+          <!-- Facebook -->
+          <div ng-switch-when="facebook">
+            <img ng-src="https://graph.facebook.com/picture?id={{ interaction.facebook.from.id }}" alt="{{ interaction.facebook.from.name }}" class="profile-picture">
+            <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
+            <a ng-href="http://facebook.com/profile.php?id={{ interaction.facebook.from.id }}" target="_blank" class="target-link">{{ interaction.facebook.from.name }}</a>
+            <p>{{ (interaction.facebook.message.length > 0) ? interaction.facebook.message : interaction.facebook.story | limitTo:140 }}</p>
 
-        <a href="#" class="expand disabled">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-          <li class="location">
-        <a href="https://maps.google.com/maps?q=NY"><i class="fa fa-map-marker"></i> NY</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/471393775177441280/Z_Bl7pdA_normal.jpeg" alt="Alex Friend" class="profile-pic">
-        <time datetime="">24s ago</time>
-        <a href="http://twitter.com/AlexFriend/status/512324397248827393" target="_blank">@AlexFriend</a>
-        <p>RT @YesScotland: There's only ONE way to guarantee Scotland gets the powers we need: Vote YES http://t.co/VvtFHpKjmt  #indyref http://t.co/…</p>
+            <a href="#" class="expand">Expand</a>
+            <ul class="actions">
+              <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
+            </ul>
+          </div>
+          <!-- Wordpress -->
+          <div ng-switch-when="wordpress">
+            <img  ng-src="{{ interaction.interaction.author.avatar }}" alt="{{ interaction.interaction.author.name }}" class="profile-picture">
+            <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
+            <a ng-href="{{ interaction.interaction.link }}" target="_blank" class="target-link">{{ interaction.interaction.author.name }}</a>
+            <p>{{ interaction.interaction.content | limitTo:140 }}</p>
 
-        <a href="#" class="expand disabled">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/466952994928345090/4UdXKwjF_normal.png" alt="NuLawLab" class="profile-pic">
-        <time datetime="">25s ago</time>
-        <a href="http://twitter.com/NuLawLab/status/512324299915800576" target="_blank">@NuLawLab</a>
-        <p>@isaacgraves A few hours left vote for the @NuLawLab + #CAMD project  to prepare litigants http://t.co/7ZyJxKg72W</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/466952994928345090/4UdXKwjF_normal.png" alt="NuLawLab" class="profile-pic">
-        <time datetime="">27s ago</time>
-        <a href="http://twitter.com/NuLawLab/status/512324204881260544" target="_blank">@NuLawLab</a>
-        <p>@PublicLab A few hours left vote for the @NuLawLab + #CAMD project  to prepare litigants http://t.co/7ZyJxKg72W</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/503371447050706944/YdxGNDyv_normal.jpeg" alt="moko83" class="profile-pic">
-        <time datetime="">33s ago</time>
-        <a href="http://twitter.com/michaelmoko83/status/512324623422459905" target="_blank">@michaelmoko83</a>
-        <p>RT @G_Miller1984: Can't wait to put my rangers top on tomorrow and vote #no</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry facebook">
-        <img src="https://graph.facebook.com/picture?id=100003133113358" alt="Donny Cameron" class="profile-pic">
-        <time datetime="">37s ago</time>
-        <a href="http://facebook.com/profile.php?id=100003133113358" target="_blank">Donny Cameron</a>
-        <p></p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-        <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry facebook">
-        <img src="https://graph.facebook.com/picture?id=22958317602" alt="Wisconsin State Journal" class="profile-pic">
-        <time datetime="">45s ago</time>
-        <a href="http://facebook.com/profile.php?id=22958317602" target="_blank">Wisconsin State Journal</a>
-        <p>UW-Madison will provide separate voter identification cards to students starting next week that comply with new photo ID requirements at the polls, spokesman John Lucas said Wednesday.</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-        <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry facebook">
-        <img src="https://graph.facebook.com/picture?id=100005533361180" alt="Pat Viands" class="profile-pic">
-        <time datetime="">48s ago</time>
-        <a href="http://facebook.com/profile.php?id=100005533361180" target="_blank">Pat Viands</a>
-        <p>WHAT!</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-        <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry facebook">
-        <img src="https://graph.facebook.com/picture?id=100000282488691" alt="Patricia Reck" class="profile-pic">
-        <time datetime="">56s ago</time>
-        <a href="http://facebook.com/profile.php?id=100000282488691" target="_blank">Patricia Reck</a>
-        <p></p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-        <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/2381443613/hsbhvqnaue5tfzm9ng45_normal.jpeg" alt="Aaron Takaza" class="profile-pic">
-        <time datetime="">56s ago</time>
-        <a href="http://twitter.com/madtakaza/status/512325109869465602" target="_blank">@madtakaza</a>
-        <p>In 10 Hours Polls Open For Scotland to Vote in their first ever Referendum. Pre-Voteday polls still split 50/50 ... http://t.co/ChRQ8rBrCK</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/466952994928345090/4UdXKwjF_normal.png" alt="NuLawLab" class="profile-pic">
-        <time datetime="">1m ago</time>
-        <a href="http://twitter.com/NuLawLab/status/512324568938459136" target="_blank">@NuLawLab</a>
-        <p>@elpuentepalante A few hours left vote for the @NuLawLab + #CAMD project  to prepare litigants http://t.co/7ZyJxKg72W</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/504210876996399104/Cs1rHeOi_normal.png" alt="Michelle Mackenzie" class="profile-pic">
-        <time datetime="">1m ago</time>
-        <a href="http://twitter.com/chellacat/status/512324829752864768" target="_blank">@chellacat</a>
-        <p>RT @Kenscott7: @citizentommy You've made a huge difference to the campaign Tommy, can't wait to hear you in George Square - Can Vote - Will…</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/454383705864167426/abqKB0Ge_normal.jpeg" alt="B4Liberty" class="profile-pic">
-        <time datetime="">1m ago</time>
-        <a href="http://twitter.com/USAB4L/status/512324058570952704" target="_blank">@USAB4L</a>
-        <p>RT @TulsiPress: Waiting on the House floor to argue against Syria vote today. We must stay focused on our mission: destroy ISIS, not nation…</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/378800000552929610/dbc6e8c41feeb859ebe42c1b4d8e5ed6_normal.jpeg" alt="Paul Quibell-smith" class="profile-pic">
-        <time datetime="">1m ago</time>
-        <a href="http://twitter.com/QuibellPaul/status/512324664732176384" target="_blank">@QuibellPaul</a>
-        <p>RT @Margaret_Curran: In 12 hours, people across Scotland will start voting. Here are 5 questions you should be asking. http://t.co/z330ZHEv…</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-          <li class="location">
-        <a href="https://maps.google.com/maps?q=CA"><i class="fa fa-map-marker"></i> CA</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/466952994928345090/4UdXKwjF_normal.png" alt="NuLawLab" class="profile-pic">
-        <time datetime="">1m ago</time>
-        <a href="http://twitter.com/NuLawLab/status/512325382545346561" target="_blank">@NuLawLab</a>
-        <p>@helloeddy 2 hours left vote for the @NuLawLab + #CAMD gaming project  to prepare litigants http://t.co/7ZyJxKg72W</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/472523614546591745/LZq02BaX_normal.jpeg" alt="lindsey" class="profile-pic">
-        <time datetime="">1m ago</time>
-        <a href="http://twitter.com/lindsey_lt1981/status/512324274510913536" target="_blank">@lindsey_lt1981</a>
-        <p>@CLASSICFOX still waiting for the reasons we ve to vote no? #voteyes #strongandindependent</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry facebook">
-        <img src="https://graph.facebook.com/picture?id=1434975556731007" alt="Better Together Isle of Islay" class="profile-pic">
-        <time datetime="">1m ago</time>
-        <a href="http://facebook.com/profile.php?id=1434975556731007" target="_blank">Better Together Isle of Islay</a>
-        <p></p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-        <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/511278447558418432/rDvi1Fsk_normal.jpeg" alt="ZOE SCOTT" class="profile-pic">
-        <time datetime="">1m ago</time>
-        <a href="http://twitter.com/zoee_scottx/status/512325268254773248" target="_blank">@zoee_scottx</a>
-        <p>3hrs till I'm 18, 10 hours until a YES VOTE</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/466952994928345090/4UdXKwjF_normal.png" alt="NuLawLab" class="profile-pic">
-        <time datetime="">1m ago</time>
-        <a href="http://twitter.com/NuLawLab/status/512324641957089281" target="_blank">@NuLawLab</a>
-        <p>@andrewncuriel A few hours left vote for the @NuLawLab + #CAMD project  to prepare litigants http://t.co/7ZyJxKg72W</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry facebook">
-        <img src="https://graph.facebook.com/picture?id=1049265141" alt="Lisa Bond" class="profile-pic">
-        <time datetime="">1m ago</time>
-        <a href="http://facebook.com/profile.php?id=1049265141" target="_blank">Lisa Bond</a>
-        <p></p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-        <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry facebook">
-        <img src="https://graph.facebook.com/picture?id=100004023345632" alt="Jim Picti" class="profile-pic">
-        <time datetime="">1m ago</time>
-        <a href="http://facebook.com/profile.php?id=100004023345632" target="_blank">Jim Picti</a>
-        <p></p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-        <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry facebook">
-        <img src="https://graph.facebook.com/picture?id=100000516862539" alt="Alan Cox" class="profile-pic">
-        <time datetime="">2m ago</time>
-        <a href="http://facebook.com/profile.php?id=100000516862539" target="_blank">Alan Cox</a>
-        <p></p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-        <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/1908191912/QkTip_normal.jpg" alt="QkTip" class="profile-pic">
-        <time datetime="">2m ago</time>
-        <a href="http://twitter.com/QkTipcom/status/512325196175642624" target="_blank">@QkTipcom</a>
-        <p>Just hours before a scheduled House vote on whether to back President Obama’s request to arm Syrian rebels, House... http://t.co/6TbCqEk9QD</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/508923940639473664/2oKFvS1A_normal.png" alt="Labour Press Team" class="profile-pic">
-        <time datetime="">2m ago</time>
-        <a href="http://twitter.com/labourpress/status/512324600970350592" target="_blank">@labourpress</a>
-        <p>RT @Margaret_Curran: In 12 hours, people across Scotland will start voting. Here are 5 questions you should be asking. http://t.co/z330ZHEv…</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/466952994928345090/4UdXKwjF_normal.png" alt="NuLawLab" class="profile-pic">
-        <time datetime="">2m ago</time>
-        <a href="http://twitter.com/NuLawLab/status/512325224390721536" target="_blank">@NuLawLab</a>
-        <p>@FrancoisGrey 2 hours left vote for the @NuLawLab + #CAMD gaming project  to prepare litigants http://t.co/7ZyJxKg72W</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/466952994928345090/4UdXKwjF_normal.png" alt="NuLawLab" class="profile-pic">
-        <time datetime="">2m ago</time>
-        <a href="http://twitter.com/NuLawLab/status/512325327302184960" target="_blank">@NuLawLab</a>
-        <p>@ScrapHacker 2 hours left vote for the @NuLawLab + #CAMD gaming project  to prepare litigants http://t.co/7ZyJxKg72W</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/354048515/madmen_iconFACE_normal.jpg" alt="Jessica Carmody" class="profile-pic">
-        <time datetime="">2m ago</time>
-        <a href="http://twitter.com/volette/status/512324107925716993" target="_blank">@volette</a>
-        <p>“@GwenHardy: Wait, if it's a yes vote do scottish residents still get to compete in #gbbo??” No.</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/467058770145595392/mBEUwK3__normal.png" alt="3ChicsPolitico" class="profile-pic">
-        <time datetime="">2m ago</time>
-        <a href="http://twitter.com/3ChicsPolitico/status/512324975202549760" target="_blank">@3ChicsPolitico</a>
-        <p>@SteveStenger  But you won't stand nor work for the citizens of #Ferguson?  I can't wait until they vote you out.</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/494856979697770497/LOwDQqj2_normal.jpeg" alt="UCLU WIO // Leah" class="profile-pic">
-        <time datetime="">2m ago</time>
-        <a href="http://twitter.com/UCLU_WIO/status/512324066402140160" target="_blank">@UCLU_WIO</a>
-        <p>RT @MindCharity: You shouldn’t have to wait longer than 28 days to get the therapy you need. Join the #MindManifesto campaign: http://t.co/…</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-          <li class="location">
-        <a href="https://maps.google.com/maps?q=NJ"><i class="fa fa-map-marker"></i> NJ</a></li>
-        </ul>
-      </li>
-      <li class="entry facebook">
-        <img src="https://graph.facebook.com/picture?id=1671774522" alt="Steve J Heimbrock" class="profile-pic">
-        <time datetime="">2m ago</time>
-        <a href="http://facebook.com/profile.php?id=1671774522" target="_blank">Steve J Heimbrock</a>
-        <p></p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-        <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry facebook">
-        <img src="https://graph.facebook.com/picture?id=100000601764917" alt="Gerard Hendrick" class="profile-pic">
-        <time datetime="">3m ago</time>
-        <a href="http://facebook.com/profile.php?id=100000601764917" target="_blank">Gerard Hendrick</a>
-        <p>Y E S</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-        <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/344513261569821249/f0510c9a3b9d58ca0308e2e86b4d110d_normal.jpeg" alt="satinder Madhok" class="profile-pic">
-        <time datetime="">3m ago</time>
-        <a href="http://twitter.com/SatinderMadhok/status/512323845874003970" target="_blank">@SatinderMadhok</a>
-        <p>RT @petervirdee: Last day of campaigning and just under 16 hours, before vote that could end UK...Yes or No? @Raj_Tigerstyle</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry facebook">
-        <img src="https://graph.facebook.com/picture?id=33004329" alt="Krista Grell" class="profile-pic">
-        <time datetime="">3m ago</time>
-        <a href="http://facebook.com/profile.php?id=33004329" target="_blank">Krista Grell</a>
-        <p>If you know anyone from Wisc, this is important information.</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-        <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/378800000340620350/7816666c4811a99e220b1a42474ee577_normal.jpeg" alt="Colin J. Blair" class="profile-pic">
-        <time datetime="">3m ago</time>
-        <a href="http://twitter.com/SGT_R0ck/status/512324182034874369" target="_blank">@SGT_R0ck</a>
-        <p>RT @Worldwidewebb1: In Perth waiting for Alex Salmond to give his final address to a yes campaign rally before tomorrow's vote #indyref htt…</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-          <li class="location">
-        <a href="https://maps.google.com/maps?q=AZ"><i class="fa fa-map-marker"></i> AZ</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/1228914897/fotograf_normal.JPG" alt="Mustafa Dikmen" class="profile-pic">
-        <time datetime="">3m ago</time>
-        <a href="http://twitter.com/mustafadikmen/status/512323911447764992" target="_blank">@mustafadikmen</a>
-        <p>RT @businessinsider: Less than 24 hours before Scotland's historic referendum, people are afraid, frustrated, and impatient http://t.co/jes…</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry facebook">
-        <img src="https://graph.facebook.com/picture?id=1550085256" alt="Jason Ashley" class="profile-pic">
-        <time datetime="">3m ago</time>
-        <a href="http://facebook.com/profile.php?id=1550085256" target="_blank">Jason Ashley</a>
-        <p>one last push!  voting is almost closed!  help me win the Hottest Bachelor in Dallas by placing your vote now! 
-
-      1 - Click the link below 
-      2 - Find my picture. (At the very bottom on the left)
-      3 - Click on it then hit vote.
-      It's that simple. Thanks for your vote and continued support!
-
-      Voting has to be on a computer. Mobile devices aren't supported
-
-      http://www.insideedition.com/polls/115-who-is-the-hottest-bachelor-in-the-dallas-area
-      </p>
-
-      <a href="#" class="expand">Expand</a>
-      <ul class="actions">
-      <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-      </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/460092579569086464/_phbvt-4_normal.jpeg" alt="岩崎まさひと" class="profile-pic">
-        <time datetime="">3m ago</time>
-        <a href="http://twitter.com/Masahito_0113/status/512324223696523264" target="_blank">@Masahito_0113</a>
-        <p>@risssha no idのデザイナーの？！👀</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/498035324191510528/yIpBrb3q_normal.jpeg" alt="ste young AKA MAMIL" class="profile-pic">
-        <time datetime="">3m ago</time>
-        <a href="http://twitter.com/y40ngy/status/512324065672302592" target="_blank">@y40ngy</a>
-        <p>RT @100Climbs: WAIT A MINUTE!!!! If Scotland vote YES, then 100 Climbs is out of date! You'll have to tear pages 110-120 out and keep them …</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/466952994928345090/4UdXKwjF_normal.png" alt="NuLawLab" class="profile-pic">
-        <time datetime="">3m ago</time>
-        <a href="http://twitter.com/NuLawLab/status/512323439072661504" target="_blank">@NuLawLab</a>
-        <p>@computational A few hours left vote for the @NuLawLab + #CAMD project  to prepare litigants http://t.co/7ZyJxKg72W</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry facebook">
-        <img src="https://graph.facebook.com/picture?id=100004037252222" alt="Jacqueline Martin" class="profile-pic">
-        <time datetime="">3m ago</time>
-        <a href="http://facebook.com/profile.php?id=100004037252222" target="_blank">Jacqueline Martin</a>
-        <p></p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-        <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/2710146889/2033daa34f938a5f25250b5e36b5efff_normal.jpeg" alt="Stewart Maxwell" class="profile-pic">
-        <time datetime="">3m ago</time>
-        <a href="http://twitter.com/Maxwellsnp/status/512323370655186944" target="_blank">@Maxwellsnp</a>
-        <p>RT @YesScotland: There's only ONE way to guarantee Scotland gets the powers we need: Vote YES http://t.co/VvtFHpKjmt  #indyref http://t.co/…</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
+            <a href="#" class="expand">Expand</a>
+            <ul class="actions">
+              <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
+            </ul>
+          </div>
+          <div ng-switch-default>Default</div>
+        </div>
       </li>
     </ul>
   </section>
@@ -742,6 +206,12 @@ Ex., ballot OR (vote AND "turned away")</em></p>
 
   </section>  
 </div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-rc.0/angular.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
+<script src="http://electiondesk.local:4242/socket.io/socket.io.js"></script>
+<script src="/assets/js/script.js"></script>
 
 </body>
 </html>
