@@ -218,6 +218,7 @@
 
 	.filter-query-group {
 		width: 260px;
+		height: 50px;
 		float: left;
 
 		.input-group-addon {
@@ -227,6 +228,9 @@
 		}
 
 		.form-control {
+			padding-left: 0;
+			height: 50px;
+
 			@extend %titillium-regular;
 			@include letterspacing(100);
 			font-size: 16px;
@@ -241,9 +245,13 @@
 	}
 
 	.btn-primary {
+		width: 120px;
+		height: 50px;
 		float: left;
 		margin-left: 8px;
-		@include clearfix();
+		@extend %titillium-regular;
+		@include letterspacing(100);
+		font-size: 16px;
 	}
 
 	p {
