@@ -166,7 +166,9 @@
 
 #filters {
 	float: left;
-	width: 505px;
+	width: 413px;
+	margin-left: 92px;
+	margin-top: 24px;
 
 	h3 {
 		@extend %titillium-semibold;
@@ -187,6 +189,7 @@
 				background-color: #FFF;
 				border: 1px solid $primaryGrayColor;
 				border-radius: 50%;
+				margin-right: 17px;
 			}
 
 			label {
@@ -196,6 +199,7 @@
 				line-height: 30px;
 				color: $primaryGrayColor;
 				cursor: pointer;
+				margin-bottom: -1px;
 
 				em {
 					display: block;
@@ -215,6 +219,11 @@
 				}
 			}
 		}
+	}
+
+	.custom-area-description {
+		margin-left: 35px;
+		margin-top: -8px;
 	}
 
 	.filter-query-group {

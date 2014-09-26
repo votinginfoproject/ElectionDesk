@@ -1,0 +1,123 @@
+/*! =========================================================
+ * bootstrap-slider.js
+ *
+ * Maintainers: 
+ *		Kyle Kemp 
+ *			- Twitter: @seiyria
+ *			- Github:  seiyria
+ *		Rohit Kalkur
+ *			- Twitter: @Rovolutionary
+ *			- Github:  rovolution
+ *
+ * =========================================================
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ========================================================= */
+.slider {
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  margin-top: 10px;
+}
+.slider.slider-horizontal {
+  width: 303px;
+  height: 20px;
+  margin-left: 89px;
+  margin-top: 30px;
+}
+.slider.slider-horizontal .slider-track {
+  height: 4px;
+  width: 100%;
+  margin-top: -2px;
+  top: 50%;
+  left: 0;
+}
+.slider.slider-horizontal .slider-selection {
+  height: 100%;
+  top: 0;
+  bottom: 0;
+}
+.slider.slider-horizontal .slider-handle {
+  margin-left: -10px;
+  margin-top: -5px;
+  border-radius: 50%;
+}
+.slider.slider-vertical {
+  height: 210px;
+  width: 20px;
+}
+.slider input {
+  display: none;
+}
+.slider .tooltip.top {
+  margin-top: -36px;
+}
+.slider .tooltip-inner {
+  white-space: nowrap;
+
+  position: absolute;
+  top: 8px;
+  left: -90px;
+  @extend %titillium-semibold;
+  @include letterspacing(100);
+  color: $primaryColor;
+  font-size: 16px;
+}
+.slider .hide {
+  display: none;
+}
+.slider-track {
+  position: absolute;
+  cursor: pointer;
+  background-color: #EBEBEB;
+  border-radius: 4px;
+}
+.slider-selection {
+  position: absolute;
+  background-color: $primaryColor;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+.slider-handle {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background-color: $primaryColor;
+  border: 0px solid transparent;
+}
+
+.slider-container {
+  position: relative;
+  margin-bottom: 40px;
+
+  &.disabled {
+    .slider {
+      .tooltip-inner {
+        color: $primaryGrayColor;
+      }
+
+      .slider-handle, .slider-selection {
+        background-color: $primaryGrayColor;
+      }
+    }
+  }
+
+  h4 {
+    color: $primaryGrayColor;
+    @extend %titillium-regular;
+    @include letterspacing(100);
+    font-size: 16px;
+    position: absolute;
+    top: 12px;
+  }
+}

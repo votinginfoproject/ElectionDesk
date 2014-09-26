@@ -64,23 +64,23 @@
 
     <div class="btn-group">
       <button type="button" class="btn btn-default">
-        <input type="checkbox" id="feed_twitter" ng-model="sourceQuery.twitter" checked>
+        <input type="checkbox" id="feed_twitter" ng-model="sourceQuery.twitter">
         <label for="feed_twitter"><i class="fa fa-twitter"></i></label>
       </button>
       <button type="button" class="btn btn-default">
-        <input type="checkbox" id="feed_facebook" ng-model="sourceQuery.facebook" checked>
+        <input type="checkbox" id="feed_facebook" ng-model="sourceQuery.facebook">
         <label for="feed_facebook"><i class="fa fa-facebook"></i></label>
       </button>
       <button type="button" class="btn btn-default">
-        <input type="checkbox" id="feed_googleplus" ng-model="sourceQuery.googleplus" checked>
+        <input type="checkbox" id="feed_googleplus" ng-model="sourceQuery.googleplus">
         <label for="feed_googleplus"><i class="fa fa-google-plus"></i></label>
       </button>
       <button type="button" class="btn btn-default">
-        <input type="checkbox" id="feed_wordpress" ng-model="sourceQuery.wordpress" checked>
+        <input type="checkbox" id="feed_wordpress" ng-model="sourceQuery.wordpress">
         <label for="feed_wordpress"><i class="fa fa-wordpress"></i></label>
       </button>
       <button type="button" class="btn btn-default">
-        <input type="checkbox" id="feed_disqus" ng-model="sourceQuery.disqus" checked>
+        <input type="checkbox" id="feed_disqus" ng-model="sourceQuery.disqus">
         <label for="feed_disqus"><i class="icon-disqus-social"></i></label>
       </button>
     </div>
@@ -166,28 +166,34 @@
 
     <ul class="limit-options">
       <li>
-        <input type="radio" name="limit" id="limit_all_posts" checked>
+        <input type="radio" name="limit" value="all" ng-model="limitQuery" id="limit_all_posts">
         <label for="limit_all_posts"><i class="circle"></i> All posts</label>
       </li>
       
       <li>
-        <input type="radio" name="limit" id="limit_state">
+        <input type="radio" name="limit" value="state" ng-model="limitQuery" id="limit_state">
         <label for="limit_state"><i class="circle"></i> Within Washington DC</label>
       </li>
       
       <li>
-        <input type="radio" name="limit" id="limit_radius">
+        <input type="radio" name="limit" value="radius" ng-model="limitQuery" id="limit_radius">
         <label for="limit_radius"><i class="circle"></i> Within radius</label>
       </li>
       
       <li>
-        <input type="radio" name="limit" id="limit_custom">
+        <input type="radio" name="limit" value="custom" ng-model="limitQuery" id="limit_custom">
         <label for="limit_custom">
           <i class="circle"></i> Within custom area
-          <em>You can define a custom area on the <a href="#">area settings</a> page.</em>
         </label>
       </li>
     </ul>
+    <p class="custom-area-description"><em>You can define a custom area on the <a href="#">area settings</a> page.</em></p>
+
+    <div class="slider-container" ng-class="{'disabled': (limitQuery != 'radius')}">
+      <h4>Radius:</h4>
+
+      <slider ng-model="radiusQuery.val" slider-id="radiusSlider" min="1" max="500" step="1" value="50" tooltip="always" formatter="radiusQuery.formatter" ng-change="radiusQuery.changed()" />
+    </div>
 
     <h3>Filters</h3>
     <div class="form-group filter-query-group">

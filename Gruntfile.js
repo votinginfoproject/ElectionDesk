@@ -47,7 +47,7 @@ module.exports = function(grunt) {
         }
       },
       options: {
-        beautify: false,
+        beautify: true,
         mangle: false
       }
     },

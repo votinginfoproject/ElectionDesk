@@ -1,6 +1,15 @@
+/*$(function () {
+	$('#radius').slider({
+		formatter: function(value) {
+			return value + ' miles';
+		}
+	});
+});*/
+
 var electiondeskStream = angular.module('electiondeskStream', [
 	'btford.socket-io',
-	'timeRelative'
+	'timeRelative',
+	'ui.bootstrap-slider'
 ]).
 factory('socket', function (socketFactory) {
 	return socketFactory({
@@ -16,6 +25,16 @@ controller('StreamController', function ($scope, socket) {
 		'googleplus': true,
 		'wordpress': true,
 		'disqus': true
+	};
+
+	$scope.limitQuery = 'all';
+	$scope.radiusQuery = {};
+	$scope.radiusQuery.val = 20;
+	$scope.radiusQuery.formatter = function(value) {
+		return value + ' miles';
+	};
+	$scope.radiusQuery.changed = function () {
+		$scope.limitQuery = 'radius';
 	};
 
 	$scope.interactions = [];
