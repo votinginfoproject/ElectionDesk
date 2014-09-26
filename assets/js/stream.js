@@ -1,11 +1,3 @@
-/*$(function () {
-	$('#radius').slider({
-		formatter: function(value) {
-			return value + ' miles';
-		}
-	});
-});*/
-
 var electiondeskStream = angular.module('electiondeskStream', [
 	'btford.socket-io',
 	'timeRelative',

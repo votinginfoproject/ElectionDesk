@@ -611,7 +611,7 @@
 
 var electiondeskStream = angular.module("electiondeskStream", [ "btford.socket-io", "timeRelative", "ui.bootstrap-slider" ]).factory("socket", function(socketFactory) {
     return socketFactory({
-        ioSocket: io.connect("http://electiondesk.local:4242")
+        ioSocket: io.connect("http://" + window.location.host + ":4242")
     });
 }).controller("StreamController", function($scope, socket) {
     socket.forward([ "update", "hello" ], $scope), $scope.sourceQuery = {
