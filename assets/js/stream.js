@@ -41,8 +41,7 @@ controller('StreamController', function ($scope, socket) {
 
 	$scope.$on('socket:update', function(ev, data) {
 		var json = JSON.parse(data);
-		console.log(json);
-
+		
 		// Take care of slight time differences so interactions won't
 		// look like they come from the future
 		var unixTime = new Date().getTime() / 1000;

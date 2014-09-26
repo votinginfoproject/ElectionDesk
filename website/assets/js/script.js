@@ -626,9 +626,7 @@ var electiondeskStream = angular.module("electiondeskStream", [ "btford.socket-i
     }, $scope.radiusQuery.changed = function() {
         $scope.limitQuery = "radius";
     }, $scope.interactions = [], $scope.$on("socket:update", function(ev, data) {
-        var json = JSON.parse(data);
-        console.log(json);
-        var unixTime = new Date().getTime() / 1e3;
+        var json = JSON.parse(data), unixTime = new Date().getTime() / 1e3;
         json.interaction.created_at.sec > unixTime && (json.interaction.created_at.sec = unixTime), 
         $scope.interactions.push(json);
     }), $scope.$on("socket:hello", function() {
