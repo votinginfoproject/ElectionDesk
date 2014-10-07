@@ -11,6 +11,16 @@ factory('socket', function (socketFactory) {
 controller('StreamController', function ($scope, socket) {
 	socket.forward(['update', 'hello'], $scope);
 
+	$scope.streamIsActive = true;
+
+	$scope.topicQuery = {
+		6: true,
+		7: true,
+		8: true,
+		9: true,
+		10: true
+	};
+
 	$scope.sourceQuery = {
 		'facebook': true,
 		'twitter': true,
@@ -19,12 +29,13 @@ controller('StreamController', function ($scope, socket) {
 		'disqus': true
 	};
 
-	$scope.topicQuery = {
-		6: true,
-		7: true,
-		8: true,
-		9: true,
-		10: true
+	$scope.togglePause = function () {
+		var icon = $('#feed_paused_label').find('i');
+		if (!$scope.streamIsActive) {
+			icon.removeClass('fa-pause').addClass('fa-play');
+		} else {
+			icon.removeClass('fa-play').addClass('fa-pause');
+		}
 	};
 
 	$scope.limitQuery = 'all';
@@ -40,16 +51,18 @@ controller('StreamController', function ($scope, socket) {
 	$scope.interactions = [];
 
 	$scope.$on('socket:update', function(ev, data) {
-		var json = JSON.parse(data);
-		
-		// Take care of slight time differences so interactions won't
-		// look like they come from the future
-		var unixTime = new Date().getTime() / 1000;
-		if (json.interaction.created_at.sec > unixTime) {
-			json.interaction.created_at.sec = unixTime;
-		}
+		if ($scope.streamIsActive) {
+			var json = JSON.parse(data);
+			
+			// Take care of slight time differences so interactions won't
+			// look like they come from the future
+			var unixTime = new Date().getTime() / 1000;
+			if (json.interaction.created_at.sec > unixTime) {
+				json.interaction.created_at.sec = unixTime;
+			}
 
-		$scope.interactions.push(json);
+			$scope.interactions.push(json);
+		}
 	});
 
 	// Ask the server to send us all recent interactions

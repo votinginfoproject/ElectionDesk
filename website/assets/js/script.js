@@ -614,27 +614,32 @@ var electiondeskStream = angular.module("electiondeskStream", [ "btford.socket-i
         ioSocket: io.connect("http://" + window.location.host + ":4242")
     });
 }).controller("StreamController", function($scope, socket) {
-    socket.forward([ "update", "hello" ], $scope), $scope.sourceQuery = {
-        facebook: !0,
-        twitter: !0,
-        googleplus: !0,
-        wordpress: !0,
-        disqus: !0
-    }, $scope.topicQuery = {
+    socket.forward([ "update", "hello" ], $scope), $scope.streamIsActive = !0, $scope.topicQuery = {
         6: !0,
         7: !0,
         8: !0,
         9: !0,
         10: !0
+    }, $scope.sourceQuery = {
+        facebook: !0,
+        twitter: !0,
+        googleplus: !0,
+        wordpress: !0,
+        disqus: !0
+    }, $scope.togglePause = function() {
+        var icon = $("#feed_paused_label").find("i");
+        $scope.streamIsActive ? icon.removeClass("fa-play").addClass("fa-pause") : icon.removeClass("fa-pause").addClass("fa-play");
     }, $scope.limitQuery = "all", $scope.radiusQuery = {}, $scope.radiusQuery.val = 20, 
     $scope.radiusQuery.formatter = function(value) {
         return value + " miles";
     }, $scope.radiusQuery.changed = function() {
         $scope.limitQuery = "radius";
     }, $scope.interactions = [], $scope.$on("socket:update", function(ev, data) {
-        var json = JSON.parse(data), unixTime = new Date().getTime() / 1e3;
-        json.interaction.created_at.sec > unixTime && (json.interaction.created_at.sec = unixTime), 
-        $scope.interactions.push(json);
+        if ($scope.streamIsActive) {
+            var json = JSON.parse(data), unixTime = new Date().getTime() / 1e3;
+            json.interaction.created_at.sec > unixTime && (json.interaction.created_at.sec = unixTime), 
+            $scope.interactions.push(json);
+        }
     }), $scope.$on("socket:hello", function() {
         socket.emit("dump");
     });

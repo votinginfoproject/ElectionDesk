@@ -86,33 +86,14 @@
     </div>
 
     <button type="button" class="btn btn-default btn-playpause">
-      <input type="checkbox" id="feed_paused">
-      <label for="feed_paused"><i class="fa fa-pause"></i></label>
+      <input type="checkbox" id="feed_paused" ng-model="streamIsActive" ng-change="togglePause()">
+      <label for="feed_paused" id="feed_paused_label"><i class="fa fa-pause"></i></label>
     </button>
 
     <button type="button" class="btn btn-warning">Bookmarks</button>
   </section>
 
   <section id="stream">
-    <!--
-    <ul>
-      <li class="entry twitter">
-        <img src="https://pbs.twimg.com/profile_images/494922173816270848/yfkE46j6_normal.jpeg" alt="awesome cakes" class="profile-pic">
-        <time datetime="">2s ago</time>
-        <a href="http://twitter.com/awesomecakes3/status/512324275316199425" target="_blank">@awesomecakes3</a>
-        <p>RT @GwenHardy: Wait, if it's a yes vote do scottish residents still get to compete in #gbbo??</p>
-
-        <a href="#" class="expand">Expand</a>
-        <ul class="actions">
-          <li class="follow"><a href="#"><i class="fa fa-plus-circle"></i> Follow</a></li>
-          <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
-          <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
-        </ul>
-      </li>
-    </ul>
-    -->
-
     <ul>
       <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | orderByCreated | limitTo:50" class="entry {{ interaction.interaction.type }}" data-messageid="{{ interaction._id.$id }}">
         <div ng-switch="interaction.interaction.type">
