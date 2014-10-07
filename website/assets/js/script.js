@@ -430,7 +430,21 @@
             $.bridget(namespace, Slider);
         } else window.Slider = Slider;
     }($);
-}(window.jQuery), angular.module("ui.bootstrap-slider", []).directive("slider", [ "$parse", "$timeout", function($parse, $timeout) {
+}(window.jQuery);
+
+var haversine = function() {
+    var toRad = function(num) {
+        return num * Math.PI / 180;
+    };
+    return function(start, end, options) {
+        var km = 6371, mile = 3960;
+        options = options || {};
+        var R = "mile" === options.unit ? mile : km, dLat = toRad(end.latitude - start.latitude), dLon = toRad(end.longitude - start.longitude), lat1 = toRad(start.latitude), lat2 = toRad(end.latitude), a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2), c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return options.threshold ? options.threshold > R * c : R * c;
+    };
+}();
+
+angular.module("ui.bootstrap-slider", []).directive("slider", [ "$parse", "$timeout", function($parse, $timeout) {
     return {
         restrict: "AE",
         replace: !0,
@@ -662,6 +676,32 @@ var electiondeskStream = angular.module("electiondeskStream", [ "btford.socket-i
         }), items.filter(function(element) {
             return -1 != activeSources.indexOf(element.interaction.type);
         });
+    };
+}).filter("limitfilter", function() {
+    return function(items, limit, radiusVal) {
+        if (!limit || "all" == limit) return items;
+        if ("state" == limit) {
+            var userState = $("#limit_state").data("state");
+            return items.filter(function(element) {
+                return "undefined" != typeof element.internal.location && element.internal.location.state == userState;
+            });
+        }
+        if ("radius" == limit) {
+            var userLocation = {
+                latitude: $("#limit_radius").data("lat"),
+                longitude: $("#limit_radius").data("lon")
+            };
+            return items.filter(function(element) {
+                if ("undefined" == typeof element.internal.location || 0 === element.internal.location.coords[0] || 0 === element.internal.location.coords[1]) return !1;
+                var interactionLocation = {
+                    latitude: element.internal.location.coords[1],
+                    longitude: element.internal.location.coords[0]
+                }, distance = haversine(userLocation, interactionLocation, {
+                    unit: "mile"
+                });
+                return radiusVal >= distance;
+            });
+        }
     };
 }).filter("orderByCreated", function() {
     return function(items, reverse) {

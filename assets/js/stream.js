@@ -106,6 +106,41 @@ filter('sourcefilter', function() {
 		});
 	};
 }).
+filter('limitfilter', function() {
+	return function(items, limit, radiusVal) {
+		if (!limit || limit == 'all') {
+			return items;
+		}
+
+		if (limit == 'state') {
+			var userState = $('#limit_state').data('state');
+
+			return items.filter(function(element, index, array) {
+				return (typeof(element.internal.location) != 'undefined' && element.internal.location.state == userState);
+			});
+
+		} else if (limit == 'radius') {
+			var userLocation = {
+				latitude: $('#limit_radius').data('lat'),
+				longitude: $('#limit_radius').data('lon')
+			};
+
+			return items.filter(function(element, index, array) {
+				if (typeof(element.internal.location) == 'undefined' || element.internal.location.coords[0] === 0 || element.internal.location.coords[1] === 0) {
+					return false;
+				}
+
+				var interactionLocation = {
+					latitude: element.internal.location.coords[1],
+					longitude: element.internal.location.coords[0]
+				};
+
+				var distance = haversine(userLocation, interactionLocation, { unit: 'mile' });
+				return (distance <= radiusVal);
+			});
+		}
+	};
+}).
 /*filter('contentfilter', function() {
 	return function(items, query) {
 		if (!query) {

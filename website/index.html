@@ -95,7 +95,7 @@
 
   <section id="stream">
     <ul>
-      <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | orderByCreated | limitTo:50" class="entry {{ interaction.interaction.type }}" data-messageid="{{ interaction._id.$id }}">
+      <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | limitfilter:limitQuery:this.radiusQuery.val | orderByCreated | limitTo:50" class="entry {{ interaction.interaction.type }}" data-messageid="{{ interaction._id.$id }}">
         <div ng-switch="interaction.interaction.type">
           <!-- Twitter -->
           <div ng-switch-when="twitter">
@@ -154,12 +154,12 @@
       </li>
       
       <li>
-        <input type="radio" name="limit" value="state" ng-model="limitQuery" id="limit_state">
+        <input type="radio" name="limit" value="state" ng-model="limitQuery" id="limit_state" data-state="DC">
         <label for="limit_state"><i class="circle"></i> Within Washington DC</label>
       </li>
       
       <li>
-        <input type="radio" name="limit" value="radius" ng-model="limitQuery" id="limit_radius">
+        <input type="radio" name="limit" value="radius" ng-model="limitQuery" id="limit_radius" data-lat="38.8051531" data-lon="-77.0488329">
         <label for="limit_radius"><i class="circle"></i> Within radius</label>
       </li>
       
@@ -175,7 +175,7 @@
     <div class="slider-container" ng-class="{'disabled': (limitQuery != 'radius')}">
       <h4>Radius:</h4>
 
-      <slider ng-model="radiusQuery.val" slider-id="radiusSlider" min="1" max="500" step="1" value="50" tooltip="always" formatter="radiusQuery.formatter" ng-change="radiusQuery.changed()" />
+      <slider ng-model="radiusQuery.val" slider-id="radiusSlider" min="1" max="5000" step="1" value="50" tooltip="always" formatter="radiusQuery.formatter" ng-change="radiusQuery.changed()" />
     </div>
 
     <h3>Filters</h3>
