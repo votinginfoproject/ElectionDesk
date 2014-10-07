@@ -19,6 +19,14 @@ controller('StreamController', function ($scope, socket) {
 		'disqus': true
 	};
 
+	$scope.topicQuery = {
+		6: true,
+		7: true,
+		8: true,
+		9: true,
+		10: true
+	};
+
 	$scope.limitQuery = 'all';
 	$scope.radiusQuery = {};
 	$scope.radiusQuery.val = 20;
@@ -40,18 +48,37 @@ controller('StreamController', function ($scope, socket) {
 		if (json.interaction.created_at.sec > unixTime) {
 			json.interaction.created_at.sec = unixTime;
 		}
-		
+
 		$scope.interactions.push(json);
 	});
 
+	// Ask the server to send us all recent interactions
 	$scope.$on('socket:hello', function(ev, data) {
 		socket.emit('dump');
 	});
 }).
+filter('topicfilter', function() {
+	return function(items, topics) {
+		if (!topics) {
+			return [];
+		}
+
+		var activeTopics = [];
+		angular.forEach(topics, function (active, source) {
+			if (active) {
+				activeTopics.push(parseInt(source));
+			}
+		});
+
+		return items.filter(function(element, index, array) {
+			return (activeTopics.indexOf(element.internal.filter_id) != -1);
+		});
+	};
+}).
 filter('sourcefilter', function() {
 	return function(items, sources) {
 		if (!sources) {
-			return items;
+			return [];
 		}
 
 		var activeSources = [];

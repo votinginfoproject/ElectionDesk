@@ -37,23 +37,23 @@
   <section id="topics">
     <ul>
       <li>
-        <input type="checkbox" id="topic_wait_time" checked>
+        <input type="checkbox" id="topic_wait_time" ng-model="topicQuery[6]">
         <label class="btn btn-default" for="topic_wait_time">Wait Time</label>
       </li>
       <li>
-        <input type="checkbox" id="topic_polling_location" checked>
+        <input type="checkbox" id="topic_polling_location" ng-model="topicQuery[7]">
         <label class="btn btn-default" for="topic_polling_location">Polling Location</label>
       </li>
       <li>
-        <input type="checkbox" id="topic_adm_issues">
+        <input type="checkbox" id="topic_adm_issues" ng-model="topicQuery[8]">
         <label class="btn btn-default" for="topic_adm_issues">Adm. Issues</label>
       </li>
       <li>
-        <input type="checkbox" id="topic_pr_issues">
+        <input type="checkbox" id="topic_pr_issues" ng-model="topicQuery[9]">
         <label class="btn btn-default" for="topic_pr_issues">PR Issues</label>
       </li>
       <li>
-        <input type="checkbox" id="topic_voter_id">
+        <input type="checkbox" id="topic_voter_id" ng-model="topicQuery[10]">
         <label class="btn btn-default" for="topic_voter_id">Voter id</label>
       </li>
     </ul>
@@ -114,7 +114,7 @@
     -->
 
     <ul>
-      <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | orderByCreated | limitTo:50" class="entry {{ interaction.interaction.type }}" data-messageid="{{ interaction._id.$id }}">
+      <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | orderByCreated | limitTo:50" class="entry {{ interaction.interaction.type }}" data-messageid="{{ interaction._id.$id }}">
         <div ng-switch="interaction.interaction.type">
           <!-- Twitter -->
           <div ng-switch-when="twitter">

@@ -620,6 +620,12 @@ var electiondeskStream = angular.module("electiondeskStream", [ "btford.socket-i
         googleplus: !0,
         wordpress: !0,
         disqus: !0
+    }, $scope.topicQuery = {
+        6: !0,
+        7: !0,
+        8: !0,
+        9: !0,
+        10: !0
     }, $scope.limitQuery = "all", $scope.radiusQuery = {}, $scope.radiusQuery.val = 20, 
     $scope.radiusQuery.formatter = function(value) {
         return value + " miles";
@@ -632,9 +638,19 @@ var electiondeskStream = angular.module("electiondeskStream", [ "btford.socket-i
     }), $scope.$on("socket:hello", function() {
         socket.emit("dump");
     });
+}).filter("topicfilter", function() {
+    return function(items, topics) {
+        if (!topics) return [];
+        var activeTopics = [];
+        return angular.forEach(topics, function(active, source) {
+            active && activeTopics.push(parseInt(source));
+        }), items.filter(function(element) {
+            return -1 != activeTopics.indexOf(element.internal.filter_id);
+        });
+    };
 }).filter("sourcefilter", function() {
     return function(items, sources) {
-        if (!sources) return items;
+        if (!sources) return [];
         var activeSources = [];
         return angular.forEach(sources, function(active, source) {
             active && activeSources.push(source);
