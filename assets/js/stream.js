@@ -40,6 +40,7 @@ controller('StreamController', function ($scope, socket) {
 		if (json.interaction.created_at.sec > unixTime) {
 			json.interaction.created_at.sec = unixTime;
 		}
+		
 		$scope.interactions.push(json);
 	});
 

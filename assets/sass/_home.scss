@@ -100,6 +100,7 @@
 			height: 97px;
 			border-bottom: 1px solid $primaryGrayColor;
 			padding: 12px 0 12px 9px;
+			position: relative;
 
 
 			img.profile-picture {
@@ -109,6 +110,16 @@
 				float: left;
 				margin-bottom: 25px;
 				margin-right: 10px;
+			}
+
+			.is-retweet {
+				width: 28px;
+				height: 26px;
+				color: #FFF;
+				position: absolute;
+				top: (12px + (48px / 2 - 26px / 2));
+				left: (9px + (48px / 2 - 28px / 2));
+				font-size: 26px;
 			}
 
 			a.target-link {
