@@ -703,6 +703,12 @@ var electiondeskStream = angular.module("electiondeskStream", [ "btford.socket-i
             });
         }
     };
+}).filter("contentfilter", function() {
+    return function(items, query) {
+        return query ? items.filter(function(element) {
+            return "undefined" != typeof element.interaction.content && element.interaction.content ? -1 != element.interaction.content.search(new RegExp(query, "i")) : !1;
+        }) : items;
+    };
 }).filter("orderByCreated", function() {
     return function(items, reverse) {
         var filtered = [];

@@ -23,8 +23,8 @@ io.on('connection', function (socket) {
 var net = require('net'),
     carrier = require('carrier');
 
-// Save last 25 items
-var buffer = CBuffer(25);
+// Save last 250 items
+var buffer = CBuffer(250);
 
 // Start a TCP Server
 net.createServer(function (connection) {

@@ -95,7 +95,7 @@
 
   <section id="stream">
     <ul>
-      <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | limitfilter:limitQuery:this.radiusQuery.val | orderByCreated | limitTo:50" class="entry {{ interaction.interaction.type }}" data-messageid="{{ interaction._id.$id }}">
+      <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | limitfilter:limitQuery:this.radiusQuery.val | contentfilter:contentQuery | orderByCreated | limitTo:50" class="entry {{ interaction.interaction.type }}" data-messageid="{{ interaction._id.$id }}">
         <div ng-switch="interaction.interaction.type">
           <!-- Twitter -->
           <div ng-switch-when="twitter">
@@ -112,6 +112,7 @@
               <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
               <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
               <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
+              <li class="location" ng-if="typeof(interaction.internal.location) !== 'undefined' && typeof(interaction.internal.location.state) != 'undefined' && interaction.internal.location.state.length"><a href="#"><i class="fa fa-map-marker"></i> {{ interaction.internal.location.state }}</a></li>
             </ul>
           </div>
           <!-- Facebook -->
@@ -124,6 +125,7 @@
             <a href="#" class="expand">Expand</a>
             <ul class="actions">
               <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
+              <li class="location" ng-if="typeof(interaction.internal.location) !== 'undefined' && typeof(interaction.internal.location.state) != 'undefined' && interaction.internal.location.state.length"><a href="#"><i class="fa fa-map-marker"></i> {{ interaction.internal.location.state }}</a></li>
             </ul>
           </div>
           <!-- Wordpress -->
@@ -136,6 +138,7 @@
             <a href="#" class="expand">Expand</a>
             <ul class="actions">
               <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
+              <li class="location" ng-if="typeof(interaction.internal.location) !== 'undefined' && typeof(interaction.internal.location.state) != 'undefined' && interaction.internal.location.state.length"><a href="#"><i class="fa fa-map-marker"></i> {{ interaction.internal.location.state }}</a></li>
             </ul>
           </div>
           <div ng-switch-default>Default</div>
@@ -178,21 +181,15 @@
       <slider ng-model="radiusQuery.val" slider-id="radiusSlider" min="1" max="5000" step="1" value="50" tooltip="always" formatter="radiusQuery.formatter" ng-change="radiusQuery.changed()" />
     </div>
 
-    <h3>Filters</h3>
+    <h3>Filter</h3>
     <div class="form-group filter-query-group">
       <div class="input-group">
         <div class="input-group-addon"><i class="fa fa-search"></i></div>
-        <input type="text" id="filter-query" name="" class="form-control" placeholder="Filter the current stream">
+        <input type="text" id="filter-query" name="" class="form-control" ng-model="contentQuery" placeholder="Filter the current stream">
       </div>
     </div>
 
-    <button type="button" class="btn btn-primary">Apply</button>
-
     <div class="clearfix"></div>
-
-    <p><em>You can use AND/OR operators as well as parenthesis.<br />
-Ex., ballot OR (vote AND "turned away")</em></p>
-
   </section>  
 </div>
 

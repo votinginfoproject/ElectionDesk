@@ -60,7 +60,7 @@ controller('StreamController', function ($scope, socket) {
 			if (json.interaction.created_at.sec > unixTime) {
 				json.interaction.created_at.sec = unixTime;
 			}
-
+			
 			$scope.interactions.push(json);
 		}
 	});
@@ -141,7 +141,7 @@ filter('limitfilter', function() {
 		}
 	};
 }).
-/*filter('contentfilter', function() {
+filter('contentfilter', function() {
 	return function(items, query) {
 		if (!query) {
 			return items;
@@ -155,7 +155,7 @@ filter('limitfilter', function() {
 			return (element.interaction.content.search(new RegExp(query, 'i')) != -1);
 		});
 	};
-}).*/
+}).
 filter('orderByCreated', function() {
 	return function(items, reverse) {
 		var filtered = [];
