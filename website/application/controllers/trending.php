@@ -59,6 +59,7 @@ class Trending extends CI_Controller {
 
         // Output view
         $data['states'] = $this->config->item('states');
+        $this->stencil->layout('stream_layout');
         $this->stencil->paint('trending_topics_view', $data);
     }
 

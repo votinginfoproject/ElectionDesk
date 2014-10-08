@@ -4,7 +4,7 @@
 	<?php echo $head; ?>
 </head>
 <?php if (empty($body_id)) $body_id = NULL; ?>
-<body id="<?php echo $body_id; ?>">
+<body id="<?php echo $body_id; ?>" ng-app="electiondeskStream" ng-controller="StreamController">
 
 <div class="container wrapper">
   <header>
@@ -31,9 +31,7 @@
     </nav>
   </header>
 
-	<main>
-		<?php echo $content; ?>
-	</main>
+	<?php echo $content; ?>
 </div>
 
 <footer>
@@ -58,6 +56,9 @@
 </footer>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-rc.0/angular.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
+<script src="http://stage.electiondesk.us:4242/socket.io/socket.io.js"></script>
 <script src="/assets/js/script.js"></script>
 
 </body>
