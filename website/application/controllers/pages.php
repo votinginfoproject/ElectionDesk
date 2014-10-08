@@ -5,7 +5,7 @@ class Pages extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
-		$this->stencil->layout('static_layout');
+		$this->stencil->layout('default_layout');
 		$this->stencil->slice('head');
 	}
 

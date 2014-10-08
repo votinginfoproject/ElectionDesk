@@ -135,7 +135,7 @@ class Settings extends CI_Controller {
 		}
 		else
 		{
-			$this->stencil->layout('unregistered_layout');
+			$this->stencil->layout('default_layout');
 			$this->stencil->title('Getting started');
 
 			// Did the user fill out their location yet?

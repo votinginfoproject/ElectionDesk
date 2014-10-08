@@ -8,7 +8,7 @@ class Auth extends CI_Controller
 		$this->load->library('security');
 		$this->lang->load('tank_auth');
 
-		$this->stencil->layout('unregistered_layout');
+		$this->stencil->layout('default_layout');
 		$this->stencil->slice('head');
 	}
 
