@@ -1,4 +1,4 @@
-var electiondeskStream = angular.module('electiondeskStream', [
+angular.module('electiondeskStream', [
 	'btford.socket-io',
 	'timeRelative',
 	'ui.bootstrap-slider'

@@ -58,6 +58,9 @@
 </footer>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-rc.0/angular.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
+<script src="http://stage.electiondesk.us:4242/socket.io/socket.io.js"></script>
 <script src="/assets/js/script.js"></script>
 
 </body>

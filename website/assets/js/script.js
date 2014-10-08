@@ -623,7 +623,48 @@ angular.module("ui.bootstrap-slider", []).directive("slider", [ "$parse", "$time
     } ];
 });
 
-var electiondeskStream = angular.module("electiondeskStream", [ "btford.socket-io", "timeRelative", "ui.bootstrap-slider" ]).factory("socket", function(socketFactory) {
+var SettingsForm = function() {
+    function bindEvents() {
+        $("#location-form .btn").click(function() {
+            return navigator.geolocation ? ($("#location-form a img").attr("src", $("#location-form a img").attr("src").replace("locateme.png", "loading.gif")), 
+            navigator.geolocation.getCurrentPosition(geoLocationSuccess, geoLocationError)) : alert("Sorry! Your browser does not support this feature"), 
+            !1;
+        }), $("#location-form").submit(function() {
+            if (!$("#loading").is(":visible")) {
+                $("#loading").show();
+                var address = $("#address").val();
+                return geocoder.geocode({
+                    address: address
+                }, function(results, status) {
+                    status == google.maps.GeocoderStatus.OK ? ($("#lat").val(results[0].geometry.location.lat()), 
+                    $("#long").val(results[0].geometry.location.lng()), $.each(results[0].address_components, function(index, component) {
+                        -1 != $.inArray("administrative_area_level_1", component.types) ? $("#state").val(component.short_name) : -1 != $.inArray("administrative_area_level_2", component.types) && $("#county").val(component.long_name);
+                    }), $("#location-form").submit()) : ($("#loading").hide(), alert("Sorry, there was an error locating your address. Please try again."));
+                }), !1;
+            }
+        });
+    }
+    function geoLocationError(message) {
+        alert("Could not get your current location: " + message);
+    }
+    function geoLocationSuccess(position) {
+        var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        geocoder.geocode({
+            latLng: latlng
+        }, function(results, status) {
+            $("#location-form a img").attr("src", $("#location-form a img").attr("src").replace("loading.gif", "locateme.png")), 
+            status == google.maps.GeocoderStatus.OK ? $("#address").val(results[0].formatted_address) : alert("Sorry, there was an error locating your address. Please try again.");
+        });
+    }
+    var geocoder = new google.maps.Geocoder();
+    return {
+        init: function() {
+            alert("testaaa"), $("#location-form").length && bindEvents();
+        }
+    };
+}();
+
+$(SettingsForm.init), angular.module("electiondeskStream", [ "btford.socket-io", "timeRelative", "ui.bootstrap-slider" ]).factory("socket", function(socketFactory) {
     return socketFactory({
         ioSocket: io.connect("http://" + window.location.host + ":4242")
     });
