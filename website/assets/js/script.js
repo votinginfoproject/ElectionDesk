@@ -645,7 +645,7 @@ var electiondeskStream = angular.module("electiondeskStream", [ "btford.socket-i
         $scope.streamIsActive ? icon.removeClass("fa-play").addClass("fa-pause") : icon.removeClass("fa-pause").addClass("fa-play");
     }, $scope.limitQuery = "all", $scope.radiusQuery = {}, $scope.radiusQuery.val = 20, 
     $scope.radiusQuery.formatter = function(value) {
-        return value + " miles";
+        return 1e3 === value && (value = "1,000"), value + " miles";
     }, $scope.radiusQuery.changed = function() {
         $scope.limitQuery = "radius";
     }, $scope.interactions = [], $scope.$on("socket:update", function(ev, data) {

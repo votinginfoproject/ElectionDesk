@@ -42,6 +42,10 @@ controller('StreamController', function ($scope, socket) {
 	$scope.radiusQuery = {};
 	$scope.radiusQuery.val = 20;
 	$scope.radiusQuery.formatter = function(value) {
+		if (value === 1000) {
+			value = '1,000';
+		}
+
 		return value + ' miles';
 	};
 	$scope.radiusQuery.changed = function () {
@@ -60,7 +64,7 @@ controller('StreamController', function ($scope, socket) {
 			if (json.interaction.created_at.sec > unixTime) {
 				json.interaction.created_at.sec = unixTime;
 			}
-			
+
 			$scope.interactions.push(json);
 		}
 	});

@@ -1,3 +1,15 @@
+html, body {
+	min-height: 1120px;
+	height: 100%;
+}
+
+.wrapper {
+	min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -108px; // Footer height
+}
+
 header {
 	height: 88px;
 	margin-top: 44px;
@@ -63,5 +75,62 @@ header {
 				}
 			}
 		}
+	}
+}
+
+footer {
+	height: 108px;
+	background-color: #f3f3f4;
+
+	img {
+		float: left;
+		margin-top: 29.5px;
+	}
+
+	nav {
+		float: right;
+		margin-top: 28px;
+		margin-bottom: 7px;
+
+		ul {
+			list-style: none;
+			padding: 0;
+
+			li {
+				display: inline-block;
+				a {
+					color: #959595;
+					@extend %titillium-regular;
+					@include letterspacing(100);
+					font-size: 16px;
+					line-height: 18px;
+				}
+
+				// Vertical bar styles
+				&:before {
+					content: "|";
+					color: #959595;
+					margin-right: 10px;
+					padding-left: 6px;
+					position: relative;
+					top: -2px;
+				}
+
+				&:first-child:before {
+					content: "";
+					margin: 0;
+					padding: 0;
+				}
+			}
+		}
+	}
+
+	span {
+		float: right;
+		color: #959595;
+		@extend %titillium-regular;
+		@include letterspacing(100);
+		font-size: 14px;
+		line-height: 18px;
 	}
 }

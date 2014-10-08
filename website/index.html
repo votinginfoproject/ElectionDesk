@@ -18,7 +18,7 @@
 </head>
 <body ng-app="electiondeskStream" ng-controller="StreamController">
 
-<div class="container">
+<div class="container wrapper">
   <header>
     <a class="logo" href="/">ElectionDesk</a>
 
@@ -95,7 +95,7 @@
 
   <section id="stream">
     <ul>
-      <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | limitfilter:limitQuery:this.radiusQuery.val | contentfilter:contentQuery | orderByCreated | limitTo:50" class="entry {{ interaction.interaction.type }}" data-messageid="{{ interaction._id.$id }}">
+      <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | limitfilter:limitQuery:this.radiusQuery.val | contentfilter:contentQuery | orderByCreated | limitTo:250" class="entry {{ interaction.interaction.type }}" data-messageid="{{ interaction._id.$id }}">
         <div ng-switch="interaction.interaction.type">
           <!-- Twitter -->
           <div ng-switch-when="twitter">
@@ -178,7 +178,7 @@
     <div class="slider-container" ng-class="{'disabled': (limitQuery != 'radius')}">
       <h4>Radius:</h4>
 
-      <slider ng-model="radiusQuery.val" slider-id="radiusSlider" min="1" max="5000" step="1" value="50" tooltip="always" formatter="radiusQuery.formatter" ng-change="radiusQuery.changed()" />
+      <slider ng-model="radiusQuery.val" slider-id="radiusSlider" min="1" max="1000" step="1" value="50" tooltip="always" formatter="radiusQuery.formatter" ng-change="radiusQuery.changed()" />
     </div>
 
     <h3>Filter</h3>
@@ -192,6 +192,24 @@
     <div class="clearfix"></div>
   </section>  
 </div>
+
+<footer>
+  <div class="container">
+    <img src="/assets/img/vip-logo.png" alt="Voting Information Project">
+
+    <nav>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Help</a></li>
+        <li><a href="#">Glossary</a></li>
+        <li><a href="#">Terms of Use</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </nav>
+
+    <span>&copy; Copyright 2012-2014 Voting Information Project. All Rights Reserved.</span>
+  </div>
+</footer>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-rc.0/angular.min.js"></script>
