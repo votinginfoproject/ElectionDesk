@@ -58,12 +58,12 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
   <label for="feed_paused" id="feed_paused_label"><i class="fa fa-pause"></i></label>
 </button>
 
-<button type="button" class="btn btn-warning">Bookmarks</button>
+<a href="/trending/bookmarks" class="btn btn-warning">Bookmarks</a>
 </section>
 
 <section id="stream">
 <ul>
-  <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | limitfilter:limitQuery:this.radiusQuery.val | contentfilter:contentQuery | orderByCreated | limitTo:250" class="entry {{ interaction.interaction.type }}" data-messageid="{{ interaction._id.$id }}">
+  <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | limitfilter:limitQuery:this.radiusQuery.val | contentfilter:contentQuery | orderByCreated | limitTo:250 as results" class="entry" ng-class="interaction.interaction.type" data-messageid="{{ interaction._id.$id }}" ng-cloak>
     <div ng-switch="interaction.interaction.type">
       <!-- Twitter -->
       <div ng-switch-when="twitter">
@@ -72,9 +72,8 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
 
         <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
         <a ng-href="{{ interaction.interaction.link }}" target="_blank" class="target-link">@{{ interaction.interaction.author.username }}</a>
-        <p>{{ interaction.twitter.text }}</p>
-
-        <a href="#" class="expand">Expand</a>
+        <p class="summary">{{ interaction.twitter.text }}</p>
+        
         <ul class="actions">
           <li class="follow"><a href="#"><i class="fa fa-twitter"></i> Follow</a></li>
           <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
@@ -82,36 +81,44 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
           <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
           <li class="location" ng-if="typeof(interaction.internal.location) !== 'undefined' && typeof(interaction.internal.location.state) != 'undefined' && interaction.internal.location.state.length"><a href="#"><i class="fa fa-map-marker"></i> {{ interaction.internal.location.state }}</a></li>
         </ul>
+        <div class="clearfix"></div>
       </div>
       <!-- Facebook -->
       <div ng-switch-when="facebook">
         <img ng-src="https://graph.facebook.com/picture?id={{ interaction.facebook.from.id }}" alt="{{ interaction.facebook.from.name }}" class="profile-picture">
         <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
         <a ng-href="http://facebook.com/profile.php?id={{ interaction.facebook.from.id }}" target="_blank" class="target-link">{{ interaction.facebook.from.name }}</a>
-        <p>{{ (interaction.facebook.message.length > 0) ? interaction.facebook.message : interaction.facebook.story | limitTo:140 }}</p>
+        <p ng-show="!show" class="summary">{{ (interaction.facebook.message.length > 0) ? interaction.facebook.message : interaction.facebook.story | limitTo:140 }}</p>
+        <p ng-show="show" class="full">{{ (interaction.facebook.message.length > 0) ? interaction.facebook.message : interaction.facebook.story }}</p>
 
-        <a href="#" class="expand">Expand</a>
+        <a href="" class="expand" ng-click="show = !show" ng-show="interaction.facebook.message.length > 140">{{ show ? 'Collapse' : 'Expand' }}</a>
         <ul class="actions">
           <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
           <li class="location" ng-if="typeof(interaction.internal.location) !== 'undefined' && typeof(interaction.internal.location.state) != 'undefined' && interaction.internal.location.state.length"><a href="#"><i class="fa fa-map-marker"></i> {{ interaction.internal.location.state }}</a></li>
         </ul>
+        <div class="clearfix"></div>
       </div>
       <!-- Wordpress -->
       <div ng-switch-when="wordpress">
         <img  ng-src="{{ interaction.interaction.author.avatar }}" alt="{{ interaction.interaction.author.name }}" class="profile-picture">
         <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
         <a ng-href="{{ interaction.interaction.link }}" target="_blank" class="target-link">{{ interaction.interaction.author.name }}</a>
-        <p>{{ interaction.interaction.content | limitTo:140 }}</p>
+        <p ng-show="!show" class="summary">{{ interaction.interaction.content | limitTo:140 }}</p>
+        <p ng-show="show" class="full">{{ interaction.interaction.content }}</p>
 
-        <a href="#" class="expand">Expand</a>
+        <a href="" class="expand" ng-click="show = !show" ng-show="interaction.interaction.content.length > 140">{{ show ? 'Collapse' : 'Expand' }}</a>
         <ul class="actions">
           <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
           <li class="location" ng-if="typeof(interaction.internal.location) !== 'undefined' && typeof(interaction.internal.location.state) != 'undefined' && interaction.internal.location.state.length"><a href="#"><i class="fa fa-map-marker"></i> {{ interaction.internal.location.state }}</a></li>
         </ul>
+        <div class="clearfix"></div>
       </div>
       <div ng-switch-default>Default</div>
     </div>
   </li>
+	<li class="ng-repeat" ng-if="results.length == 0">
+		<strong>No matches</strong> for your current filter.
+	</li>
 </ul>
 </section>
 

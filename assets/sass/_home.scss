@@ -97,7 +97,7 @@
 
 		> li {
 			display: block;
-			height: 97px;
+			min-height: 97px;
 			border-bottom: 1px solid $primaryGrayColor;
 			padding: 12px 0 12px 9px;
 			position: relative;
@@ -137,12 +137,12 @@
 
 			p {
 				margin: 0;
-				height: 41px;
 				font-family: Helvetica, Arial, sans-serif;
 				font-size: 14px;
 				line-height: 19px;
 				@include letterspacing(-10);
 				color: #292f33;
+				min-height: 41px;
 			}
 
 			a.expand {

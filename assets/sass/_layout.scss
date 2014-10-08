@@ -10,6 +10,11 @@ html, body {
     margin: 0 auto -108px; // Footer height
 }
 
+// Hide Angular elements until they are ready to be rendered
+[ng-cloak] {
+  display: none !important;
+}
+
 header {
 	height: 88px;
 	margin-top: 44px;

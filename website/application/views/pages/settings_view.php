@@ -1,6 +1,6 @@
 <div class="content">
 <section class="register settings-general">
-	<div class="left-col">
+	<div class="col-md-6">
 		<?php if (!empty($success_message)) : ?>
 		<div class="success-message" id="address-success"><?php echo $success_message; ?></div>
 		<?php endif; ?>
@@ -8,21 +8,20 @@
 		
 		<?php echo form_open('settings', array('id' => 'location-form')); ?>
 		<label for="address">Address:</label>
-		<input type="text" id="address" name="address" value="<?php echo is_null($user->user_location) ? '' : $user->user_location; ?>" placeholder="enter a street address" />
+		<input type="text" id="address" name="address" class="form-control" value="<?php echo is_null($user->user_location) ? '' : $user->user_location; ?>" placeholder="enter a street address" />
 		<a href="#"><img src="<?php echo site_url('assets/img/locateme.png'); ?>" alt="Locate me" title="Locate me" /></a>
 		<input type="hidden" name="lat" id="lat" value="" />
 		<input type="hidden" name="long" id="long" value="" />
 		<input type="hidden" name="county" id="county" value="" />
 		<input type="hidden" name="state" id="state" value="" />
 		<p>If you have multiple offices, please select the one most central to your election jurisdiction or state.</p>
-		<input type="submit" value="Save" />
+		<input type="submit" class="btn btn-primary" value="Save" />
 		<div id="loading">
 			<h3>Saving location</h3>
 		</div>
 		<?php echo form_close(); ?>
-		<div class="clear"></div>
 	</div>
-	<div class="right-col">
+	<div class="col-md-6">
 		<?php
 		foreach ($accounts as $account) {
 		?>
