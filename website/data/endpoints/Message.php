@@ -31,8 +31,7 @@ class Message extends EndpointBase
 		// Output JSON data
 		if (is_null($result)) {
 		    echo json_encode(array('error' => 'Message doesn\'t exist'));
-		} else {		
-			$this->convertDates($result);
+		} else {
 			echo json_encode($result);
 		}
 	}

@@ -1431,6 +1431,54 @@ angular.module("ui.bootstrap-slider", []).directive("slider", [ "$parse", "$time
             return wrappedSocket;
         };
     } ];
+}), angular.module("electiondeskBookmarks", [ "timeRelative" ]).factory("dataService", [ "$http", function($http) {
+    return {
+        getJson: function() {
+            return $http.get("/trending/bookmarksinteractions");
+        }
+    };
+} ]).value("modelService", []).controller("BookmarksController", function($scope, dataService, modelService) {
+    $scope.bookmark = function(interaction) {
+        var messageId = interaction._id.$id;
+        interaction.bookmarked ? $http({
+            method: "POST",
+            url: "/trending/unbookmark",
+            data: $.param({
+                message: messageId
+            }),
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).success(function(data) {
+            data.error ? "You cannot remove a bookmark that is not bookmarked." != data.error && alert("Could not unbookmark message: " + data.error) : interaction.bookmarked = !1;
+        }) : $http({
+            method: "POST",
+            url: "/trending/bookmark",
+            data: $.param({
+                message: messageId
+            }),
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).success(function(data) {
+            data.error ? alert("Could not bookmark message: " + data.error) : interaction.bookmarked = !0;
+        });
+    }, $scope.interactions = modelService, dataService.getJson().then(function(res) {
+        angular.forEach(res.data, function(item) {
+            item.bookmarked = !0;
+        }), angular.copy(res.data, modelService);
+    }, function() {
+        alert("Could not load bookmarks");
+    });
+}).filter("orderByCreated", function() {
+    return function(items, reverse) {
+        var filtered = [];
+        return angular.forEach(items, function(item) {
+            filtered.push(item);
+        }), filtered.sort(function(a, b) {
+            return a.interaction.created_at.sec < b.interaction.created_at.sec ? 1 : -1;
+        }), reverse && filtered.reverse(), filtered;
+    };
 });
 
 var Conversations = function() {

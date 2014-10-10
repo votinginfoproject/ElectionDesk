@@ -69,6 +69,7 @@ class Trending extends CI_Controller {
 
         // Output view
         $data['states'] = $this->config->item('states');
+        $this->stencil->slice('stream');
         $this->stencil->layout('stream_layout');
         $this->stencil->paint('trending_topics_view', $data);
     }
@@ -78,32 +79,34 @@ class Trending extends CI_Controller {
         $this->stencil->js('scripts');
         $this->stencil->js('stream');
 		$this->stencil->js('bookmark');
-		
-		
-		$this->load->model('message_bookmarks_model');
-
-		$bookmarks = $this->message_bookmarks_model->get_user_bookmarks($this->tank_auth->get_user_id());
-		
-		$messages = array();
-		
-		foreach ($bookmarks as $bookmark) {
-			$result = file_get_contents($this->config->item('stream_server') . '/message?id='.$bookmark->message_id);
-            $result = json_decode($result);
-
-            if (!isset($result->error)) {
-                $messages[] = $result;
-            }
-		}
-		
-		
-		$data['bookmarks'] = $messages;
 
         // Load accounts
         $this->load->model('user_accounts_model');
         $data['accounts'] = $this->user_accounts_model->get_by_user_id($this->tank_auth->get_user_id(), 'TWITTER');
 		
+        $this->stencil->slice('stream');
 		$this->stencil->paint('bookmarks_view', $data);
 	}
+
+    public function bookmarksinteractions() {
+        $this->load->model('message_bookmarks_model');
+
+        $bookmarks = $this->message_bookmarks_model->get_user_bookmarks($this->tank_auth->get_user_id());
+        
+        $messages = array();
+        
+        foreach ($bookmarks as $bookmark) {
+            $result = file_get_contents($this->config->item('stream_server') . '/message?id='.$bookmark->message_id);
+            $result = json_decode($result);
+
+            if (!isset($result->error)) {
+                $messages[] = $result;
+            }
+        }
+
+        $this->output->set_header('Content-type: application/json');
+        echo json_encode($messages);
+    }
 	
     public function bookmark()
     {
