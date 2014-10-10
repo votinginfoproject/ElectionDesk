@@ -6,6 +6,12 @@
 <?php if (empty($body_id)) $body_id = NULL; ?>
 <body id="<?php echo $body_id; ?>">
 
+<?php
+if (isset($modal_reply)) {
+  echo $modal_reply;
+}
+?>
+
 <div class="wrapper">
   <header>
     <div class="container">

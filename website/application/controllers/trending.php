@@ -22,6 +22,7 @@ class Trending extends CI_Controller {
 
         $this->stencil->layout('default_layout');
         $this->stencil->slice('head');
+        $this->stencil->slice('modal_reply');
     }
 
     public function index()
@@ -78,7 +79,7 @@ class Trending extends CI_Controller {
 		
 		foreach ($bookmarks as $bookmark) {
 			$result = file_get_contents($this->config->item('stream_server') . '/message?id='.$bookmark->message_id);
-			$messages[] = json_decode($result);
+            $messages[] = json_decode($result);
 		}
 		
 		
