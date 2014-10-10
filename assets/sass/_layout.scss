@@ -1,13 +1,20 @@
 html, body {
-	min-height: 1120px;
+	//min-height: 1120px;
 	height: 100%;
 }
 
 .wrapper {
+	position: relative;
+	overflow: hidden;
 	min-height: 100%;
-    height: auto !important;
-    height: 100%;
-    margin: 0 auto -108px; // Footer height
+	padding-bottom: 125px; //clears footer
+  //height: auto !important;
+  //height: 100%;
+  //margin: 0 auto -108px; // Footer height
+}
+
+iframe[src="about:blank"]{
+	display: none;
 }
 
 // Hide Angular elements until they are ready to be rendered
@@ -84,6 +91,9 @@ header {
 }
 
 footer {
+	position: absolute;
+		bottom: 0px;
+	width: 100%;
 	height: 108px;
 	background-color: #f3f3f4;
 
