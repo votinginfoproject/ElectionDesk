@@ -1,0 +1,55 @@
+
+
+
+//Help Page
+//===========================
+
+
+.help-desk-text{
+  h2{
+    margin-top: 0px;
+  }
+}
+
+#recaptcha_widget_div{
+  margin-bottom: 20px;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  background-color: #fff;
+
+    .recaptchatable{
+      border: none!important;
+    }
+
+    input{
+      display: block;
+      width: 100%;
+      height: 34px;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.42857;
+      color: #555;
+      background-color: #FFF;
+      background-image: none;
+      border: 1px solid #CCC!important;
+      border-radius: 4px;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+      transition: border-color ease-in-out 0.15s,box-shadow ease-in-out 0.15s;
+    }
+}
+
+
+
+.help-desk-form{
+  padding-top: 15px;
+  padding-bottom: 15px; 
+  background-color: #F7F7F9;
+}
+
+.webinar-video{
+  max-width: 900px;
+  margin: auto;
+}
+
+
+
