@@ -623,6 +623,78 @@ angular.module("ui.bootstrap-slider", []).directive("slider", [ "$parse", "$time
     } ];
 });
 
+var Conversations = function() {
+    function loadConversations() {
+        $.get("/conversations/data", function(conversations) {
+            $("#loading").hide(), conversations.length <= 0 && $("#no-conversations").show();
+            var conversation_id = 1;
+            $.each(conversations, function(index, conversation) {
+                for (var firstconversation = null, has_unread_messages = !1, i = 0; i < conversation.list.length && (conversation.list[i].id && (firstconversation = conversation.list[i]), 
+                conversation.list[i].is_read === !1 && (has_unread_messages = !0), null === firstconversation || !has_unread_messages); i++) ;
+                var lastconversation = conversation.list[conversation.list.length - 1];
+                $("#conversations-overview").append('<div class="convo' + (has_unread_messages ? " unread" : "") + '" data-id="' + conversation_id + '" data-username="' + conversation.user + '" data-messageid="' + firstconversation.id.$id + '"><a href="#">	<img src="' + lastconversation.picture + '" class="thumbnail" alt="' + lastconversation.author + '">	<p class="time-stamp">Posted ' + lastconversation.reltime + " ago</p>	<h4>" + lastconversation.author + "</h4>	<p>" + lastconversation.message + "</p></a></div>");
+                var conversationObj = $("<div>");
+                conversationObj.addClass("conversation" + conversation_id), $("#conversations-list").append(conversationObj), 
+                $.each(conversation.list, function(index, message) {
+                    conversationObj.append('<div class="convo"' + (message.twitter_message_id ? ' data-twittermessageid="' + message.twitter_message_id + '"' : "") + '>	<img src="' + message.picture + '" class="thumbnail" alt="' + message.author + '">	<p class="time-stamp">Posted ' + message.reltime + " ago</p>	<h4>" + message.author + "</h4>	<p>" + message.message + "</p></div>");
+                }), conversation_id++;
+            }), $(".convo a").unbind("click").click(function() {
+                var parent = $(this).parent();
+                parent.removeClass("unread"), $("#conversations-overview").hide(), $("body").attr("id", "conversations-single"), 
+                currentConversation = $("#conversations-list .conversation" + parent.attr("data-id")), 
+                currentConversation.show();
+                var message_ids = [];
+                return currentConversation.find(".convo[data-twittermessageid]").each(function() {
+                    message_ids.push($(this).attr("data-twittermessageid"));
+                }), message_ids.length > 0 && $.get("/conversations/read_messages", {
+                    ids: message_ids.join(",")
+                }, function(data) {
+                    if (data.status && "OK" == data.status) {
+                        var obj = $(".unread-messages");
+                        if (-1 != obj.length) {
+                            var val = parseInt(obj.html()), newVal = val - data.changed;
+                            newVal > 0 ? obj.html(newVal) : obj.hide();
+                        }
+                    }
+                }), prepareReplyForm(parent.attr("data-username"), parent.attr("data-messageid")), 
+                $(".go-back-tab").show(), $(".go-back-tab a").unbind("click").click(function() {
+                    return $("#conversations-overview").show(), $("body").attr("id", "conversations"), 
+                    $("#conversations-list > div").hide(), $(".go-back-tab").hide(), !1;
+                }), !1;
+            });
+        });
+    }
+    function prepareReplyForm(username, message_id) {
+        $(".reply textarea").val("@" + username + " ");
+        var tweet_length = $(".reply textarea").val().length, remaining = 140 - tweet_length;
+        $(".reply .word-count").html(remaining), $(".reply textarea").selectRange(tweet_length, tweet_length), 
+        $(".reply textarea").keyup(function() {
+            var remaining = 140 - $(this).val().length;
+            $(".reply .word-count").html(remaining);
+        }), $(".reply .error").hide(), $(".reply").unbind("submit").submit(function() {
+            if (!$("#saving-reply-indicator").is(":visible")) {
+                var message = $(".reply textarea").val();
+                return message.length > 140 ? alert("You can not post tweets that exceed 140 characters.") : ($("#saving-reply-indicator").show(), 
+                $.post("/tweet/post", {
+                    message_id: message_id,
+                    message: message
+                }, function(data) {
+                    $("#saving-reply-indicator").hide(), data.error ? alert(data.error) : (currentConversation.append('<div class="convo">	<img src="/assets/img/user.png" class="thumbnail" alt="Me">	<p class="time-stamp">Posted just now</p>	<h4>Me</h4>	<p>' + message + "</p></div>"), 
+                    prepareReplyForm(username, message_id));
+                })), !1;
+            }
+        });
+    }
+    var currentConversation = null;
+    return {
+        init: function() {
+            $("body#conversations").length && loadConversations();
+        }
+    };
+}();
+
+$(Conversations.init);
+
 var SettingsForm = function() {
     function bindEvents() {
         $("#location-form .btn").click(function() {
