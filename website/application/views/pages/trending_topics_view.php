@@ -1,5 +1,8 @@
 <script language="javascript">
-var geofencePolygons = <?php echo $polygons_object; ?>;
+window.STREAM = {
+	geofencePolygons: <?php echo $polygons_object; ?>,
+	bookmarks: <?php echo $bookmark_ids; ?>
+}
 </script>
 
 <section id="topics">
@@ -63,7 +66,7 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
 
 <section id="stream">
 <ul>
-  <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | limitfilter:limitQuery:this.radiusQuery.val | contentfilter:contentQuery | orderByCreated | limitTo:250 as results" class="entry" ng-class="interaction.interaction.type" data-messageid="{{ interaction._id.$id }}" ng-cloak>
+  <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | limitfilter:limitQuery:this.radiusQuery.val | contentfilter:contentQuery | orderByCreated | limitTo:250 as results" class="entry {{ interaction.interaction.type }}" ng-class="{ bookmarked: interaction.bookmarked }" ng-cloak>
     <div ng-switch="interaction.interaction.type">
       <!-- Twitter -->
       <div ng-switch-when="twitter">
@@ -78,7 +81,7 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
           <li class="follow"><a href="#"><i class="fa fa-twitter"></i> Follow</a></li>
           <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
           <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
+          <li class="bookmark"><a href="" ng-click="bookmark(interaction)"><i class="fa fa-star"></i> Bookmark</a></li>
           <li class="location" ng-if="typeof(interaction.internal.location) !== 'undefined' && typeof(interaction.internal.location.state) != 'undefined' && interaction.internal.location.state.length"><a href="#"><i class="fa fa-map-marker"></i> {{ interaction.internal.location.state }}</a></li>
         </ul>
         <div class="clearfix"></div>
@@ -93,7 +96,7 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
 
         <a href="" class="expand" ng-click="show = !show" ng-show="interaction.facebook.message.length > 140">{{ show ? 'Collapse' : 'Expand' }}</a>
         <ul class="actions">
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
+          <li class="bookmark"><a href="" ng-click="bookmark(interaction)"><i class="fa fa-star"></i> Bookmark</a></li>
           <li class="location" ng-if="typeof(interaction.internal.location) !== 'undefined' && typeof(interaction.internal.location.state) != 'undefined' && interaction.internal.location.state.length"><a href="#"><i class="fa fa-map-marker"></i> {{ interaction.internal.location.state }}</a></li>
         </ul>
         <div class="clearfix"></div>
@@ -108,7 +111,7 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
 
         <a href="" class="expand" ng-click="show = !show" ng-show="interaction.interaction.content.length > 140">{{ show ? 'Collapse' : 'Expand' }}</a>
         <ul class="actions">
-          <li class="bookmark"><a href="#"><i class="fa fa-star"></i> Bookmark</a></li>
+          <li class="bookmark"><a href="" ng-click="bookmark(interaction)"><i class="fa fa-star"></i> Bookmark</a></li>
           <li class="location" ng-if="typeof(interaction.internal.location) !== 'undefined' && typeof(interaction.internal.location.state) != 'undefined' && interaction.internal.location.state.length"><a href="#"><i class="fa fa-map-marker"></i> {{ interaction.internal.location.state }}</a></li>
         </ul>
         <div class="clearfix"></div>
@@ -163,8 +166,6 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
     <input type="text" id="filter-query" name="" class="form-control" ng-model="contentQuery" placeholder="Filter the current stream">
   </div>
 </div>
-
-<div class="clearfix"></div>
 </section>
 
 <?php

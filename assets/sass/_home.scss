@@ -102,6 +102,12 @@
 			padding: 12px 0 12px 9px;
 			position: relative;
 
+			&.bookmarked {
+				li.bookmark a {
+					color: $brand-warning;
+				}
+			}
+
 			img.profile-picture {
 				width: 48px;
 				height: 48px;

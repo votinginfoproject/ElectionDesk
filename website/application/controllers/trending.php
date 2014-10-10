@@ -58,6 +58,15 @@ class Trending extends CI_Controller {
         }
         $data['polygons_object'] = json_encode($polygonsArr);
 
+        $this->load->model('message_bookmarks_model');
+        $bookmarks = $this->message_bookmarks_model->get_user_bookmarks($this->tank_auth->get_user_id());
+        
+        $bookmarkIds = array();
+        foreach ($bookmarks as $bookmark) {
+            $bookmarkIds[] = $bookmark->message_id;
+        }
+        $data['bookmark_ids'] = json_encode(array_combine($bookmarkIds, $bookmarkIds));
+
         // Output view
         $data['states'] = $this->config->item('states');
         $this->stencil->layout('stream_layout');
@@ -79,7 +88,11 @@ class Trending extends CI_Controller {
 		
 		foreach ($bookmarks as $bookmark) {
 			$result = file_get_contents($this->config->item('stream_server') . '/message?id='.$bookmark->message_id);
-            $messages[] = json_decode($result);
+            $result = json_decode($result);
+
+            if (!isset($result->error)) {
+                $messages[] = $result;
+            }
 		}
 		
 		
@@ -108,11 +121,6 @@ class Trending extends CI_Controller {
 
     	$this->load->model('message_bookmarks_model');
 
-        if ($this->message_bookmarks_model->bookmark_exists($this->input->post('message'), $this->tank_auth->get_user_id())) {
-            echo json_encode(array('error' => 'Message already bookmarked'));
-            return;
-        }
-
     	$this->message_bookmarks_model->save(array(
     		'user_id' => $this->tank_auth->get_user_id(),
     		'message_id' => $this->input->post('message')
@@ -136,11 +144,6 @@ class Trending extends CI_Controller {
     	}
 
     	$this->load->model('message_bookmarks_model');
-
-        if (!$this->message_bookmarks_model->bookmark_exists($this->input->post('message'), $this->tank_auth->get_user_id())) {
-            echo json_encode(array('error' => 'You cannot remove a bookmark that is not bookmarked.'));
-            return;
-        }
 
     	$this->message_bookmarks_model->delete_bookmark($this->tank_auth->get_user_id(), $this->input->post('message'));
 

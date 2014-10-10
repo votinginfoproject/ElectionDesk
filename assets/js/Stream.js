@@ -13,9 +13,10 @@ factory('socket', function (socketFactory) {
 		ioSocket: io.connect('http://' + hostname + ':4242')
 	});
 }).
-controller('StreamController', function ($scope, socket) {
+controller('StreamController', function ($scope, $http, socket) {
 	socket.forward(['update', 'hello'], $scope);
 
+	// Filters
 	$scope.streamIsActive = true;
 
 	$scope.topicQuery = {
@@ -57,6 +58,47 @@ controller('StreamController', function ($scope, socket) {
 		$scope.limitQuery = 'radius';
 	};
 
+	// Interaction actions
+	$scope.bookmark = function(interaction) {
+		console.log(interaction);
+		var messageId = interaction._id.$id;
+		console.log(interaction._id);
+		console.log(messageId);
+
+		if (interaction.bookmarked) {
+			$http({
+				method: 'POST',
+				url: '/trending/unbookmark',
+				data: $.param({ message: messageId }),
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			})
+			.success(function(data) {
+				if (data.error) {
+					if (data.error != 'You cannot remove a bookmark that is not bookmarked.') {
+						alert('Could not unbookmark message: ' + data.error);
+					}
+				} else {
+					interaction.bookmarked = false;console.log(interaction.bookmarked);
+				}
+			});
+		} else {
+			$http({
+				method: 'POST',
+				url: '/trending/bookmark',
+				data: $.param({ message: messageId }),
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			})
+			.success(function(data) {
+				if (data.error) {
+					alert('Could not bookmark message: ' + data.error);
+				} else {
+					interaction.bookmarked = true;console.log(interaction.bookmarked);
+				}
+			});
+		}
+	};
+
+	// Interactions from WebSocket server
 	$scope.interactions = [];
 
 	$scope.$on('socket:update', function(ev, data) {
@@ -68,6 +110,12 @@ controller('StreamController', function ($scope, socket) {
 			var unixTime = new Date().getTime() / 1000;
 			if (json.interaction.created_at.sec > unixTime) {
 				json.interaction.created_at.sec = unixTime;
+			}
+
+			if (typeof window.STREAM.bookmarks[json._id.$id] !== 'undefined') {
+				json.bookmarked = true;
+			} else {
+				json.bookmarked = false;
 			}
 
 			$scope.interactions.push(json);

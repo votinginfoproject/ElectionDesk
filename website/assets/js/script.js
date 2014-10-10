@@ -1551,7 +1551,7 @@ $(SettingsForm.init), angular.module("electiondeskStream", [ "btford.socket-io",
     return hostname.indexOf("local") && (hostname = "stage.electiondesk.us"), socketFactory({
         ioSocket: io.connect("http://" + hostname + ":4242")
     });
-}).controller("StreamController", function($scope, socket) {
+}).controller("StreamController", function($scope, $http, socket) {
     socket.forward([ "update", "hello" ], $scope), $scope.streamIsActive = !0, $scope.topicQuery = {
         6: !0,
         7: !0,
@@ -1572,10 +1572,39 @@ $(SettingsForm.init), angular.module("electiondeskStream", [ "btford.socket-io",
         return 1e3 === value && (value = "1,000"), value + " miles";
     }, $scope.radiusQuery.changed = function() {
         $scope.limitQuery = "radius";
+    }, $scope.bookmark = function(interaction) {
+        console.log(interaction);
+        var messageId = interaction._id.$id;
+        console.log(interaction._id), console.log(messageId), interaction.bookmarked ? $http({
+            method: "POST",
+            url: "/trending/unbookmark",
+            data: $.param({
+                message: messageId
+            }),
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).success(function(data) {
+            data.error ? "You cannot remove a bookmark that is not bookmarked." != data.error && alert("Could not unbookmark message: " + data.error) : (interaction.bookmarked = !1, 
+            console.log(interaction.bookmarked));
+        }) : $http({
+            method: "POST",
+            url: "/trending/bookmark",
+            data: $.param({
+                message: messageId
+            }),
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).success(function(data) {
+            data.error ? alert("Could not bookmark message: " + data.error) : (interaction.bookmarked = !0, 
+            console.log(interaction.bookmarked));
+        });
     }, $scope.interactions = [], $scope.$on("socket:update", function(ev, data) {
         if ($scope.streamIsActive) {
             var json = JSON.parse(data), unixTime = new Date().getTime() / 1e3;
             json.interaction.created_at.sec > unixTime && (json.interaction.created_at.sec = unixTime), 
+            json.bookmarked = "undefined" != typeof window.STREAM.bookmarks[json._id.$id] ? !0 : !1, 
             $scope.interactions.push(json);
         }
     }), $scope.$on("socket:hello", function() {
