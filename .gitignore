@@ -5,6 +5,9 @@ website/application/cache/*
 website/application/cache/!index.html
 website/vendor
 
+# Vagramt
+.vagrant
+
 # Mac OS X
 .DS_Store
 
@@ -16,3 +19,4 @@ website/vendor
 .grunt
 node_modules
 .lock-wscript
+
