@@ -659,14 +659,15 @@ var SettingsForm = function() {
     var geocoder = new google.maps.Geocoder();
     return {
         init: function() {
-            alert("testaaa"), $("#location-form").length && bindEvents();
+            $("#location-form").length && bindEvents();
         }
     };
 }();
 
 $(SettingsForm.init), angular.module("electiondeskStream", [ "btford.socket-io", "timeRelative", "ui.bootstrap-slider" ]).factory("socket", function(socketFactory) {
-    return socketFactory({
-        ioSocket: io.connect("http://" + window.location.host + ":4242")
+    var hostname = window.location.host;
+    return hostname.indexOf("local") && (hostname = "stage.electiondesk.us"), socketFactory({
+        ioSocket: io.connect("http://" + hostname + ":4242")
     });
 }).controller("StreamController", function($scope, socket) {
     socket.forward([ "update", "hello" ], $scope), $scope.streamIsActive = !0, $scope.topicQuery = {

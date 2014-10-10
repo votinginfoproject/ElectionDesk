@@ -26,3 +26,5 @@
 	  })();
 	</script>
 <!-- End Tracking -->
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2KRRwjsTYoH9yEHNO3o_Yn2GVFKLpxTU&sensor=false"></script>

@@ -67,7 +67,6 @@ var SettingsForm = (function () {
 
 	return {
 		init: function () {
-			alert('testaaa');
 			if ($('#location-form').length) {
 				bindEvents();
 			}

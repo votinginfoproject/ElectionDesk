@@ -4,8 +4,13 @@ angular.module('electiondeskStream', [
 	'ui.bootstrap-slider'
 ]).
 factory('socket', function (socketFactory) {
+	var hostname = window.location.host;
+	if (hostname.indexOf('local')) {
+		hostname = 'stage.electiondesk.us';
+	}
+
 	return socketFactory({
-		ioSocket: io.connect('http://' + window.location.host + ':4242')
+		ioSocket: io.connect('http://' + hostname + ':4242')
 	});
 }).
 controller('StreamController', function ($scope, socket) {
