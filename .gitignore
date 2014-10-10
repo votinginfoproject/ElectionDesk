@@ -6,7 +6,7 @@ website/application/cache/!index.html
 website/vendor
 
 # Vagramt
-.vagrant
+.vagrant*
 
 # Mac OS X
 .DS_Store

@@ -6,23 +6,26 @@
 <?php if (empty($body_id)) $body_id = NULL; ?>
 <body id="<?php echo $body_id; ?>">
 
-<div class="container wrapper">
+<div class="wrapper">
   <header>
-    <a class="logo" href="/">ElectionDesk</a>
+    <div class="container">
+      <a class="logo" href="/">ElectionDesk</a>
 
-    <nav>
-      <ul>
-        <li class="active"><a href="/">Home</a></li>
-        <li><a href="/admin/users">Users</a></li>
-        <li><a href="/admin/data">Data</a></li>
-      </ul>
-    </nav>
+      <nav>
+        <ul>
+          <li class="active"><a href="/">Home</a></li>
+          <li><a href="/admin/users">Users</a></li>
+          <li><a href="/admin/data">Data</a></li>
+        </ul>
+      </nav>
+    </div><!--/container-->
   </header>
 
 	<main>
-		<?php echo $content; ?>
+    <div class="container">
+		  <?php echo $content; ?>
+    </div><!--/container-->
 	</main>
-</div>
 
 <footer>
   <div class="container">
@@ -36,14 +39,17 @@
         <li><a href="/terms-of-use">Terms of Use</a></li>
         <li><a href="/privacy-policy">Privacy Policy</a></li>
         <?php if ($this->session->userdata('is_admin') == 1) : ?>
-				<li><a href="/admin">Admin</a></li>
-				<?php endif; ?>
+        <li><a href="/admin">Admin</a></li>
+        <?php endif; ?>
       </ul>
     </nav>
 
     <span>&copy; Copyright 2012-<?php echo date('Y'); ?> Voting Information Project. All Rights Reserved.</span>
   </div>
 </footer>
+</div><!--/wrapper-->
+
+
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="/assets/js/script.js"></script>
