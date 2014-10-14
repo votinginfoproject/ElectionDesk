@@ -108,10 +108,14 @@ class Tweet extends CI_Controller {
             return;
         }
 
-        if (!$this->twitter->follow($this->input->post('username'))) {
-            echo json_encode(array('error' => 'You are not connected with Twitter'));
-        } else {
-            echo json_encode(array('status' => 'OK'));
+        try {
+            if (!$this->twitter->follow($this->input->post('username'))) {
+                echo json_encode(array('error' => 'You are not connected with Twitter'));
+            } else {
+                echo json_encode(array('status' => 'OK'));
+            }
+        } catch (Exception $e) {
+           echo json_encode(array('error' => $e->getMessage())); 
         }
     }
 
@@ -132,10 +136,14 @@ class Tweet extends CI_Controller {
             return;
         }
 
-        if (!$this->twitter->retweet($this->input->post('message_id'))) {
-            echo json_encode(array('error' => 'You are not connected with Twitter'));
-        } else {
-            echo json_encode(array('status' => 'OK'));
+        try {
+            if (!$this->twitter->retweet($this->input->post('message_id'))) {
+                echo json_encode(array('error' => 'You are not connected with Twitter'));
+            } else {
+                echo json_encode(array('status' => 'OK'));
+            }
+        } catch (Exception $e) {
+           echo json_encode(array('error' => $e->getMessage())); 
         }
     }
 }

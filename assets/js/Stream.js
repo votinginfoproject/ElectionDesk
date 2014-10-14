@@ -2,7 +2,8 @@ angular.module('electiondeskStream', [
 	'btford.socket-io',
 	'timeRelative',
 	'ui.bootstrap',
-	'ui.bootstrap-slider'
+	'ui.bootstrap-slider',
+	'cgNotify'
 ]).
 factory('socket', function (socketFactory) {
 	var hostname = window.location.host;
@@ -14,8 +15,10 @@ factory('socket', function (socketFactory) {
 		ioSocket: io.connect('http://' + hostname + ':4242')
 	});
 }).
-controller('StreamController', function ($scope, $http, $modal, socket) {
+controller('StreamController', function ($scope, $http, $modal, socket, notify) {
 	socket.forward(['update', 'hello'], $scope);
+
+	notify.config({duration: 0});
 
 	// Modal
 	$scope.reply = function (interaction) {
@@ -26,6 +29,38 @@ controller('StreamController', function ($scope, $http, $modal, socket) {
 				interaction: function () {
 					return interaction;
 				}
+			}
+		});
+	};
+
+	$scope.follow = function (interaction) {
+		$http({
+			method  : 'POST',
+			url     : '/tweet/follow',
+			data    : $.param({ username: interaction.interaction.author.username }),
+			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+		})
+		.success(function(data) {
+			if (data.error) {
+				notify({ message: 'Could not follow user: ' + data.error, classes: 'alert-danger' });
+			} else {
+				notify({ message: 'You are now following @' + interaction.interaction.author.username, classes: 'alert-success' });
+			}
+		});
+	};
+
+	$scope.retweet = function (interaction) {
+		$http({
+			method  : 'POST',
+			url     : '/tweet/retweet',
+			data    : $.param({ message_id: interaction.twitter.id_str }),
+			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+		})
+		.success(function(data) {
+			if (data.error) {
+				notify({ message: 'Could not follow user: ' + data.error, classes: 'alert-danger' });
+			} else {
+				notify({ message: 'Retweet successful', classes: 'alert-success' });
 			}
 		});
 	};
