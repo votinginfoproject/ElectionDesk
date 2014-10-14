@@ -32,8 +32,8 @@ $captcha = array(
 );
 ?>
 <?php echo form_open($this->uri->uri_string(), 'class="register"'); ?>
-	<div class="signin col-md-6">
-		<div class="form-wrapper">
+	<div class="signin col-md-6 account-form">
+		<div class="form-wrapper-left">
 			<h2>Sign in with email</h2>
 			<div class="form-group">
 				<div class="input-group">
