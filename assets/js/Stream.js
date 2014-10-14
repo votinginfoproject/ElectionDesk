@@ -109,11 +109,8 @@ controller('StreamController', function ($scope, $http, $modal, socket, notify) 
 
 	// Interaction actions
 	$scope.bookmark = function(interaction) {
-		console.log(interaction);
 		var messageId = interaction._id.$id;
-		console.log(interaction._id);
-		console.log(messageId);
-
+		
 		if (interaction.bookmarked) {
 			$http({
 				method: 'POST',
@@ -127,7 +124,7 @@ controller('StreamController', function ($scope, $http, $modal, socket, notify) 
 						alert('Could not unbookmark message: ' + data.error);
 					}
 				} else {
-					interaction.bookmarked = false;console.log(interaction.bookmarked);
+					interaction.bookmarked = false;
 				}
 			});
 		} else {
@@ -141,7 +138,7 @@ controller('StreamController', function ($scope, $http, $modal, socket, notify) 
 				if (data.error) {
 					alert('Could not bookmark message: ' + data.error);
 				} else {
-					interaction.bookmarked = true;console.log(interaction.bookmarked);
+					interaction.bookmarked = true;
 				}
 			});
 		}
@@ -153,6 +150,8 @@ controller('StreamController', function ($scope, $http, $modal, socket, notify) 
 	$scope.$on('socket:update', function(ev, data) {
 		if ($scope.streamIsActive) {
 			var json = JSON.parse(data);
+
+			console.log(json);
 			
 			// Take care of slight time differences so interactions won't
 			// look like they come from the future
@@ -227,7 +226,7 @@ filter('topicfilter', function() {
 		});
 
 		return items.filter(function(element, index, array) {
-			return (activeTopics.indexOf(element.internal.filter_id) != -1);
+			return (activeTopics.indexOf(parseInt(element.internal.filter_id)) != -1);
 		});
 	};
 }).

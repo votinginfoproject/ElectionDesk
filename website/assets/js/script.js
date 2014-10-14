@@ -3658,9 +3658,8 @@ $(SettingsForm.init), angular.module("electiondeskStream", [ "btford.socket-io",
     }, $scope.radiusQuery.changed = function() {
         $scope.limitQuery = "radius";
     }, $scope.bookmark = function(interaction) {
-        console.log(interaction);
         var messageId = interaction._id.$id;
-        console.log(interaction._id), console.log(messageId), interaction.bookmarked ? $http({
+        interaction.bookmarked ? $http({
             method: "POST",
             url: "/trending/unbookmark",
             data: $.param({
@@ -3670,8 +3669,7 @@ $(SettingsForm.init), angular.module("electiondeskStream", [ "btford.socket-io",
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).success(function(data) {
-            data.error ? "You cannot remove a bookmark that is not bookmarked." != data.error && alert("Could not unbookmark message: " + data.error) : (interaction.bookmarked = !1, 
-            console.log(interaction.bookmarked));
+            data.error ? "You cannot remove a bookmark that is not bookmarked." != data.error && alert("Could not unbookmark message: " + data.error) : interaction.bookmarked = !1;
         }) : $http({
             method: "POST",
             url: "/trending/bookmark",
@@ -3682,12 +3680,13 @@ $(SettingsForm.init), angular.module("electiondeskStream", [ "btford.socket-io",
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).success(function(data) {
-            data.error ? alert("Could not bookmark message: " + data.error) : (interaction.bookmarked = !0, 
-            console.log(interaction.bookmarked));
+            data.error ? alert("Could not bookmark message: " + data.error) : interaction.bookmarked = !0;
         });
     }, $scope.interactions = [], $scope.$on("socket:update", function(ev, data) {
         if ($scope.streamIsActive) {
-            var json = JSON.parse(data), unixTime = new Date().getTime() / 1e3;
+            var json = JSON.parse(data);
+            console.log(json);
+            var unixTime = new Date().getTime() / 1e3;
             json.interaction.created_at.sec > unixTime && (json.interaction.created_at.sec = unixTime), 
             json.bookmarked = "undefined" != typeof window.STREAM.bookmarks[json._id.$id] ? !0 : !1, 
             $scope.interactions.push(json);
@@ -3726,7 +3725,7 @@ $(SettingsForm.init), angular.module("electiondeskStream", [ "btford.socket-io",
         return angular.forEach(topics, function(active, source) {
             active && activeTopics.push(parseInt(source));
         }), items.filter(function(element) {
-            return -1 != activeTopics.indexOf(element.internal.filter_id);
+            return -1 != activeTopics.indexOf(parseInt(element.internal.filter_id));
         });
     };
 }).filter("sourcefilter", function() {

@@ -14,12 +14,12 @@
     <div ng-switch="interaction.interaction.type">
       <!-- Twitter -->
       <div ng-switch-when="twitter">
-        <img ng-src="{{ interaction.twitter.user.profile_image_url_https }}" alt="{{ interaction.twitter.user.name }}" class="profile-picture">
+        <img ng-src="{{ interaction.interaction.author.avatar }}" alt="{{ interaction.twitter.user.name }}" class="profile-picture">
         <i class="fa fa-retweet is-retweet" ng-show="{{ (typeof(interaction.twitter.retweeted_status) !== 'undefined') }}"></i>
 
         <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
         <a ng-href="{{ interaction.interaction.link }}" target="_blank" class="target-link">@{{ interaction.interaction.author.username }}</a>
-        <p class="summary">{{ interaction.twitter.text }}</p>
+        <p class="summary">{{ interaction.interaction.content }}</p>
         
         <ul class="actions">
           <li class="follow"><a href="" ng-click="follow(interaction)"><i class="fa fa-twitter"></i> Follow</a></li>
