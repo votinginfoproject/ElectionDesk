@@ -1,17 +1,37 @@
-<div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="replyModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="replyModalLabel">Reply</h4>
-      </div>
-      <div class="modal-body">
-        Reply
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+<script type="text/ng-template" id="replyModalContent.html">
+  <div class="modal-body">
+    <p>Reply from <select name="accounts" id="accountswitcher">
+    <?php foreach ($accounts as $account): ?>
+      <option value="<?php echo $account->id; ?>"<?php if ($account->is_primary == 1) echo ' selected="selected"' ?>>@<?php echo $account->name; ?></option>
+    <?php endforeach; ?>
+    </select></p>
+
+    <h2>Reply to <span class="username">@{{ interaction.interaction.author.username }}</span></h2>
+    <span class="error"></span>
+
+    <?php
+    // Are we logged in
+    if(!$this->twitter->is_logged_in()):
+    ?>
+      <?php echo anchor('/tweet/login', '<img src="'. site_url('assets/img/twitter-connect.png') .'" alt="Login with Twitter" />'); ?>
+    <?php
+    else:
+    ?>
+      <form ng-submit="processForm()">
+        <p class="alert alert-danger" ng-show="(errorMessage.length > 0)">{{ errorMessage }}</p>
+
+        <div class="form-group">
+          <textarea class="form-control" ng-model="twitterMessage" maxlength="140"></textarea>
+          <p class="character-count">{{ twitterMessage.length }}/140 characters</p>
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+          <input type="submit" class="btn btn-primary" value="Reply">
+        </div>
+      </form>
+    <?php
+    endif;
+    ?>
     </div>
-  </div>
-</div>
+</script>

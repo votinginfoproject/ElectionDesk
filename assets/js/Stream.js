@@ -1,6 +1,7 @@
 angular.module('electiondeskStream', [
 	'btford.socket-io',
 	'timeRelative',
+	'ui.bootstrap',
 	'ui.bootstrap-slider'
 ]).
 factory('socket', function (socketFactory) {
@@ -13,8 +14,21 @@ factory('socket', function (socketFactory) {
 		ioSocket: io.connect('http://' + hostname + ':4242')
 	});
 }).
-controller('StreamController', function ($scope, $http, socket) {
+controller('StreamController', function ($scope, $http, $modal, socket) {
 	socket.forward(['update', 'hello'], $scope);
+
+	// Modal
+	$scope.reply = function (interaction) {
+		var modalInstance = $modal.open({
+			templateUrl: 'replyModalContent.html',
+			controller: 'ReplyModalInstanceController',
+			resolve: {
+				interaction: function () {
+					return interaction;
+				}
+			}
+		});
+	};
 
 	// Filters
 	$scope.streamIsActive = true;
@@ -126,6 +140,43 @@ controller('StreamController', function ($scope, $http, socket) {
 	$scope.$on('socket:hello', function(ev, data) {
 		socket.emit('dump');
 	});
+}).
+controller('ReplyModalInstanceController', function ($scope, $modalInstance, $http, interaction) {
+	$scope.interaction = interaction;
+	$scope.errorMessage = '';
+	$scope.twitterMessage = '@' + interaction.interaction.author.username + ' ';
+
+	$scope.processForm = function() {
+		$scope.errorMessage = '';
+
+		var parameters = {
+			message_id: $scope.interaction._id.$id,
+			tweet_id: $scope.interaction.twitter.id_str,
+			message: $scope.twitterMessage
+		};
+
+		$http({
+			method  : 'POST',
+			url     : '/tweet/post',
+			data    : $.param(parameters),
+			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+		})
+		.success(function(data) {
+			if (!data.error) {
+				$modalInstance.close();
+			} else {
+				$scope.errorMessage = data.error;
+			}
+		});
+	};
+
+	$scope.ok = function () {
+		$modalInstance.close();
+	};
+
+	$scope.cancel = function () {
+		$modalInstance.dismiss('cancel');
+	};
 }).
 filter('topicfilter', function() {
 	return function(items, topics) {
