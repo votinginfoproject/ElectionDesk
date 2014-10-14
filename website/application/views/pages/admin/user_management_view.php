@@ -1,17 +1,25 @@
 <h2>Enable or Disable Email Accounts</h2>
 
 <section id="all-users">
-	
-	<?php if (!empty($banned_users)) : foreach ($banned_users as $user) : ?>
-			<div class="user">
-				<h3><?php echo anchor('admin/enable/'.$user->id, 'Enable'); ?> <?php echo $user->email; ?> <span class="date-created">(<?php echo date('F j @ g:ia', strtotime($user->created)); ?>)</span></h3>
-			</div>
-	<?php endforeach; endif; ?>
-	
-	
-	
-	
-	
+
+	<table class="table">
+  	<thead>
+  		<tr>
+  			<th>Action</th>
+  			<th>User Account</th>
+  			<th>Date</th>
+  		</tr>
+  	</thead>
+  	<tbody>
+			<?php if (!empty($banned_users)) : foreach ($banned_users as $user) : ?>
+			<tr>
+				<td><?php echo anchor('admin/enable/'.$user->id, 'Enable', array('class' => 'btn btn-success btn-enable')); ?></td>
+				<td><?php echo $user->email; ?></td>
+				<td><?php echo date('F j @ g:ia', strtotime($user->created)); ?></td>
+			</tr>
+			<?php endforeach; endif; ?>
+  	</tbody>
+	</table>
 	
 	<?php if (empty($banned_users)) : ?>
 	
