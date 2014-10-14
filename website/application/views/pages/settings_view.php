@@ -42,7 +42,21 @@
 			<?php
 			foreach ($accounts as $account):
 			?>
-				<h4><?php if ($account->type == 'TWITTER') echo '@'; ?><?php echo $account->name; ?><?php echo anchor('settings/delete_account?id=' . $account->id, '<i class="fa fa-trash"></i>', array('class' => 'btn btn-danger btn-del-account')); ?> </h4>
+				<h4 class="sm-account">
+					<?php
+						switch ($account->type) {
+					  case "TWITTER":
+					    $logo = '<i class="fa fa-twitter"></i>@';
+					    break;
+					  case "FACEBOOK":
+					    $logo = '<i class="fa fa-facebook"></i>';
+					    break;
+					  case "GOOGLEPLUS":
+					    $logo = '<i class="fa fa-google-plus"></i>';
+					    break;
+					}?>
+
+				 	<?php echo $logo . $account->name; ?><?php echo anchor('settings/delete_account?id=' . $account->id, '<i class="fa fa-trash"></i>', array('class' => 'btn btn-danger btn-del-account')); ?> </h4>
 			<?php
 			endforeach;
 			?>

@@ -177,6 +177,33 @@
 
     }
 
+    .sm-account{
+
+        .fa{
+          margin-right: 7px;
+          font-size: 26px;
+
+          &.fa-twitter{
+            color: $twitterColor;
+          }
+
+          &.fa-facebook{
+            color: $facebookColor;
+          }
+
+          &.fa-google-plus{
+            color: #d34836;
+          }
+
+          &.fa-trash{
+            margin-right: 0px;
+            font-size: 16px;
+          }
+        }
+    }
+
+
+
 
 
 }
