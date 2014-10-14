@@ -46,7 +46,7 @@ $captcha = array(
 			<div class="input-group">
 				<div class="input-group-addon"><i class="fa fa-lock"></i></div>
 				<?php echo form_error($password['name'], '<div class="alert alert-danger">', '</div>'); ?>
-				<?php echo form_input($password); ?>
+				<?php echo form_password($password); ?>
 			</div><!--/input group-->
 		</div>
 
@@ -55,7 +55,7 @@ $captcha = array(
 			<div class="input-group">
 				<div class="input-group-addon"><i class="fa fa-lock"></i></div>
 				<?php echo form_error($confirm_password['name'], '<div class="alert alert-danger">', '</div>'); ?>
-				<?php echo form_input($confirm_password); ?>
+				<?php echo form_password($confirm_password); ?>
 			</div><!--/input group-->
 		</div>
 		
