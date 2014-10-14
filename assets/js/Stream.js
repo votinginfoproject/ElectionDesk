@@ -18,8 +18,6 @@ factory('socket', function (socketFactory) {
 controller('StreamController', function ($scope, $http, $modal, socket, notify) {
 	socket.forward(['update', 'hello'], $scope);
 
-	notify.config({duration: 0});
-
 	// Modal
 	$scope.reply = function (interaction) {
 		var modalInstance = $modal.open({

@@ -3587,9 +3587,7 @@ $(SettingsForm.init), angular.module("electiondeskStream", [ "btford.socket-io",
         ioSocket: io.connect("http://" + hostname + ":4242")
     });
 }).controller("StreamController", function($scope, $http, $modal, socket, notify) {
-    socket.forward([ "update", "hello" ], $scope), notify.config({
-        duration: 0
-    }), $scope.reply = function(interaction) {
+    socket.forward([ "update", "hello" ], $scope), $scope.reply = function(interaction) {
         $modal.open({
             templateUrl: "replyModalContent.html",
             controller: "ReplyModalInstanceController",
