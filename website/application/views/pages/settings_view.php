@@ -1,6 +1,7 @@
 <div class="content">
-<section class="register settings-general">
-	<div class="col-md-6">
+<section class="settings-general">
+	<div class="address col-md-6">
+		<div class="form-wrapper-left">
 		<?php if (!empty($success_message)) : ?>
 		<div class="success-message" id="address-success"><?php echo $success_message; ?></div>
 		<?php endif; ?>
@@ -27,8 +28,13 @@
 		<p>If you have multiple offices, please select the one most central to your election jurisdiction or state.</p>
 		<input type="submit" class="btn btn-primary" value="Save" />
 		<?php echo form_close(); ?>
-	</div>
-	<div class="col-md-6">
+	
+		</div><!--form wrapper-->
+	</div><!--/left column-->
+
+
+
+	<div class="col-md-6 accounts">
 		<?php
 		if (count($accounts) > 0):
 		?>
@@ -36,7 +42,7 @@
 			<?php
 			foreach ($accounts as $account):
 			?>
-				<h4><?php echo anchor('settings/delete_account?id=' . $account->id, '<i class="fa fa-trash"></i>', array('class' => 'btn btn-danger')); ?> <?php if ($account->type == 'TWITTER') echo '@'; ?><?php echo $account->name; ?></h4>
+				<h4><?php if ($account->type == 'TWITTER') echo '@'; ?><?php echo $account->name; ?><?php echo anchor('settings/delete_account?id=' . $account->id, '<i class="fa fa-trash"></i>', array('class' => 'btn btn-danger btn-del-account')); ?> </h4>
 			<?php
 			endforeach;
 			?>

@@ -1,3 +1,6 @@
+//Login, Register and Password Pages
+//==================================
+
 .login-heading{
   margin-bottom: 75px;
   text-align: center;
@@ -44,6 +47,46 @@
     
     p{
       max-width: 400px;
+    }
+}
+
+.account-form{
+
+    .form-wrapper-left{
+      float: right;
+    }
+
+    label{
+      display: block;
+    }
+
+    .form-control{
+      width: 250px;
+      height: 50px;
+      border-left: none;
+      box-shadow: none;
+      transition: none;
+
+        &:focus{
+          border-color: #ccc;
+        } 
+    }
+
+    .input-group-addon{
+      width: 50px;
+      background-color: #fff;
+
+        .fa{
+          font-size: 18px;
+        }
+
+        .fa-user{
+          color: #25aae1;
+        }
+
+        .fa-lock{
+          color: #bf1e2e;
+        }
     }
 }
 
@@ -97,6 +140,74 @@
   max-width: 900px;
   margin: auto;
 }
+
+
+//Settings Page
+//===========================
+
+
+#settings{
+
+    .address{
+      padding-right: 35px;
+    }
+
+    .form-control{
+      height: 46px;
+      border-right: none;
+      box-shadow: none;
+      transition: none;
+
+      &:focus{
+        border-color: #ccc;
+      } 
+    }
+
+    .accounts{
+      padding-left: 35px;
+      border-left: 1px solid #ccc;
+    }
+
+    .btn-del-account{
+      margin-left: 20px;
+      width: 35px;
+      height: 35px;
+      line-height: 35px;
+      padding: 0px;
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
