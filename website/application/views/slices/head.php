@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ElectionDesk</title>
 
-<link href="//fonts.googleapis.com/css?family=Titillium+Web:400,600,400italic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Titillium+Web:300,400,600,400italic" rel="stylesheet" type="text/css">
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
 <link href="/assets/css/style.css" rel="stylesheet">
 

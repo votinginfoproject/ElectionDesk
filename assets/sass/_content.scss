@@ -1,4 +1,51 @@
+.login-heading{
+  margin-bottom: 75px;
+  text-align: center;
+}
 
+.signin h2,
+.register h2{
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.btn{
+  padding: 12px 30px;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  @include antialiase(); 
+}
+
+ .btn-login{
+    background-color: #25aae1;
+
+    &:hover{
+      background-color: darken(#25aae1, 10%);
+    }
+  }
+
+  .btn-register{
+    margin-bottom: 20px;
+    background-color: #bf1e2e;
+
+    &:hover{
+      background-color: darken(#bf1e2e, 10%);
+    }
+  }
+
+.signin{
+  padding-right: 35px;
+  border-right: 1px solid #ccc;
+}
+
+.register{
+  padding-left: 35px;
+    
+    p{
+      max-width: 400px;
+    }
+}
 
 
 //Help Page
