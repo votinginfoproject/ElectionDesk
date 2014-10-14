@@ -32,7 +32,7 @@ class WorkCommand extends Command {
 
         $consumerName = get_class($consumer);
 
-        if ($consumer instanceof \Consumer\IndividualConsumer\IndividualConsumer) {
+        if ($consumer instanceof \Consumer\IndividualConsumer\IndividualConsumer || $consumer instanceof \Consumer\DatasiftConsumer) {
             $filter = \Consumer\Model\Filter::find($input->getArgument('filter'));
             $output->writeln('Consuming "'. $consumerName .'" with filter "'. $filter->title .'"');
 

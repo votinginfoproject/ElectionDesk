@@ -72,7 +72,7 @@ class ListenCommand extends Command {
         foreach (explode(',', CONSUMERS) as $consumerName) {
             $consumer = \Consumer\Consumer::resolve($consumerName);
 
-            if ($consumer instanceof \Consumer\IndividualConsumer\IndividualConsumer) {
+            if ($consumer instanceof \Consumer\IndividualConsumer\IndividualConsumer || $consumer instanceof \Consumer\DatasiftConsumer) {
                 foreach ($filters as $filter) {
                     $this->processes[$consumerName . ' - Filter ' . $filter->id] = new \Symfony\Component\Process\Process('./consume work ' . $consumerName . ' ' . $filter->id);
                     $this->processes[$consumerName . ' - Filter ' . $filter->id]->start();

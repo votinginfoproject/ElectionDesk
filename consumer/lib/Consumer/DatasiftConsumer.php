@@ -1,23 +1,17 @@
 <?php namespace Consumer;
 
-class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEventHandler {
-    private $user;
+class DatasiftConsumer extends Consumer implements \DataSift_IStreamConsumerEventHandler {
     private $filter;
-
-    public function __construct($user)
-    {
-        $this->user = $user;
-    }
 
     public function consume($filter)
     {
         // Save the filter
         $this->filter = $filter;
 
-        $definition = new DataSift_Definition($this->user, $filter->csdl);
+        $definition = new \DataSift_Definition(new \DataSift_User(DATASIFT_USERNAME, DATASIFT_API_KEY), $filter->csdl);
 
         // Create the consumer
-        $consumer = $definition->getConsumer(DataSift_StreamConsumer::TYPE_HTTP, $this);
+        $consumer = $definition->getConsumer(\DataSift_StreamConsumer::TYPE_HTTP, $this);
 
         // And start consuming (this will block)
         $consumer->consume();
@@ -32,7 +26,7 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
      */
     public function onConnect($consumer)
     {
-        echo 'Connected'.PHP_EOL;
+        Log::info('Connected');
     }
 
     /**
@@ -48,14 +42,14 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
      */
     public function onInteraction($consumer, $interaction, $hash)
     {
-        echo 'Type: '.$interaction['interaction']['type']."\n";
-        echo 'Content: '.$interaction['interaction']['content']."\n--\n";
+        Log::info('Type: '.$interaction['interaction']['type']);
+        Log::info('Content: '.$interaction['interaction']['content']);
 
         // Convert all created_at columns to the MongoDate type
         $this->convertDates($interaction);
 
         $interaction['internal'] = array(
-            'filter_id' => $this->filterId
+            'filter_id' => $this->filter->id
         );
 
         // Twitter specific operations
@@ -162,7 +156,7 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
     {
         switch ($type) {
             default:
-                echo 'STATUS: '.$type.PHP_EOL;
+                Log::info('STATUS: '.$type);
                 break;
         }
     }
@@ -177,7 +171,7 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
      */
     public function onWarning($consumer, $message)
     {
-        echo 'WARNING: '.$message.PHP_EOL;
+        Log::info('WARNING: '.$message);
     }
 
     /**
@@ -190,7 +184,7 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
      */
     public function onError($consumer, $message)
     {
-        echo 'ERROR: '.$message.PHP_EOL;
+        Log::info('ERROR: '.$message);
     }
 
     /**
@@ -202,7 +196,7 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
      */
     public function onDisconnect($consumer)
     {
-        echo 'Disconnected'.PHP_EOL;
+        Log::info('Disconnected');
     }
 
     /**
@@ -215,6 +209,6 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
      */
     public function onStopped($consumer, $reason)
     {
-        echo PHP_EOL.'Stopped: '.$reason.PHP_EOL.PHP_EOL;
+        Log::info('Stopped: '.$reason);
     }
 }
