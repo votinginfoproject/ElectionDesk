@@ -183,6 +183,68 @@
 
 
 
+//Modal Styles
+//===========================
+
+.modal-top{
+  margin-top: -5px;
+  height: 10px;
+  background-color: #25aae1;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.modal-bottom{
+  margin-bottom: -5px;
+  height: 20px;
+  background-color: #bf1e2e;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.modal-body{
+
+    p{
+      font-size: 18px;
+      font-weight: 600;
+      color: #959595;
+
+      &.from{
+        display: inline;
+      }
+
+      &.to{
+        margin-top: 15px;
+      }
+
+      &.character-count{
+        text-align: right;
+      }
+    }
+
+    #accountswitcher{
+      display: inline;
+      margin-left: 10px;
+      width: auto;
+      box-shadow: none;
+      transition: none;
+
+      &:focus{
+        border-color: #ccc;
+      } 
+    }
+
+    textarea.form-control{
+      min-height: 200px;
+    }
+
+    .button-wrapper{
+      text-align: right;
+    }
+}
+
+
+
 
 
 
