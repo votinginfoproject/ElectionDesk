@@ -2,7 +2,8 @@ angular.module('electiondeskStream', [
 	'btford.socket-io',
 	'timeRelative',
 	'ui.bootstrap',
-	'ui.bootstrap-slider'
+	'ui.bootstrap-slider',
+	'cgNotify'
 ]).
 factory('socket', function (socketFactory) {
 	var hostname = window.location.host;
@@ -14,7 +15,7 @@ factory('socket', function (socketFactory) {
 		ioSocket: io.connect('http://' + hostname + ':4242')
 	});
 }).
-controller('StreamController', function ($scope, $http, $modal, socket) {
+controller('StreamController', function ($scope, $http, $modal, socket, notify) {
 	socket.forward(['update', 'hello'], $scope);
 
 	// Modal
@@ -26,6 +27,38 @@ controller('StreamController', function ($scope, $http, $modal, socket) {
 				interaction: function () {
 					return interaction;
 				}
+			}
+		});
+	};
+
+	$scope.follow = function (interaction) {
+		$http({
+			method  : 'POST',
+			url     : '/tweet/follow',
+			data    : $.param({ username: interaction.interaction.author.username }),
+			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+		})
+		.success(function(data) {
+			if (data.error) {
+				notify({ message: 'Could not follow user: ' + data.error, classes: 'alert-danger' });
+			} else {
+				notify({ message: 'You are now following @' + interaction.interaction.author.username, classes: 'alert-success' });
+			}
+		});
+	};
+
+	$scope.retweet = function (interaction) {
+		$http({
+			method  : 'POST',
+			url     : '/tweet/retweet',
+			data    : $.param({ message_id: interaction.twitter.id_str }),
+			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+		})
+		.success(function(data) {
+			if (data.error) {
+				notify({ message: 'Could not follow user: ' + data.error, classes: 'alert-danger' });
+			} else {
+				notify({ message: 'Retweet successful', classes: 'alert-success' });
 			}
 		});
 	};
@@ -74,11 +107,8 @@ controller('StreamController', function ($scope, $http, $modal, socket) {
 
 	// Interaction actions
 	$scope.bookmark = function(interaction) {
-		console.log(interaction);
 		var messageId = interaction._id.$id;
-		console.log(interaction._id);
-		console.log(messageId);
-
+		
 		if (interaction.bookmarked) {
 			$http({
 				method: 'POST',
@@ -92,7 +122,7 @@ controller('StreamController', function ($scope, $http, $modal, socket) {
 						alert('Could not unbookmark message: ' + data.error);
 					}
 				} else {
-					interaction.bookmarked = false;console.log(interaction.bookmarked);
+					interaction.bookmarked = false;
 				}
 			});
 		} else {
@@ -106,7 +136,7 @@ controller('StreamController', function ($scope, $http, $modal, socket) {
 				if (data.error) {
 					alert('Could not bookmark message: ' + data.error);
 				} else {
-					interaction.bookmarked = true;console.log(interaction.bookmarked);
+					interaction.bookmarked = true;
 				}
 			});
 		}
@@ -118,6 +148,8 @@ controller('StreamController', function ($scope, $http, $modal, socket) {
 	$scope.$on('socket:update', function(ev, data) {
 		if ($scope.streamIsActive) {
 			var json = JSON.parse(data);
+
+			console.log(json);
 			
 			// Take care of slight time differences so interactions won't
 			// look like they come from the future
@@ -192,7 +224,7 @@ filter('topicfilter', function() {
 		});
 
 		return items.filter(function(element, index, array) {
-			return (activeTopics.indexOf(element.internal.filter_id) != -1);
+			return (activeTopics.indexOf(parseInt(element.internal.filter_id)) != -1);
 		});
 	};
 }).

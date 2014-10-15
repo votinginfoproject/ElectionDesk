@@ -25,7 +25,7 @@ class Interaction {
 		// Initialize database
 		try
 		{
-		    $m = new \Mongo('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
+		    $m = new \MongoClient('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
 		    self::$db = $m->selectDB(MONGODB_DATABASE);
 		}
 		catch (MongoConnectionException $e)

@@ -30,7 +30,7 @@
 class Twitter {
 
     // internal constant to enable/disable debugging
-    const DEBUG = true;
+    const DEBUG = false;
 
     // url for the twitter-api
     const API_URL = 'https://api.twitter.com/1.1';
@@ -1390,7 +1390,7 @@ class Twitter {
         $url = 'statuses/retweet/' . $tweet_id;
         
         
-        $arrResult = $this->doCall($url, $arrParams, true, 'POST');
+        $arrResult = $this->doCall($url, array(), true, 'POST');
         
         return $arrResult;      
     }

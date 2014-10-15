@@ -41,7 +41,7 @@ class Admin extends CI_Controller {
 		$data['facebook_stream_total'] = NULL;
 		
 			try {
-				$m = new \Mongo('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
+				$m = new \MongoClient('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
 				$db = $m->selectDB(MONGODB_DATABASE);
 			} catch (MongoConnectionException $e) {
 				echo json_encode(array('error' => 'Database connection failed, please try again later'));
