@@ -103,10 +103,18 @@
 
 		&:checked + label {
 			background-color: $primaryColor;
+
+			&:hover{
+				background-color: lighten($primaryColor, 10%);
+			}
 		}
 
 		&:not(:checked) + label {
 			background-color: $primaryGrayColor;
+
+			&:hover{
+				background-color: darken($primaryGrayColor, 5%);
+			}
 		}
 	}
 
