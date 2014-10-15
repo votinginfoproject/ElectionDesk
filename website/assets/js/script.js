@@ -3761,6 +3761,20 @@ $(SettingsForm.init), angular.module("electiondeskStream", [ "btford.socket-io",
                 return radiusVal >= distance;
             });
         }
+        if ("custom" == limit) {
+            var isPointInPoly = function(poly, pt) {
+                for (var c = !1, i = -1, l = poly.length, j = l - 1; ++i < l; j = i) (poly[i].y <= pt.y && pt.y < poly[j].y || poly[j].y <= pt.y && pt.y < poly[i].y) && pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x && (c = !c);
+                return c;
+            };
+            return items.filter(function(element) {
+                if ("undefined" == typeof element.internal.location || 0 === element.internal.location.coords[0] || 0 === element.internal.location.coords[1]) return !1;
+                for (var i = 0; i < window.STREAM.geofencePolygons.length; i++) if (isPointInPoly(window.STREAM.geofencePolygons[i], {
+                    x: element.internal.location.coords[0],
+                    y: element.internal.location.coords[1]
+                })) return !0;
+                return !1;
+            });
+        }
     };
 }).filter("contentfilter", function() {
     return function(items, query) {

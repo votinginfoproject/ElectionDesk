@@ -278,6 +278,30 @@ filter('limitfilter', function() {
 				var distance = haversine(userLocation, interactionLocation, { unit: 'mile' });
 				return (distance <= radiusVal);
 			});
+		} else if (limit == 'custom') {
+			/* jshint ignore:start */
+			var isPointInPoly = function(poly, pt) {
+				for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+					((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
+					&& (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+					&& (c = !c);
+					return c;
+			};
+			/* jshint ignore:end */
+
+			return items.filter(function(element, index, array) {
+				if (typeof(element.internal.location) == 'undefined' || element.internal.location.coords[0] === 0 || element.internal.location.coords[1] === 0) {
+					return false;
+				}
+
+				for (var i = 0; i < window.STREAM.geofencePolygons.length; i++) {
+					if (isPointInPoly(window.STREAM.geofencePolygons[i], { x: element.internal.location.coords[0], y: element.internal.location.coords[1] })) {
+						return true;
+					}
+				}
+
+				return false;
+			});
 		}
 	};
 }).

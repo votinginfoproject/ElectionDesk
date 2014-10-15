@@ -60,6 +60,21 @@
         </ul>
         <div class="clearfix"></div>
       </div>
+      <!-- Disqus -->
+      <div ng-switch-when="disqus">
+        <img src="/assets/img/disqus.png" alt="{{ interaction.interaction.author.name }}" class="profile-picture">
+        <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
+        <a ng-href="{{ interaction.interaction.link }}" target="_blank" class="target-link">{{ interaction.interaction.author.name }}</a>
+        <p ng-show="!show" class="summary">{{ interaction.interaction.content | limitTo:140 }}</p>
+        <p ng-show="show" class="full">{{ interaction.interaction.content }}</p>
+
+        <a href="" class="expand" ng-click="show = !show" ng-show="interaction.interaction.content.length > 140">{{ show ? 'Collapse' : 'Expand' }}</a>
+        <ul class="actions">
+          <li class="bookmark"><a href="" ng-click="bookmark(interaction)"><i class="fa fa-star"></i> Bookmark</a></li>
+          <li class="location" ng-if="typeof(interaction.internal.location) !== 'undefined' && typeof(interaction.internal.location.state) != 'undefined' && interaction.internal.location.state.length"><a href="#"><i class="fa fa-map-marker"></i> {{ interaction.internal.location.state }}</a></li>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
       <!-- Google+ -->
       <div ng-switch-when="googleplus">
         <img ng-src="{{ interaction.interaction.author.avatar }}" alt="{{ interaction.interaction.author.name }}" class="profile-picture">
