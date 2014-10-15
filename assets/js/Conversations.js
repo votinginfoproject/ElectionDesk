@@ -17,6 +17,11 @@ var Conversations = (function () {
 		$.get('/conversations/data', function (conversations) {
 			$("#loading").hide(); // Remove loading indicator
 
+			if (conversations.error) {
+				alert(conversations.error);
+				return;
+			}
+
 			if (conversations.length <= 0) {
 				$("#no-conversations").show();
 			}
@@ -114,8 +119,8 @@ var Conversations = (function () {
 				prepareReplyForm(parent.attr("data-username"), parent.attr("data-messageid"));
 
 				// Show the go-back button
-				$(".go-back-tab").show();
-				$(".go-back-tab a").unbind('click').click(function () {
+				$(".go-back").show();
+				$(".go-back").unbind('click').click(function () {
 					// Show conversations overview
 					$("#conversations-overview").show();
 
@@ -124,7 +129,7 @@ var Conversations = (function () {
 					$("#conversations-list > div").hide();
 
 					// Hide the go back button again
-					$(".go-back-tab").hide();
+					$(".go-back").hide();
 
 					return false;
 				});
@@ -140,7 +145,7 @@ var Conversations = (function () {
 		var tweet_length = $(".reply textarea").val().length;
 		var remaining = 140 - tweet_length;
 		$(".reply .word-count").html(remaining);
-		$(".reply textarea").selectRange(tweet_length, tweet_length);
+		//$(".reply textarea").selectRange(tweet_length, tweet_length);
 
 		// Handle tweet character count update
 		$(".reply textarea").keyup(function () {

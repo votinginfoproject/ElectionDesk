@@ -1,91 +1,109 @@
-.convo {
-	border-bottom: 1px solid #afafaf;
-	padding-bottom: 20px;
-	margin-bottom: 20px;
-}
-.convo.unread {
-	background-color: #25AAE1;
-}
-#conversations .content {
-	padding: 0px;
-}
-#conversations .convo {
+#conversations {
 	padding: 0;
 	margin: 0;
 }
-#conversations .convo a {
-	display: block;
-	color: #300F00;
-	text-decoration: none;
-	min-height: 45px;
-	padding: 20px;
+
+#conversations main .container > p, #conversations-single main .container > p {
+  font-size: 18px;
+  font-weight: 600;
+  color: #959595;
+
+  &.from{
+    display: inline;
+  }
+
+  &.to{
+    margin-top: 15px;
+  }
+
+  &.character-count{
+    text-align: right;
+  }
 }
-#conversations .convo a:hover {
-	background: #f1f1f1;
+
+.conversations-container {
+	margin-top: 25px;
 }
+
+.convo {
+	border-bottom: 1px solid #ccc;
+
+	&.unread {
+		background-color: #25AAE1;
+	}
+
+	a {
+		display: block;
+		color: #300F00;
+		text-decoration: none;
+		min-height: 45px;
+		padding: 12px 0 12px 9px;
+
+		&:hover {
+			background: #f1f1f1;
+		}
+	}
+
+	img {
+		width: 48px;
+		height: 48px;
+		border-radius: 4px;
+		float: left;
+		margin-bottom: 25px;
+		margin-right: 10px;
+	}
+
+	p {
+		margin: 0;
+		font-family: Helvetica, Arial, sans-serif;
+		font-size: 14px;
+		line-height: 19px;
+		letter-spacing: -0.01em;
+		color: #292f33;
+
+		&.time-stamp {
+			float: right;
+			font-size: 13px;
+			color: #ccc;
+		}
+	}
+
+	h4 {
+		color: #25aae1;
+		font-weight: bold;
+		font-size: 14px;
+	}
+}
+
+.content {
+	padding: 0;
+}
+
 .convo p.message {
 	width: 724px;
 	display: block;
 }
+
 #conversations form.reply {
 	display: none;
+}
+#conversations-single {
+	.convo {
+		padding: 12px 0 12px 9px;
+	}
 }
 #conversations-single form.reply {
 	background: #ebebeb;
 	padding: 20px;
-}
-#conversations-single form.reply textarea {
-	width: 600px;
-	max-width: 600px;
-	float: left;
-	margin-right: 20px;
-	min-height: 37px;
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border: 1px solid #e8e8e9;
-	box-shadow: inset 1px 2px 4px 0px rgba(0,0,0,.2);
-	-moz-box-shadow: inset 1px 2px 4px 0px rgba(0,0,0,.2);
-	-webkit-box-shadow: inset 1px 2px 4px 0px rgba(0,0,0,.2);
-	padding: 15px;
-	font-size: 15px;
-}
-#conversations-single form.reply input {
-	clear: none;
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border: none;
-	outline: none;
-	cursor: pointer;
-	color: white;
-	text-transform: uppercase;
-	height: 45px;
-	font-size: 16px;
-	line-height: 45px;
-	display: block;
-	box-shadow: 1px 2px 2px 0px rgba(0,0,0,.2);
-	-moz-box-shadow: 1px 2px 2px 0px rgba(0,0,0,.2);
-	-webkit-box-shadow: 1px 2px 2px 0px rgba(0,0,0,.2);
-	border-bottom: 1px solid rgba(0,0,0,.2);
-	border-right: 1px solid rgba(0,0,0,.2);
-	background: #DC5A5A;
-	padding: 0 40px 0 40px;
-}
-#conversations-single .convo {
-	border-bottom: 1px solid #ebebeb;
-}
-#loading {
-	padding: 20px;
+
+	
+	textarea.form-control{
+      min-height: 200px;
+    }
 }
 body#settings #loading {
 	padding: 20px 0px;
 	display: none;
-}
-#loading h3 {
-	margin: 8px;
-	padding: 0 0 0 20px;
-	background: url(../img/loading.gif) no-repeat 0 2px;
 }
 #no-conversations {
 	padding: 20px;
@@ -96,5 +114,8 @@ body#settings #loading {
 	padding: 0 0 0 20px;
 }
 #conversations-list > div {
+	display: none;
+}
+.go-back, #saving-reply-indicator {
 	display: none;
 }

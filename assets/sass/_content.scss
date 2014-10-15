@@ -229,7 +229,7 @@
   border-bottom-right-radius: 6px;
 }
 
-.modal-body{
+.modal-body {
 
     p{
       font-size: 18px;
@@ -249,20 +249,13 @@
       }
     }
 
-    #accountswitcher{
-      display: inline;
-      margin-left: 10px;
-      width: auto;
-      box-shadow: none;
-      transition: none;
-
-      &:focus{
-        border-color: #ccc;
-      } 
+    textarea.form-control{
+      min-height: 150px;
     }
 
-    textarea.form-control{
-      min-height: 200px;
+    .btn {
+      float: right;
+      margin-top: 12px;
     }
 
     .button-wrapper{
@@ -270,8 +263,17 @@
     }
 }
 
+#accountswitcher, .accountswitcher{
+  display: inline;
+  margin-left: 10px;
+  width: auto;
+  box-shadow: none;
+  transition: none;
 
-
+  &:focus{
+    border-color: #ccc;
+  } 
+}
 
 
 //Admin Styles

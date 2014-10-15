@@ -17,7 +17,7 @@
 	<input type="hidden" name="state" id="state" value="" />
 	<input type="submit" value="Save" />
 	<div id="loading">
-		<h3>Saving location</h3>
+		<h3><i class="fa fa-spinner fa-spin"></i> Saving location</h3>
 	</div>
 	<?php echo form_close(); ?>
 	<div class="clear"></div>

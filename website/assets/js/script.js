@@ -3471,7 +3471,8 @@ angular.module("ui.bootstrap.transition", []).factory("$transition", [ "$q", "$t
 var Conversations = function() {
     function loadConversations() {
         $.get("/conversations/data", function(conversations) {
-            $("#loading").hide(), conversations.length <= 0 && $("#no-conversations").show();
+            if ($("#loading").hide(), conversations.error) return void alert(conversations.error);
+            conversations.length <= 0 && $("#no-conversations").show();
             var conversation_id = 1;
             $.each(conversations, function(index, conversation) {
                 for (var firstconversation = null, has_unread_messages = !1, i = 0; i < conversation.list.length && (conversation.list[i].id && (firstconversation = conversation.list[i]), 
@@ -3502,9 +3503,9 @@ var Conversations = function() {
                         }
                     }
                 }), prepareReplyForm(parent.attr("data-username"), parent.attr("data-messageid")), 
-                $(".go-back-tab").show(), $(".go-back-tab a").unbind("click").click(function() {
+                $(".go-back").show(), $(".go-back").unbind("click").click(function() {
                     return $("#conversations-overview").show(), $("body").attr("id", "conversations"), 
-                    $("#conversations-list > div").hide(), $(".go-back-tab").hide(), !1;
+                    $("#conversations-list > div").hide(), $(".go-back").hide(), !1;
                 }), !1;
             });
         });
@@ -3512,8 +3513,7 @@ var Conversations = function() {
     function prepareReplyForm(username, message_id) {
         $(".reply textarea").val("@" + username + " ");
         var tweet_length = $(".reply textarea").val().length, remaining = 140 - tweet_length;
-        $(".reply .word-count").html(remaining), $(".reply textarea").selectRange(tweet_length, tweet_length), 
-        $(".reply textarea").keyup(function() {
+        $(".reply .word-count").html(remaining), $(".reply textarea").keyup(function() {
             var remaining = 140 - $(this).val().length;
             $(".reply .word-count").html(remaining);
         }), $(".reply .error").hide(), $(".reply").unbind("submit").submit(function() {
