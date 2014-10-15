@@ -2,10 +2,10 @@ var SettingsForm = (function () {
 	var geocoder = new google.maps.Geocoder();
 
 	function bindEvents() {
-		$('#location-form .btn').click(function () {
+		$('.btn-locate').click(function () {
 			if (navigator.geolocation) {
 				// Show loading indicator
-				$('#location-form a img').attr('src', $('#location-form a img').attr('src').replace('locateme.png', 'loading.gif'));
+				$(this).find('.fa').removeClass('fa-location-arrow').addClass('fa-spin').addClass('fa-spinner');
 
 				// Get current position
 				navigator.geolocation.getCurrentPosition(geoLocationSuccess, geoLocationError);
@@ -55,7 +55,7 @@ var SettingsForm = (function () {
 		var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
 		geocoder.geocode( { 'latLng': latlng}, function(results, status) {
-			$('#location-form a img').attr('src', $('#location-form a img').attr('src').replace('loading.gif', 'locateme.png'));
+			$('.btn-locate .fa').removeClass('fa-spin').removeClass('fa-spinner').addClass('fa-location-arrow');
 
 			if (status == google.maps.GeocoderStatus.OK) {
 				$('#address').val(results[0].formatted_address);

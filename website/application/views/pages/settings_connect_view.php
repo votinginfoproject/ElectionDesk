@@ -1,36 +1,13 @@
 <section class="register">
-	<div class="left-col">
+	<div class="col-md-6">
 	<h3>Connect your social network accounts</h3>
 
 	<p>Last step. Connect your social networks to allow them to integrate with ElectionDesk. </p>
 	<p>At a minimum, we require you to connect your official <a href="http://twitter.com">Twitter</a> account to ElectionDesk.  This is the account you will use to engage with voters in your area (e.g. @ElectionOfficial). </p>
 	<p>If you don't have a Twitter handle yet, you can sign up <a href="https://twitter.com/signup">here</a>.</p>
-	<?php
-	$twitter = false;
-	if ($accounts) {
-		foreach ($accounts as $account) {
-			if ($account->type == 'TWITTER') {
-				$twitter = true;
-				break;
-			}
-		}
-	}
-	if ($twitter):
-	?>
-	<div class="box-completed">
-		<h3>You're all set!</h3>
-		<p>
-			<?php echo anchor('/', 'Get started'); ?>
-			<span class="middle">- or -</span><br>
-			connect to more social networks
-		</p>
-	</div>
-	<?php
-	endif;
-	?>
 
 	</div>
-	<div class="right-col">
+	<div class="col-md-6">
 		<?php
 		foreach ($accounts as $account) {
 		?>

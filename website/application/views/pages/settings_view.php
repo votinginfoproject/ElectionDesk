@@ -3,9 +3,8 @@
 	<div class="address col-md-6">
 		<div class="form-wrapper-left">
 		<?php if (!empty($success_message)) : ?>
-		<div class="success-message" id="address-success"><?php echo $success_message; ?></div>
+		<div class="alert alert-success"><?php echo $success_message; ?></div>
 		<?php endif; ?>
-		<div class="error-message" id="address-errors"></div>
 		
 		<?php echo form_open('settings', array('id' => 'location-form')); ?>
 
@@ -15,7 +14,7 @@
 			<div class="input-group">
 				<input type="text" id="address" name="address" class="form-control" value="<?php echo is_null($user->user_location) ? '' : $user->user_location; ?>" placeholder="enter a street address" />
 				<span class="input-group-btn">
-					<a href="#" class="btn btn-warning"><i class="fa fa-location-arrow"></i></a>
+					<a href="#" class="btn btn-locate btn-warning"><i class="fa fa-location-arrow"></i></a>
 				</span>
 			</div>
 		</div>
@@ -26,7 +25,7 @@
 		<input type="hidden" name="state" id="state" value="" />
 
 		<p>If you have multiple offices, please select the one most central to your election jurisdiction or state.</p>
-		<input type="submit" class="btn btn-primary" value="Save" />
+		<button type="submit" class="btn btn-primary"><i class="fa fa-spinner fa-spin" id="loading"></i> Save</button>
 		<?php echo form_close(); ?>
 	
 		</div><!--form wrapper-->

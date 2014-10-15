@@ -94,7 +94,7 @@ $config['autologin_cookie_life'] = 60*60*24*31*2;
 | 'forgot_password_expire' = Time before forgot password key become invalid. Default is 15 minutes (60*15).
 |--------------------------------------------------------------------------
 */
-$config['forgot_password_expire'] = 60*15;
+$config['forgot_password_expire'] = 3600*48;
 
 /*
 |--------------------------------------------------------------------------

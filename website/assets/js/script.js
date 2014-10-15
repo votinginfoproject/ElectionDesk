@@ -3542,8 +3542,8 @@ $(Conversations.init);
 
 var SettingsForm = function() {
     function bindEvents() {
-        $("#location-form .btn").click(function() {
-            return navigator.geolocation ? ($("#location-form a img").attr("src", $("#location-form a img").attr("src").replace("locateme.png", "loading.gif")), 
+        $(".btn-locate").click(function() {
+            return navigator.geolocation ? ($(this).find(".fa").removeClass("fa-location-arrow").addClass("fa-spin").addClass("fa-spinner"), 
             navigator.geolocation.getCurrentPosition(geoLocationSuccess, geoLocationError)) : alert("Sorry! Your browser does not support this feature"), 
             !1;
         }), $("#location-form").submit(function() {
@@ -3569,7 +3569,7 @@ var SettingsForm = function() {
         geocoder.geocode({
             latLng: latlng
         }, function(results, status) {
-            $("#location-form a img").attr("src", $("#location-form a img").attr("src").replace("loading.gif", "locateme.png")), 
+            $(".btn-locate .fa").removeClass("fa-spin").removeClass("fa-spinner").addClass("fa-location-arrow"), 
             status == google.maps.GeocoderStatus.OK ? $("#address").val(results[0].formatted_address) : alert("Sorry, there was an error locating your address. Please try again.");
         });
     }
