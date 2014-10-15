@@ -100,7 +100,7 @@ class GnipConsumer extends Consumer {
                 'interaction' => array(
                     'schema' => array('version' => 3),
                     'author' => array(
-                        'username' => $post->actor->preferredUsername,
+                        'username' => isset($post->actor->preferredUsername) ? $post->actor->preferredUsername : 'Anonymous',
                         'name' => $post->actor->preferredUsername,
                         'id' => $post->actor->id
                     ),
