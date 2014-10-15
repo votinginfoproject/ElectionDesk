@@ -16,22 +16,21 @@ if (isset($modal_reply)) {
   <header>
     <div class="container">
       <a class="logo" href="/">ElectionDesk</a>
-
       <nav>
         <ul>
-          <li class="active"><a href="/">Home</a></li>
+          <li<?php echo (uri_string() == '') ? ' class="active"' : '' ?>><a href="/">Home</a></li>
           <?php
-  				if ($this->tank_auth->is_logged_in()):
-  				?>
-          <li><a href="/conversations">Conversations</a></li>
-          <li><a href="/settings">Settings</a></li>
+          if ($this->tank_auth->is_logged_in()):
+          ?>
+          <li<?php echo (uri_string() == 'conversations') ? ' class="active"' : '' ?>><a href="/conversations">Conversations</a></li>
+          <li<?php echo (uri_string() == 'settings') ? ' class="active"' : '' ?>><a href="/settings">Settings</a></li>
           <li><a href="/auth/logout">Logout</a></li>
           <li class="btn btn-primary"><a href="/post">Post</a></li>
           <?php
           else:
           ?>
-  	    	<li><a href="/help">Help</a></li>
-  		    <?php
+          <li<?php echo (uri_string() == 'help') ? ' class="active"' : '' ?>><a href="/help">Help</a></li>
+          <?php
           endif;
           ?>
         </ul>

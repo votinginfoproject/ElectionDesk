@@ -13,9 +13,9 @@
 
       <nav>
         <ul>
-          <li class="active"><a href="/">Home</a></li>
-          <li><a href="/admin/users">Users</a></li>
-          <li><a href="/admin/data">Data</a></li>
+          <li<?php echo (uri_string() == 'admin') ? ' class="active"' : '' ?>><a href="/">Home</a></li>
+          <li<?php echo (uri_string() == 'admin/users') ? ' class="active"' : '' ?>><a href="/admin/users">Users</a></li>
+          <li<?php echo (uri_string() == 'admin/data') ? ' class="active"' : '' ?>><a href="/admin/data">Data</a></li>
         </ul>
       </nav>
     </div><!--/container-->
