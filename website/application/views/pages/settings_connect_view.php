@@ -7,22 +7,42 @@
 	<p>If you don't have a Twitter handle yet, you can sign up <a href="https://twitter.com/signup">here</a>.</p>
 
 	</div>
-	<div class="col-md-6">
+	<div class="col-md-6 accounts">
 		<?php
-		foreach ($accounts as $account) {
+		if (count($accounts) > 0):
 		?>
-			<div id="<?php echo strtolower($account->type); ?>" class="account-disconnect">
-				<p class="connected-<?php echo strtolower($account->type); ?>">
-					<?php if ($account->type == 'TWITTER') echo '@'; ?><?php echo $account->name; ?>
-					<?php echo anchor('settings/delete_account?id=' . $account->id, 'Remove'); ?>
-				</p>
-			</div>
+			<h2>Connected accounts</h2>
+			<?php
+			foreach ($accounts as $account):
+			?>
+				<h4 class="sm-account">
+					<?php
+						switch ($account->type) {
+					  case "TWITTER":
+					    $logo = '<i class="fa fa-twitter"></i>@';
+					    break;
+					  case "FACEBOOK":
+					    $logo = '<i class="fa fa-facebook"></i>';
+					    break;
+					  case "GOOGLEPLUS":
+					    $logo = '<i class="fa fa-google-plus"></i>';
+					    break;
+					}?>
+
+				 	<?php echo $logo . $account->name; ?><?php echo anchor('settings/delete_account?id=' . $account->id, '<i class="fa fa-trash"></i>', array('class' => 'btn btn-danger btn-del-account')); ?> </h4>
+			<?php
+			endforeach;
+			?>
 		<?php
-		}
+		endif;
 		?>
-		<?php echo anchor('settings/twitter', '<i class="fa fa-twitter"></i> Add Twitter account', array('class' => 'btn btn-block btn-info')); ?>
-		<?php echo anchor($this->facebook->getLoginUrl($this->config->item('facebook_login_parameters')), '<i class="fa fa-facebook"></i> Add Facebook account', array('class' => 'btn btn-block btn-primary')); ?>
-		<?php echo anchor('settings/google', '<i class="fa fa-google-plus"></i> Add Google+ account', array('class' => 'btn btn-block btn-danger')); ?>
+
+		<h2>Add account</h2>
+		<div class="col-md-6">
+			<?php echo anchor('settings/twitter', '<i class="fa fa-twitter"></i> Add Twitter account', array('class' => 'btn btn-block btn-info')); ?>
+			<?php echo anchor($this->facebook->getLoginUrl($this->config->item('facebook_login_parameters')), '<i class="fa fa-facebook"></i> Add Facebook account', array('class' => 'btn btn-block btn-primary')); ?>
+			<?php echo anchor('settings/google', '<i class="fa fa-google-plus"></i> Add Google+ account', array('class' => 'btn btn-block btn-danger')); ?>
+		</div>
 	</div>	
 	<div class="clear"></div>
 </section>
