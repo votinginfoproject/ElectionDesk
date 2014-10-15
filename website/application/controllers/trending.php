@@ -28,7 +28,6 @@ class Trending extends CI_Controller {
     public function index()
     {
         $this->stencil->title('My Desk');
-        $this->stencil->js(array('scripts', 'stream'));
 		
         $this->stencil->meta(array(
             'description' => 'The Voting Information Project (VIP) is an innovative and proven service that uses the latest technology to provide voters with the information they need to cast a ballot—when they need it and where they are most likely to look for it.'
@@ -76,9 +75,6 @@ class Trending extends CI_Controller {
 
 	public function bookmarks() {
 		$this->stencil->title('Bookmarks');
-        $this->stencil->js('scripts');
-        $this->stencil->js('stream');
-		$this->stencil->js('bookmark');
 
         // Load accounts
         $this->load->model('user_accounts_model');

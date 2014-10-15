@@ -185,7 +185,6 @@ class Conversations extends CI_Controller {
 		$data['body_id'] = 'conversations';
 
 		//$data['body_id'] = 'conversations-single';
-		$this->stencil->js(array('scripts', 'conversations'));
 		$this->stencil->paint('conversations_view', $data); // All conversations
 	}
 }

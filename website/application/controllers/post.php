@@ -34,7 +34,6 @@ class Post extends CI_Controller {
 	
 	public function twitter() {
 		$this->stencil->title('Post to Twitter');
-		$this->stencil->js(array('post'));
 
         $this->load->model('user_accounts_model');
         $data['accounts'] = $this->user_accounts_model->get_by_user_id($this->tank_auth->get_user_id(), 'TWITTER');

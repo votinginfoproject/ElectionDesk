@@ -17,8 +17,6 @@ class Settings extends CI_Controller {
 	function index()
 	{
 		$data['body_id'] = 'settings';
-		$this->stencil->js('https://maps.googleapis.com/maps/api/js?sensor=false');
-		$this->stencil->js('settings');
 
 		$this->load->model('user_profiles_model');
 		$this->load->model('user_accounts_model');
