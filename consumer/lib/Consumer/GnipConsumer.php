@@ -95,27 +95,49 @@ class GnipConsumer extends Consumer {
             return;
         }
 
-        $interaction = array(
-            'interaction' => array(
-                'schema' => array('version' => 3),
-                'author' => array(
-                    'username' => $post->actor->displayName,
-                    'name' => $post->actor->displayName,
-                    'id' => $post->actor->id,
-                    'avatar' => 'http://1.gravatar.com/avatar/' . $post->actor->wpEmailMd5,
-                    'link' => $post->actor->link
+        if (isset($post->disqusType)) { // Disqus
+            $interaction = array(
+                'interaction' => array(
+                    'schema' => array('version' => 3),
+                    'author' => array(
+                        'username' => $post->actor->preferredUsername,
+                        'name' => $post->actor->preferredUsername,
+                        'id' => $post->actor->id
+                    ),
+                    'type' => 'disqus',
+                    'created_at' => new \MongoDate(time()),
+                    'content' => $post->body,
+                    'id' => $post->id,
+                    'link' => $post->object->link
                 ),
-                'type' => strtolower($post->provider->displayName),
-                'created_at' => new \MongoDate(time() + rand(0, 60*4)), // Necessary when data is not live
-                'content' => $post->object->summary,
-                'id' => $post->object->id,
-                'link' => $post->object->link
-            ),
-            //strtolower($post->provider->displayName) => $post,
-            'internal' => array(
-                'filter_id' => (int)$post->gnip->matching_rules[0]->tag
-            )
-        );
+                //'disqus' => $post,
+                'internal' => array(
+                    'filter_id' => (int)$post->gnip->matching_rules[0]->tag
+                )
+            );
+        } else { // WordPress
+            $interaction = array(
+                'interaction' => array(
+                    'schema' => array('version' => 3),
+                    'author' => array(
+                        'username' => $post->actor->displayName,
+                        'name' => $post->actor->displayName,
+                        'id' => $post->actor->id,
+                        'avatar' => 'http://1.gravatar.com/avatar/' . $post->actor->wpEmailMd5,
+                        'link' => $post->actor->link
+                    ),
+                    'type' => strtolower($post->provider->displayName),
+                    'created_at' => new \MongoDate(time()),
+                    'content' => $post->object->summary,
+                    'id' => $post->object->id,
+                    'link' => $post->object->link
+                ),
+                //strtolower($post->provider->displayName) => $post,
+                'internal' => array(
+                    'filter_id' => (int)$post->gnip->matching_rules[0]->tag
+                )
+            );
+        }
 
         \Consumer\Interaction::insert($interaction);
     }
