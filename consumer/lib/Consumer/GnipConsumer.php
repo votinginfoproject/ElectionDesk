@@ -17,7 +17,9 @@ class GnipConsumer extends Consumer {
         $this->filters = $filters;
 
         // Update Gnip Filters
-        $this->clearRules();
+        if (!$this->clearRules()) {
+            return;
+        }
 
         Log::info('Consuming stream');
         $this->consumeStream();
@@ -134,6 +136,7 @@ class GnipConsumer extends Consumer {
             } else {
                 Log::info('Gnip API Request error');
             }
+            return false;
         }
 
         // Delete existing rules
@@ -150,6 +153,7 @@ class GnipConsumer extends Consumer {
                 } else {
                     Log::info('Gnip API Request error');
                 }
+                return false;
             }
         }
 
@@ -171,7 +175,10 @@ class GnipConsumer extends Consumer {
             } else {
                 Log::info('Gnip API Request error');
             }
+            return false;
         }
+
+        return true;
     }
 
 }

@@ -24,7 +24,7 @@
 					  case "FACEBOOK":
 					    $logo = '<i class="fa fa-facebook"></i>';
 					    break;
-					  case "GOOGLEPLUS":
+					  case "GOOGLE":
 					    $logo = '<i class="fa fa-google-plus"></i>';
 					    break;
 					}?>

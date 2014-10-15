@@ -85,7 +85,7 @@ CREATE TABLE `message_replies` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `reply_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `reply_to` varchar(255) DEFAULT NULL,
-  `social_type` enum('FACEBOOK','TWITTER','GOOGLEPLUS') DEFAULT NULL,
+  `social_type` enum('FACEBOOK','TWITTER','GOOGLE') DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `message` mediumtext,
   PRIMARY KEY (`id`)
