@@ -43,17 +43,9 @@
 		<?php
 		}
 		?>
-		<div id="twitter">
-			<?php echo anchor('settings/twitter', 'Add Twitter account', array('class' => 'twitter-connect')); ?>
-		</div>
-
-		<div id="facebook">
-			<?php echo anchor($this->facebook->getLoginUrl($this->config->item('facebook_login_parameters')), 'Add Facebook account', array('class' => 'facebook-connect')); ?>
-		</div>
-
-		<div id="google-plus">
-			<?php echo anchor('settings/google', 'Add Google+ account', array('class' => 'google-connect')); ?>
-		</div>
+		<?php echo anchor('settings/twitter', '<i class="fa fa-twitter"></i> Add Twitter account', array('class' => 'btn btn-block btn-info')); ?>
+		<?php echo anchor($this->facebook->getLoginUrl($this->config->item('facebook_login_parameters')), '<i class="fa fa-facebook"></i> Add Facebook account', array('class' => 'btn btn-block btn-primary')); ?>
+		<?php echo anchor('settings/google', '<i class="fa fa-google-plus"></i> Add Google+ account', array('class' => 'btn btn-block btn-danger')); ?>
 	</div>	
 	<div class="clear"></div>
 </section>

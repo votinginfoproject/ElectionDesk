@@ -33,33 +33,37 @@ window.STREAM = {
 <section id="feeds">
 <h3>Toggle Feeds:</h3>
 
-<div class="btn-group">
-  <button type="button" class="btn btn-default">
-    <input type="checkbox" id="feed_twitter" ng-model="sourceQuery.twitter">
-    <label for="feed_twitter"><i class="fa fa-twitter"></i></label>
-  </button>
-  <button type="button" class="btn btn-default">
-    <input type="checkbox" id="feed_facebook" ng-model="sourceQuery.facebook">
-    <label for="feed_facebook"><i class="fa fa-facebook"></i></label>
-  </button>
-  <button type="button" class="btn btn-default">
-    <input type="checkbox" id="feed_googleplus" ng-model="sourceQuery.googleplus">
-    <label for="feed_googleplus"><i class="fa fa-google-plus"></i></label>
-  </button>
-  <button type="button" class="btn btn-default">
-    <input type="checkbox" id="feed_wordpress" ng-model="sourceQuery.wordpress">
-    <label for="feed_wordpress"><i class="fa fa-wordpress"></i></label>
-  </button>
-  <button type="button" class="btn btn-default">
-    <input type="checkbox" id="feed_disqus" ng-model="sourceQuery.disqus">
-    <label for="feed_disqus"><i class="icon-disqus-social"></i></label>
-  </button>
-</div>
+  <ul class="feed-buttons toggle">
+    <li>
+      <input type="checkbox" id="feed_twitter" ng-model="sourceQuery.twitter">
+      <label for="feed_twitter"><i class="fa fa-twitter"></i></label>
+    </li>
+    <li>
+      <input type="checkbox" id="feed_facebook" ng-model="sourceQuery.facebook">
+      <label for="feed_facebook"><i class="fa fa-facebook"></i></label>
+    </li>
+    <li>
+      <input type="checkbox" id="feed_googleplus" ng-model="sourceQuery.googleplus">
+      <label for="feed_googleplus"><i class="fa fa-google-plus"></i></label>
+    </li>
+    <li>
+      <input type="checkbox" id="feed_wordpress" ng-model="sourceQuery.wordpress">
+      <label for="feed_wordpress"><i class="fa fa-wordpress"></i></label>
+    </li>
+    <li>
+      <input type="checkbox" id="feed_disqus" ng-model="sourceQuery.disqus">
+      <label for="feed_disqus"><i class="icon-disqus-social"></i></label>
+    </li>
+</ul><!--/feed buttons-->
 
-<button type="button" class="btn btn-default btn-playpause">
-  <input type="checkbox" id="feed_paused" ng-model="streamIsActive" ng-change="togglePause()">
-  <label for="feed_paused" id="feed_paused_label"><i class="fa fa-pause"></i></label>
-</button>
+<ul class="feed-buttons control">
+  <li>
+    <input type="checkbox" id="feed_paused" ng-model="streamIsActive" ng-change="togglePause()">
+    <label for="feed_paused" id="feed_paused_label"><i class="fa fa-pause"></i></label>
+  </li>
+</ul><!--/feed buttons-->
+
+
 
 <a href="/trending/bookmarks" class="btn btn-warning">Bookmarks</a>
 </section>
