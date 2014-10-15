@@ -38,6 +38,8 @@ if (ENVIRONMENT == 'production') {
 
 	// Google API
 	define('GOOGLE_API_KEY', '');
+	define('GOOGLE_CLIENT_ID', '');
+	define('GOOGLE_CLIENT_SECRET', '');
 
 	// Twitter API
 	define('TWITTER_CONSUMER_KEY', '');
@@ -86,6 +88,8 @@ if (ENVIRONMENT == 'production') {
 
 	// Google API
 	define('GOOGLE_API_KEY', '');
+	define('GOOGLE_CLIENT_ID', '');
+	define('GOOGLE_CLIENT_SECRET', '');
 
 	// Twitter API
 	define('TWITTER_CONSUMER_KEY', '');
