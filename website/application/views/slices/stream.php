@@ -62,9 +62,9 @@
       </div>
       <!-- Disqus -->
       <div ng-switch-when="disqus">
-        <img src="/assets/img/disqus.png" alt="{{ interaction.interaction.author.name }}" class="profile-picture">
-        <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
-        <a ng-href="{{ interaction.interaction.link }}" target="_blank" class="target-link">{{ interaction.interaction.author.name }}</a>
+        <a href="http://disqus.com" target="_blank"><img src="/assets/img/disqus.png" alt="{{ interaction.interaction.author.name }}" class="profile-picture"></a>
+        <a ng-href="{{ interaction.interaction.link }}" target="_blank"><time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time></a>
+        <a ng-href="https://disqus.com/home/user/{{ interaction.interaction.author.username }}" target="_blank" class="target-link">{{ interaction.interaction.author.name }}</a>
         <p ng-show="!show" class="summary">{{ interaction.interaction.content | limitTo:140 }}</p>
         <p ng-show="show" class="full">{{ interaction.interaction.content }}</p>
 

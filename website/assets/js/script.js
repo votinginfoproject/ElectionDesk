@@ -3418,7 +3418,82 @@ angular.module("ui.bootstrap.transition", []).factory("$transition", [ "$q", "$t
     a.put("template/typeahead/typeahead-match.html", '<a tabindex="-1" bind-html-unsafe="match.label | typeaheadHighlight:query"></a>');
 } ]), angular.module("template/typeahead/typeahead-popup.html", []).run([ "$templateCache", function(a) {
     a.put("template/typeahead/typeahead-popup.html", '<ul class="dropdown-menu" ng-show="isOpen()" ng-style="{top: position.top+\'px\', left: position.left+\'px\'}" style="display: block;" role="listbox" aria-hidden="{{!isOpen()}}">\n    <li ng-repeat="match in matches track by $index" ng-class="{active: isActive($index) }" ng-mouseenter="selectActive($index)" ng-click="selectMatch($index)" role="option" id="{{match.id}}">\n        <div typeahead-match index="$index" match="match" query="query" template-url="templateUrl"></div>\n    </li>\n</ul>\n');
-} ]), angular.module("electiondeskBookmarks", [ "timeRelative" ]).factory("dataService", [ "$http", function($http) {
+} ]);
+
+var Areas = function() {
+    function initialize() {
+        var mapOptions = {
+            zoom: 4,
+            center: new google.maps.LatLng(41.850033, -87.6500523),
+            mapTypeId: google.maps.MapTypeId.TERRAIN
+        };
+        map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+        for (var i = 0; i < window.COORDS.length; i++) {
+            var polygon = new google.maps.Polygon({
+                paths: window.COORDS[i],
+                strokeColor: "#FF0000",
+                strokeOpacity: .8,
+                strokeWeight: 2,
+                fillColor: "#FF0000",
+                fillOpacity: .35
+            });
+            polygon.setMap(map);
+        }
+    }
+    function bindEvents() {
+        function mapClicked(event) {
+            drawPolyPoints.insertAt(drawPolyPoints.length, event.latLng);
+            var marker = new google.maps.Marker({
+                position: event.latLng,
+                map: map,
+                draggable: !0
+            });
+            drawMarkers.push(marker), marker.setTitle("#" + drawPolyPoints.length), google.maps.event.addListener(marker, "click", function() {
+                marker.setMap(null);
+                for (var i = 0, I = drawMarkers.length; I > i && drawMarkers[i] != marker; ++i) ;
+                drawMarkers.splice(i, 1), drawPolyPoints.removeAt(i);
+            }), google.maps.event.addListener(marker, "dragend", function() {
+                for (var i = 0, I = drawMarkers.length; I > i && drawMarkers[i] != marker; ++i) ;
+                drawPolyPoints.setAt(i, marker.getPosition());
+            });
+        }
+        $("#drawbtn").click(function() {
+            if ($("#drawbtn").data("editing") === !0) {
+                var name = prompt("What do you want to call this area?");
+                if (name) {
+                    $("#drawname").val(name);
+                    var normalizedPoints = [];
+                    drawPolyPoints.forEach(function(point) {
+                        normalizedPoints.push({
+                            lat: point.lat(),
+                            lng: point.lng()
+                        });
+                    }), $("#drawpoints").val(JSON.stringify(normalizedPoints)), $("#draw-form").submit();
+                }
+                $("#drawcancelbtn").addClass("hide"), $("#drawbtn").data("editing", !1).val("Saving...");
+            } else drawPolygon = new google.maps.Polygon({
+                strokeColor: "#0000FF",
+                strokeOpacity: .8,
+                strokeWeight: 2,
+                fillColor: "#0000FF",
+                fillOpacity: .35
+            }), drawPolygon.setMap(map), drawPolygon.setPaths(new google.maps.MVCArray([ drawPolyPoints ])), 
+            drawClickListener = google.maps.event.addListener(map, "click", mapClicked), $("#drawcancelbtn").removeClass("hide"), 
+            $("#drawbtn").data("editing", !0).val("Save area");
+        }), $("#drawcancelbtn").click(function() {
+            google.maps.event.removeListener(drawClickListener), drawPolyPoints = new google.maps.MVCArray(), 
+            drawPolygon = null, drawMarkers = [], $("#drawbtn").data("editing", !1).val("Start");
+        });
+    }
+    var map, drawPolygon, drawClickListener, drawPolyPoints = new google.maps.MVCArray(), drawMarkers = [];
+    return google.maps.event.addDomListener(window, "load", initialize), {
+        init: function() {
+            $("body#areas").length && (initialize(), bindEvents());
+        }
+    };
+}();
+
+$(Areas.init), angular.module("electiondeskBookmarks", [ "timeRelative" ]).factory("dataService", [ "$http", function($http) {
     return {
         getJson: function() {
             return $http.get("/trending/bookmarksinteractions");
@@ -3682,9 +3757,7 @@ $(SettingsForm.init), angular.module("electiondeskStream", [ "btford.socket-io",
         });
     }, $scope.interactions = [], $scope.$on("socket:update", function(ev, data) {
         if ($scope.streamIsActive) {
-            var json = JSON.parse(data);
-            console.log(json);
-            var unixTime = new Date().getTime() / 1e3;
+            var json = JSON.parse(data), unixTime = new Date().getTime() / 1e3;
             json.interaction.created_at.sec > unixTime && (json.interaction.created_at.sec = unixTime), 
             json.bookmarked = "undefined" != typeof window.STREAM.bookmarks[json._id.$id] ? !0 : !1, 
             $scope.interactions.push(json);
