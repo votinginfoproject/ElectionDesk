@@ -27,12 +27,6 @@
 <p><?php echo $total_users; ?></p>
 <br>
 
-
-<h2># of support tickets sent</h2>
-<p><?php echo $tickets_total; ?></p>
-<br>
-
-
 <h2>How many times people log in</h2>
 <p>Total Logins: <?php echo $total_logins; ?></p>
 

@@ -369,9 +369,19 @@ class Users extends CI_Model
 		));
 	}
 	
+	function get_all_users()
+	{
+		return $this->db->order_by('created', 'desc')->get($this->table_name)->result();
+	}
+
 	function get_banned_users()
 	{
 		return $this->db->where('banned', 1)->order_by('created', 'desc')->get($this->table_name)->result();
+	}
+
+	function get_unbanned_users()
+	{
+		return $this->db->where('banned', 0)->order_by('created', 'desc')->get($this->table_name)->result();
 	}
 	
 

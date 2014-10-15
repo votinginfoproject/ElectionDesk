@@ -29,7 +29,20 @@ class Admin extends CI_Controller {
 		
 		$this->load->model('tank_auth/users');
 		
-		$data['banned_users'] = $this->users->get_banned_users();
+		$data['users'] = $this->users->get_unbanned_users();
+		
+		
+		
+		$this->stencil->paint('admin/user_management_view', $data);
+	}
+
+	function pending() {
+		$data['body_id'] = 'users';
+		$this->stencil->title('User Management');
+		
+		$this->load->model('tank_auth/users');
+		
+		$data['users'] = $this->users->get_banned_users();
 		
 		
 		
@@ -59,7 +72,6 @@ class Admin extends CI_Controller {
 		$this->load->model('auth/users');
 		$this->load->model('user_profiles_model');
 		$this->load->model('user_accounts_model');
-		$this->load->model('tickets_model');
 		
 		$user_id = $this->tank_auth->get_user_id();
 		
@@ -85,11 +97,7 @@ class Admin extends CI_Controller {
 		$data['twitter_connects'] = $this->user_accounts_model->count_connections('TWITTER');
 		
 		//count all user
-		$data['total_users'] = $this->users->count_all();
-		
-		//total tickets submitted
-		$data['tickets_total'] = $this->tickets_model->count_all();
-		
+		$data['total_users'] = $this->users->count_all();		
 		
 		$data['body_id'] = 'data';
 		$this->stencil->title('Data Analysis');
@@ -132,8 +140,33 @@ class Admin extends CI_Controller {
 		redirect('admin/users', 'location');
 	
 	}
+
+	function disable($user_id = NULL) {
+		if (is_null($user_id)) {
+			redirect('admin', 'location');
+		}
+		
+		$this->load->model('tank_auth/users');
+	
+		$this->users->ban_user($user_id, 'Admin action');		
+	
+		redirect('admin/users', 'location');
+	
+	}
+
+	function delete($user_id = NULL) {
+		if (is_null($user_id)) {
+			redirect('admin', 'location');
+		}
+		
+		$this->load->model('tank_auth/users');
+	
+		$this->users->delete_user($user_id);
+			
+		redirect('admin/users', 'location');
+	
+	}
 }
 
 /* End of file admin.php */
 /* Location: ./application/controllers/admin.php */
-
