@@ -11,8 +11,8 @@ endif;
 ?>
 
 <div class="btn-group">
-  <a href="/admin/pending" class="btn btn-info<?php echo ($this->uri->segment(2) == 'pending') ? ' active' : '' ?>">Pending users</a>
   <a href="/admin/users" class="btn btn-info<?php echo ($this->uri->segment(2) != 'pending') ? ' active' : '' ?>">Active users</a>
+  <a href="/admin/pending" class="btn btn-info<?php echo ($this->uri->segment(2) == 'pending') ? ' active' : '' ?>">Pending users</a>
 </div>
 
 <section id="all-users">
