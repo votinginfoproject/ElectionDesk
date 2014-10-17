@@ -76,8 +76,6 @@ class DatasiftConsumer extends Consumer implements \DataSift_IStreamConsumerEven
                 array_key_exists('location', $interaction['twitter']['user'])) {
                 $location = $this->geocode($interaction['twitter']['user']['location']);
 
-                Log::info('Got tweet with location ' . print_r($location, true));
-
                 if (!is_null($location)) {
                     $interaction['internal']['location'] = array(
                         'source' => 'bio',
@@ -91,14 +89,6 @@ class DatasiftConsumer extends Consumer implements \DataSift_IStreamConsumerEven
                     );
                 }
             }
-        }
-
-        // Skip non-american messages, if location is available
-        if (array_key_exists('location', $interaction['internal']) &&
-            array_key_exists('country', $interaction['internal']['location']) &&
-            $interaction['internal']['location']['country'] != 'US' && $interaction['internal']['location']['country'] != 'USA') {
-            Log::info('Skipping ' . $interaction['internal']['location']['country']);
-            return;
         }
 
         // Insert interaction into the collection
