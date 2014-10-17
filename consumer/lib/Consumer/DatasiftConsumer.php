@@ -43,7 +43,6 @@ class DatasiftConsumer extends Consumer implements \DataSift_IStreamConsumerEven
     public function onInteraction($consumer, $interaction, $hash)
     {
         Log::info('Type: '.$interaction['interaction']['type']);
-        Log::info('Content: '.$interaction['interaction']['content']);
 
         // Convert all created_at columns to the MongoDate type
         $this->convertDates($interaction);
@@ -74,7 +73,7 @@ class DatasiftConsumer extends Consumer implements \DataSift_IStreamConsumerEven
 
             // Else get lat/lon from users bio location if available
             } elseif (array_key_exists('user', $interaction['twitter']) &&
-                array_key_exists('location', $interaction['twitter']['user'])) {                
+                array_key_exists('location', $interaction['twitter']['user'])) {
                 $location = $this->geocode($interaction['twitter']['user']['location']);
 
                 if (!is_null($location)) {
@@ -95,7 +94,7 @@ class DatasiftConsumer extends Consumer implements \DataSift_IStreamConsumerEven
         // Skip non-american messages, if location is available
         if (array_key_exists('location', $interaction['internal']) &&
             array_key_exists('country', $interaction['internal']['location']) &&
-            $interaction['internal']['location']['country'] != 'US') {
+            $interaction['internal']['location']['country'] != 'US' && $interaction['internal']['location']['country'] != 'USA') {
             return;
         }
 
