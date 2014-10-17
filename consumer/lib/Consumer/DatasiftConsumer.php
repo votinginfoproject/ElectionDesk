@@ -54,7 +54,9 @@ class DatasiftConsumer extends Consumer implements \DataSift_IStreamConsumerEven
         // Twitter specific operations
         if ($interaction['interaction']['type'] == 'twitter') {
             // If we have a tweet location
-            if (array_key_exists('geo', $interaction['twitter'])) {        
+            if (array_key_exists('geo', $interaction['twitter'])) {
+                Log::info('Got location via tweet location');
+
                 $location = $this->reverseGeocode(
                     $interaction['twitter']['geo']['latitude'],
                     $interaction['twitter']['geo']['longitude']
@@ -74,6 +76,8 @@ class DatasiftConsumer extends Consumer implements \DataSift_IStreamConsumerEven
             // Else get lat/lon from users bio location if available
             } elseif (array_key_exists('user', $interaction['twitter']) &&
                 array_key_exists('location', $interaction['twitter']['user'])) {
+                Log::info('Got location via user');
+
                 $location = $this->geocode($interaction['twitter']['user']['location']);
 
                 if (!is_null($location)) {
