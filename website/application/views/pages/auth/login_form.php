@@ -37,7 +37,9 @@ $captcha = array(
 		<div class="form-wrapper-left">
 			<h2>Sign in with email</h2>
 			<div class="form-group">
-				<?php echo form_error($login['name'], '<div class="alert alert-danger">', '</div>'); ?>
+				<?php if (isset($errors[$login['name']])): ?>
+					<div class="alert alert-danger"><?php echo $errors[$login['name']]; ?></div>
+				<?php endif; ?>
 				<div class="input-group">
 					<div class="input-group-addon"><i class="fa fa-user"></i></div>
 					<?php echo form_label('E-mail', $login['id'], array('class' => 'sr-only')); ?>
@@ -46,7 +48,9 @@ $captcha = array(
 			</div>
 
 			<div class="form-group">
-				<?php echo form_error($password['name'], '<div class="alert alert-danger">', '</div>'); ?>
+				<?php if (isset($errors[$password['name']])): ?>
+					<div class="alert alert-danger"><?php echo $errors[$password['name']]; ?></div>
+				<?php endif; ?>
 				<div class="input-group">
 					<div class="input-group-addon"><i class="fa fa-lock"></i></div>
 					<?php echo form_label('Password', $password['id'], array('class' => 'sr-only')); ?>

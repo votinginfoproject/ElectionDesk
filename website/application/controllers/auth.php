@@ -75,6 +75,7 @@ class Auth extends CI_Controller
 
 				} else {
 					$errors = $this->tank_auth->get_error_message();
+
 					if (isset($errors['banned'])) {								// banned user
 						$this->_show_message($errors['banned']);
 

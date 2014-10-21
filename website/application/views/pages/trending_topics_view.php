@@ -111,8 +111,4 @@ window.STREAM = {
     <input type="text" id="filter-query" name="" class="form-control" ng-model="contentQuery" placeholder="Filter the current stream">
   </div>
 </div>
-
-<p class="disclaimer">
-Any application displaying a Disqus comment or user profile must display the Disqus social icon linking to disqus.com, the comment timestamp linking to the comment permalink, and the Disqus username linking to the disqus.com user profile URL if the username is available. Any analysis or statistical reporting for public or commercial purposes, derived in part or in its entirety from content on the Disqus Service, must be sourced as “Disqus” or “Disqus comments.”
-</p>
 </section>
