@@ -100,11 +100,11 @@
     @include antialiase();
   }
 
-  p{
+  p, li, address{
     font-family: 'Titillium Web', sans-serif;
     font-size: 15px;
     font-weight: 400;
-    color: #ccc;
+    color: #777;
     @include antialiase();
   }
 
