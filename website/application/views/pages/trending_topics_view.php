@@ -78,14 +78,14 @@ window.STREAM = {
     <input type="radio" name="limit" value="all" ng-model="limitQuery" id="limit_all_posts">
     <label for="limit_all_posts"><i class="circle"></i> All posts</label>
   </li>
-  
+
   <li>
-    <input type="radio" name="limit" value="state" ng-model="limitQuery" id="limit_state" data-state="DC">
-    <label for="limit_state"><i class="circle"></i> Within Washington DC</label>
+    <input type="radio" name="limit" value="state" ng-model="limitQuery" id="limit_state" data-state="<?php echo $profile->user_state; ?>">
+    <label for="limit_state"><i class="circle"></i> Within <?php echo (isset($states[$profile->user_state]) ? $states[$profile->user_state] : $profile->user_state); ?></label>
   </li>
   
   <li>
-    <input type="radio" name="limit" value="radius" ng-model="limitQuery" id="limit_radius" data-lat="38.8051531" data-lon="-77.0488329">
+    <input type="radio" name="limit" value="radius" ng-model="limitQuery" id="limit_radius" data-lat="<?php echo $profile->user_lat; ?>" data-lon="<?php echo $profile->user_lon; ?>">
     <label for="limit_radius"><i class="circle"></i> Within radius</label>
   </li>
   
