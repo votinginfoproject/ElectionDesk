@@ -1325,7 +1325,549 @@ var haversine = function() {
     };
 }();
 
-angular.module("ui.bootstrap-slider", []).directive("slider", [ "$parse", "$timeout", function($parse, $timeout) {
+!function(factory) {
+    "function" == typeof define && define.amd ? define([ "jquery" ], factory) : factory("object" == typeof exports ? require("jquery") : jQuery);
+}(function($) {
+    function encode(s) {
+        return config.raw ? s : encodeURIComponent(s);
+    }
+    function decode(s) {
+        return config.raw ? s : decodeURIComponent(s);
+    }
+    function stringifyCookieValue(value) {
+        return encode(config.json ? JSON.stringify(value) : String(value));
+    }
+    function parseCookieValue(s) {
+        0 === s.indexOf('"') && (s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, "\\"));
+        try {
+            return s = decodeURIComponent(s.replace(pluses, " ")), config.json ? JSON.parse(s) : s;
+        } catch (e) {}
+    }
+    function read(s, converter) {
+        var value = config.raw ? s : parseCookieValue(s);
+        return $.isFunction(converter) ? converter(value) : value;
+    }
+    var pluses = /\+/g, config = $.cookie = function(key, value, options) {
+        if (arguments.length > 1 && !$.isFunction(value)) {
+            if (options = $.extend({}, config.defaults, options), "number" == typeof options.expires) {
+                var days = options.expires, t = options.expires = new Date();
+                t.setTime(+t + 864e5 * days);
+            }
+            return document.cookie = [ encode(key), "=", stringifyCookieValue(value), options.expires ? "; expires=" + options.expires.toUTCString() : "", options.path ? "; path=" + options.path : "", options.domain ? "; domain=" + options.domain : "", options.secure ? "; secure" : "" ].join("");
+        }
+        for (var result = key ? void 0 : {}, cookies = document.cookie ? document.cookie.split("; ") : [], i = 0, l = cookies.length; l > i; i++) {
+            var parts = cookies[i].split("="), name = decode(parts.shift()), cookie = parts.join("=");
+            if (key && key === name) {
+                result = read(cookie, value);
+                break;
+            }
+            key || void 0 === (cookie = read(cookie)) || (result[name] = cookie);
+        }
+        return result;
+    };
+    config.defaults = {}, $.removeCookie = function(key, options) {
+        return void 0 === $.cookie(key) ? !1 : ($.cookie(key, "", $.extend({}, options, {
+            expires: -1
+        })), !$.cookie(key));
+    };
+}), function($) {
+    var lang = {
+        en: {
+            days: [ "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" ],
+            months: [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ],
+            sep: "-",
+            format: "YYYY-MM-DD hh:mm",
+            prevMonth: "Previous month",
+            nextMonth: "Next month",
+            today: "Today"
+        },
+        ro: {
+            days: [ "Dum", "Lun", "Mar", "Mie", "Joi", "Vin", "SÃ¢m" ],
+            months: [ "Ian", "Feb", "Mar", "Apr", "Mai", "Iun", "Iul", "Aug", "Sep", "Oct", "Nov", "Dec" ],
+            sep: ".",
+            format: "DD.MM.YYYY hh:mm",
+            prevMonth: "Luna precedentÄƒ",
+            nextMonth: "Luna urmÄƒtoare",
+            today: "Azi"
+        },
+        ja: {
+            days: [ "æ—¥", "æœˆ", "ç«", "æ°´", "æœ¨", "é‡‘", "åœŸ" ],
+            months: [ "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" ],
+            sep: "/",
+            format: "YYYY/MM/DD hh:mm"
+        },
+        ru: {
+            days: [ "Ð’Ñ", "ÐŸÐ½", "Ð’Ñ‚", "Ð¡Ñ€", "Ð§Ñ‚", "ÐŸÑ‚", "Ð¡Ð±" ],
+            months: [ "Ð¯Ð½Ð²", "Ð¤ÐµÐ²", "ÐœÐ°Ñ€", "ÐÐ¿Ñ€", "ÐœÐ°Ð¹", "Ð˜ÑŽÐ½", "Ð˜ÑŽÐ»", "ÐÐ²Ð³", "Ð¡ÐµÐ½", "ÐžÐºÑ‚", "ÐÐ¾Ñ", "Ð”ÐµÐº" ],
+            format: "DD.MM.YYYY hh:mm"
+        },
+        br: {
+            days: [ "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "SÃ¡b" ],
+            months: [ "Janeiro", "Fevereiro", "MarÃ§o", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" ],
+            format: "DD/MM/YYYY hh:mm"
+        },
+        pt: {
+            days: [ "dom", "seg", "ter", "qua", "qui", "sex", "sÃ¡b" ],
+            months: [ "janeiro", "fevereiro", "marÃ§o", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro" ]
+        },
+        cn: {
+            days: [ "æ—¥", "ä¸€", "äºŒ", "ä¸‰", "å››", "äº”", "å…­" ],
+            months: [ "ä¸€æœˆ", "äºŒæœˆ", "ä¸‰æœˆ", "å››æœˆ", "äº”æœˆ", "å…­æœˆ", "ä¸ƒæœˆ", "å…«æœˆ", "ä¹æœˆ", "åæœˆ", "åä¸€æœˆ", "åäºŒæœˆ" ]
+        },
+        de: {
+            days: [ "So", "Mo", "Di", "Mi", "Do", "Fr", "Sa" ],
+            months: [ "Jan", "Feb", "MÃ¤rz", "Apr", "Mai", "Juni", "Juli", "Aug", "Sept", "Okt", "Nov", "Dez" ],
+            format: "DD.MM.YYYY hh:mm"
+        },
+        sv: {
+            days: [ "SÃ¶", "MÃ¥", "Ti", "On", "To", "Fr", "LÃ¶" ],
+            months: [ "Jan", "Feb", "Mar", "Apr", "Maj", "Juni", "Juli", "Aug", "Sept", "Okt", "Nov", "Dec" ]
+        },
+        id: {
+            days: [ "Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab" ],
+            months: [ "Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des" ]
+        },
+        it: {
+            days: [ "Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab" ],
+            months: [ "Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic" ],
+            format: "DD/MM/YYYY hh:mm"
+        },
+        tr: {
+            days: [ "Pz", "Pzt", "Sal", "Ã‡ar", "Per", "Cu", "Cts" ],
+            months: [ "Ock", "Åžub", "Mar", "Nis", "May", "Haz", "Tem", "Agu", "Eyl", "Ekm", "Kas", "Arlk" ]
+        },
+        es: {
+            days: [ "dom", "lun", "mar", "miÃ©r", "jue", "viÃ©", "sÃ¡b" ],
+            months: [ "ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic" ],
+            format: "DD/MM/YYYY hh:mm"
+        },
+        ko: {
+            days: [ "ì¼", "ì›”", "í™”", "ìˆ˜", "ëª©", "ê¸ˆ", "í† " ],
+            months: [ "1ì›”", "2ì›”", "3ì›”", "4ì›”", "5ì›”", "6ì›”", "7ì›”", "8ì›”", "9ì›”", "10ì›”", "11ì›”", "12ì›”" ]
+        },
+        nl: {
+            days: [ "zo", "ma", "di", "wo", "do", "vr", "za" ],
+            months: [ "jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec" ],
+            format: "DD-MM-YYYY hh:mm"
+        },
+        cz: {
+            days: [ "Ne", "Po", "Ãšt", "St", "ÄŒt", "PÃ¡", "So" ],
+            months: [ "Led", "Ãšno", "BÅ™e", "Dub", "KvÄ›", "ÄŒer", "ÄŒvc", "Srp", "ZÃ¡Å™", "Å˜Ã­j", "Lis", "Pro" ],
+            format: "DD.MM.YYYY hh:mm"
+        },
+        fr: {
+            days: [ "Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam" ],
+            months: [ "Janvier", "FÃ©vrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "AoÃ»t", "Septembre", "Octobre", "Novembre", "DÃ©cembre" ],
+            format: "DD-MM-YYYY hh:mm"
+        },
+        pl: {
+            days: [ "N", "Pn", "Wt", "Åšr", "Cz", "Pt", "So" ],
+            months: [ "StyczeÅ„", "Luty", "Marzec", "KwiecieÅ„", "Maj", "Czerwiec", "Lipiec", "SierpieÅ„", "WrzesieÅ„", "PaÅºdziernik", "Listopad", "GrudzieÅ„" ],
+            sep: "-",
+            format: "YYYY-MM-DD hh:mm",
+            prevMonth: "Poprzedni miesiÄ…c",
+            nextMonth: "NastÄ™pny miesiÄ…c",
+            today: "Dzisiaj"
+        }
+    }, PickerHandler = function($picker, $input) {
+        this.$pickerObject = $picker, this.$inputObject = $input;
+    };
+    PickerHandler.prototype.getPicker = function() {
+        return this.$pickerObject;
+    }, PickerHandler.prototype.getInput = function() {
+        return this.$inputObject;
+    }, PickerHandler.prototype.isShow = function() {
+        var is_show = !0;
+        return "none" == this.$pickerObject.css("display") && (is_show = !1), is_show;
+    }, PickerHandler.prototype.show = function() {
+        var $picker = this.$pickerObject, $input = this.$inputObject;
+        if ($picker.show(), ActivePickerId = $input.data("pickerId"), 0 == $picker.data("isInline")) {
+            var _position = $input.parent().css("position");
+            "relative" === _position || "absolute" === _position ? $picker.parent().css("top", $input.outerHeight() + 2 + "px") : ($picker.parent().css("top", $input.position().top + $input.outerHeight() + 2 + "px"), 
+            $picker.parent().css("left", $input.position().left + "px"));
+        }
+    }, PickerHandler.prototype.hide = function() {
+        {
+            var $picker = this.$pickerObject;
+            this.$inputObject;
+        }
+        $picker.hide();
+    }, PickerHandler.prototype.destroy = function() {
+        var $picker = this.$pickerObject, picker_id = $picker.data("pickerId");
+        PickerObjects[picker_id] = null, $picker.remove();
+    };
+    var PickerObjects = [], InputObjects = [], ActivePickerId = -1, getParentPickerObject = function(obj) {
+        return $(obj).closest(".datepicker");
+    }, getPickersInputObject = function($obj) {
+        var $picker = getParentPickerObject($obj);
+        return null != $picker.data("inputObjectId") ? $(InputObjects[$picker.data("inputObjectId")]) : null;
+    }, setToNow = function($obj) {
+        var $picker = getParentPickerObject($obj), date = new Date();
+        draw($picker, {
+            isAnim: !0,
+            isOutputToInputObject: !0
+        }, date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
+    }, beforeMonth = function($obj) {
+        var $picker = getParentPickerObject($obj);
+        if (0 != $picker.data("stateAllowBeforeMonth")) {
+            var date = getPickedDate($picker), targetMonth_lastDay = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+            targetMonth_lastDay < date.getDate() && date.setDate(targetMonth_lastDay), draw($picker, {
+                isAnim: !0,
+                isOutputToInputObject: !0
+            }, date.getFullYear(), date.getMonth() - 1, date.getDate(), date.getHours(), date.getMinutes());
+            var todayDate = new Date(), isCurrentYear = todayDate.getFullYear() == date.getFullYear(), isCurrentMonth = isCurrentYear && todayDate.getMonth() == date.getMonth();
+            isCurrentMonth && $picker.data("futureOnly") || (targetMonth_lastDay < date.getDate() && date.setDate(targetMonth_lastDay), 
+            draw($picker, {
+                isAnim: !0,
+                isOutputToInputObject: !0
+            }, date.getFullYear(), date.getMonth() - 1, date.getDate(), date.getHours(), date.getMinutes()));
+        }
+    }, nextMonth = function($obj) {
+        var $picker = getParentPickerObject($obj), date = getPickedDate($picker), targetMonth_lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+        targetMonth_lastDay < date.getDate() && date.setDate(targetMonth_lastDay), draw($picker, {
+            isAnim: !0,
+            isOutputToInputObject: !0
+        }, date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes());
+    }, getDateFormat = function(format, locale, is_date_only) {
+        return "default" == format && (format = translate(locale, "format"), is_date_only && (format = format.substring(0, format.search(" ")))), 
+        format;
+    }, normalizeYear = function(year) {
+        if (99 > year) {
+            var date = new Date();
+            return parseInt(year) + parseInt(date.getFullYear().toString().substr(0, 2) + "00");
+        }
+        return year;
+    }, parseDate = function(str, opt_date_format) {
+        if (null != opt_date_format) {
+            var df = opt_date_format.replace(/(-|\/)/g, "[-/]").replace(/YYYY/gi, "(\\d{2,4})").replace(/(YY|MM|DD|hh|mm)/g, "(\\d{1,2})").replace(/(M|D|h|m)/g, "(\\d{1,2})"), re = new RegExp(df), m = re.exec(str);
+            if (null != m) {
+                for (var formats = new Array(), format_buf = "", format_before_c = "", df = opt_date_format; null != df && 0 < df.length; ) {
+                    var format_c = df.substring(0, 1);
+                    df = df.substring(1, df.length), format_before_c != format_c && (/(YYYY|YY|MM|DD|mm|dd|M|D|h|m)/.test(format_buf) ? (formats.push(format_buf), 
+                    format_buf = "") : format_buf = ""), format_buf += format_c, format_before_c = format_c;
+                }
+                "" != format_buf && /(YYYY|YY|MM|DD|mm|dd|M|D|h|m)/.test(format_buf) && formats.push(format_buf);
+                for (var year, month, day, hour, min, is_successful = !1, i = 0; i < formats.length && !(m.length < i); i++) {
+                    var f = formats[i], d = m[i + 1];
+                    "YYYY" == f ? (year = normalizeYear(d), is_successful = !0) : "YY" == f ? (year = parseInt(d) + 2e3, 
+                    is_successful = !0) : "MM" == f || "M" == f ? (day = parseInt(d) - 1, is_successful = !0) : "DD" == f || "D" == f ? (day = d, 
+                    is_successful = !0) : "hh" == f || "h" == f ? (hour = d, is_successful = !0) : ("mm" == f || "m" == f) && (min = d, 
+                    is_successful = !0);
+                }
+                var date = new Date(year, month, day, hour, min);
+                if (1 == is_successful && 0 == isNaN(date) && 0 == isNaN(date.getDate())) return date;
+            }
+        }
+        var re = /^(\d{2,4})[-\/](\d{1,2})[-\/](\d{1,2}) (\d{1,2}):(\d{1,2})$/, m = re.exec(str);
+        return null !== m ? (m[1] = normalizeYear(m[1]), date = new Date(m[1], m[2] - 1, m[3], m[4], m[5])) : (re = /^(\d{2,4})[-\/](\d{1,2})[-\/](\d{1,2})$/, 
+        m = re.exec(str), null !== m && (m[1] = normalizeYear(m[1]), date = new Date(m[1], m[2] - 1, m[3]))), 
+        0 == isNaN(date) && 0 == isNaN(date.getDate()) ? date : !1;
+    }, getFormattedDate = function(date, date_format) {
+        null == date && (date = new Date());
+        var y = date.getFullYear(), m = date.getMonth() + 1, d = date.getDate(), hou = date.getHours(), min = date.getMinutes(), date_format = date_format.replace(/YYYY/gi, y).replace(/YY/g, y - 2e3).replace(/MM/g, zpadding(m)).replace(/M/g, m).replace(/DD/g, zpadding(d)).replace(/D/g, d).replace(/hh/g, zpadding(hou)).replace(/h/g, hou).replace(/mm/g, zpadding(min)).replace(/m/g, min);
+        return date_format;
+    }, outputToInputObject = function($picker) {
+        var $inp = getPickersInputObject($picker);
+        if (null != $inp) {
+            var date = getPickedDate($picker), locale = $picker.data("locale"), format = getDateFormat($picker.data("dateFormat"), locale, $picker.data("dateOnly")), old = $inp.val();
+            $inp.val(getFormattedDate(date, format)), old != $inp.val() && $inp.trigger("change");
+        }
+    }, getPickedDate = function($obj) {
+        var $picker = getParentPickerObject($obj);
+        return $picker.data("pickedDate");
+    }, zpadding = function(num) {
+        return num = ("0" + num).slice(-2);
+    }, draw_date = function($picker, option, date) {
+        draw($picker, option, date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
+    }, translate = function(locale, s) {
+        return "undefined" != typeof lang[locale][s] ? lang[locale][s] : lang.en[s];
+    }, draw = function($picker, option, year, month, day, hour, min) {
+        var date = new Date();
+        date = null != hour ? new Date(year, month, day, hour, min, 0) : null != year ? new Date(year, month, day) : new Date();
+        var isTodayButton = $picker.data("todayButton"), isScroll = option.isAnim;
+        0 == $picker.data("timelistScroll") && (isScroll = !1);
+        var isAnim = option.isAnim;
+        0 == $picker.data("animation") && (isAnim = !1);
+        var isFutureOnly = $picker.data("futureOnly"), minDate = $picker.data("minDate"), maxDate = $picker.data("maxDate"), isOutputToInputObject = option.isOutputToInputObject, minuteInterval = $picker.data("minuteInterval"), firstDayOfWeek = $picker.data("firstDayOfWeek"), minTime = $picker.data("minTime"), maxTime = $picker.data("maxTime"), locale = $picker.data("locale");
+        lang.hasOwnProperty(locale) || (locale = "en");
+        var todayDate = new Date(), firstWday = new Date(date.getFullYear(), date.getMonth(), 1).getDay() - firstDayOfWeek, lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(), beforeMonthLastDay = new Date(date.getFullYear(), date.getMonth(), 0).getDate(), dateBeforeMonth = new Date(date.getFullYear(), date.getMonth(), 0), dateNextMonth = new Date(date.getFullYear(), date.getMonth() + 2, 0), isCurrentYear = todayDate.getFullYear() == date.getFullYear(), isCurrentMonth = isCurrentYear && todayDate.getMonth() == date.getMonth(), isCurrentDay = isCurrentMonth && todayDate.getDate() == date.getDate(), isPastMonth = !1;
+        (date.getFullYear() < todayDate.getFullYear() || isCurrentYear && date.getMonth() < todayDate.getMonth()) && (isPastMonth = !0);
+        var $header = $picker.children(".datepicker_header"), $calendar = ($picker.children(".datepicker_inner_container"), 
+        $picker.children(".datepicker_inner_container").children(".datepicker_calendar")), $table = $calendar.children(".datepicker_table"), $timelist = $picker.children(".datepicker_inner_container").children(".datepicker_timelist"), changePoint = "", oldDate = getPickedDate($picker);
+        null != oldDate && (oldDate.getMonth() != date.getMonth() || oldDate.getDate() != date.getDate() ? changePoint = "calendar" : (oldDate.getHours() != date.getHours() || oldDate.getMinutes() != date.getMinutes()) && (0 == date.getMinutes() || date.getMinutes() % minuteInterval == 0) && (changePoint = "timelist")), 
+        $($picker).data("pickedDate", date), 1 == isAnim && ("calendar" == changePoint ? ($calendar.stop().queue([]), 
+        $calendar.fadeTo("fast", .8)) : "timelist" == changePoint && ($timelist.stop().queue([]), 
+        $timelist.fadeTo("fast", .8)));
+        var drawBefore_timeList_scrollTop = $timelist.scrollTop(), timelist_activeTimeCell_offsetTop = -1;
+        $header.children().remove();
+        var cDate = new Date(date.getTime());
+        if (cDate.setMinutes(59), cDate.setHours(23), cDate.setSeconds(59), cDate.setDate(0), 
+        isFutureOnly && isCurrentMonth || !(null == minDate || minDate < cDate.getTime())) $picker.data("stateAllowBeforeMonth", !1); else {
+            var $link_before_month = $("<a>");
+            $link_before_month.text("<"), $link_before_month.prop("alt", translate(locale, "prevMonth")), 
+            $link_before_month.prop("title", translate(locale, "prevMonth")), $link_before_month.click(function() {
+                beforeMonth($picker);
+            }), $picker.data("stateAllowBeforeMonth", !0);
+        }
+        cDate.setMinutes(0), cDate.setHours(0), cDate.setSeconds(0), cDate.setDate(1), cDate.setMonth(date.getMonth() + 1);
+        var $now_month = $("<span>");
+        if ($now_month.text(date.getFullYear() + " " + translate(locale, "sep") + " " + translate(locale, "months")[date.getMonth()]), 
+        null == maxDate || maxDate > cDate.getTime()) {
+            var $link_next_month = $("<a>");
+            $link_next_month.text(">"), $link_next_month.prop("alt", translate(locale, "nextMonth")), 
+            $link_next_month.prop("title", translate(locale, "nextMonth")), $link_next_month.click(function() {
+                nextMonth($picker);
+            });
+        }
+        if (isTodayButton) {
+            var $link_today = $("<a/>");
+            $link_today.html(decodeURIComponent("%3c%3fxml%20version%3d%221%2e0%22%20encoding%3d%22UTF%2d8%22%20standalone%3d%22no%22%3f%3e%3csvg%20%20xmlns%3adc%3d%22http%3a%2f%2fpurl%2eorg%2fdc%2felements%2f1%2e1%2f%22%20%20xmlns%3acc%3d%22http%3a%2f%2fcreativecommons%2eorg%2fns%23%22%20xmlns%3ardf%3d%22http%3a%2f%2fwww%2ew3%2eorg%2f1999%2f02%2f22%2drdf%2dsyntax%2dns%23%22%20%20xmlns%3asvg%3d%22http%3a%2f%2fwww%2ew3%2eorg%2f2000%2fsvg%22%20xmlns%3d%22http%3a%2f%2fwww%2ew3%2eorg%2f2000%2fsvg%22%20%20version%3d%221%2e1%22%20%20width%3d%22100%25%22%20%20height%3d%22100%25%22%20viewBox%3d%220%200%2010%2010%22%3e%3cg%20transform%3d%22translate%28%2d5%2e5772299%2c%2d26%2e54581%29%22%3e%3cpath%20d%3d%22m%2014%2e149807%2c31%2e130932%20c%200%2c%2d0%2e01241%200%2c%2d0%2e02481%20%2d0%2e0062%2c%2d0%2e03721%20L%2010%2e57723%2c28%2e153784%207%2e0108528%2c31%2e093719%20c%200%2c0%2e01241%20%2d0%2e0062%2c0%2e02481%20%2d0%2e0062%2c0%2e03721%20l%200%2c2%2e97715%20c%200%2c0%2e217084%200%2e1798696%2c0%2e396953%200%2e3969534%2c0%2e396953%20l%202%2e3817196%2c0%200%2c%2d2%2e38172%201%2e5878132%2c0%200%2c2%2e38172%202%2e381719%2c0%20c%200%2e217084%2c0%200%2e396953%2c%2d0%2e179869%200%2e396953%2c%2d0%2e396953%20l%200%2c%2d2%2e97715%20m%201%2e383134%2c%2d0%2e427964%20c%200%2e06823%2c%2d0%2e08063%200%2e05582%2c%2d0%2e210882%20%2d0%2e02481%2c%2d0%2e279108%20l%20%2d1%2e358324%2c%2d1%2e128837%200%2c%2d2%2e530576%20c%200%2c%2d0%2e111643%20%2d0%2e08683%2c%2d0%2e198477%20%2d0%2e198477%2c%2d0%2e198477%20l%20%2d1%2e190859%2c0%20c%20%2d0%2e111643%2c0%20%2d0%2e198477%2c0%2e08683%20%2d0%2e198477%2c0%2e198477%20l%200%2c1%2e209467%20%2d1%2e513384%2c%2d1%2e265289%20c%20%2d0%2e2605%2c%2d0%2e217083%20%2d0%2e682264%2c%2d0%2e217083%20%2d0%2e942764%2c0%20L%205%2e6463253%2c30%2e42386%20c%20%2d0%2e080631%2c0%2e06823%20%2d0%2e093036%2c0%2e198476%20%2d0%2e024809%2c0%2e279108%20l%200%2e3845485%2c0%2e458976%20c%200%2e031012%2c0%2e03721%200%2e080631%2c0%2e06203%200%2e1302503%2c0%2e06823%200%2e055821%2c0%2e0062%200%2e1054407%2c%2d0%2e01241%200%2e1488574%2c%2d0%2e04342%20l%204%2e2920565%2c%2d3%2e578782%204%2e292058%2c3%2e578782%20c%200%2e03721%2c0%2e03101%200%2e08063%2c0%2e04342%200%2e13025%2c0%2e04342%200%2e0062%2c0%200%2e01241%2c0%200%2e01861%2c0%200%2e04962%2c%2d0%2e0062%200%2e09924%2c%2d0%2e03101%200%2e130251%2c%2d0%2e06823%20l%200%2e384549%2c%2d0%2e458976%22%20%2f%3e%3c%2fg%3e%3c%2fsvg%3e")), 
+            $link_today.addClass("icon-home"), $link_today.prop("alt", translate(locale, "today")), 
+            $link_today.prop("title", translate(locale, "today")), $link_today.click(function() {
+                setToNow($picker);
+            }), $header.append($link_today);
+        }
+        $header.append($link_before_month), $header.append($now_month), $header.append($link_next_month), 
+        $table.children().remove();
+        var $tr = $("<tr>");
+        $table.append($tr);
+        for (var firstDayDiff = 7 + firstDayOfWeek, daysOfWeek = translate(locale, "days"), i = 0; 7 > i; i++) {
+            var $td = $("<th>");
+            $td.text(daysOfWeek[(i + firstDayDiff) % 7]), $tr.append($td);
+        }
+        var cellNum = 7 * Math.ceil((firstWday + lastDay) / 7), i = 0;
+        0 > firstWday && (i = -7);
+        var realDayObj = new Date(date.getTime());
+        realDayObj.setHours(0), realDayObj.setMinutes(0), realDayObj.setSeconds(0);
+        for (;cellNum > i; i++) {
+            var realDay = i + 1 - firstWday, isPast = isPastMonth || isCurrentMonth && realDay < todayDate.getDate();
+            i % 7 == 0 && ($tr = $("<tr>"), $table.append($tr));
+            var $td = $("<td>");
+            $td.data("day", realDay), $tr.append($td), firstWday > i ? ($td.text(beforeMonthLastDay + realDay), 
+            $td.addClass("day_another_month"), $td.data("dateStr", dateBeforeMonth.getFullYear() + "/" + (dateBeforeMonth.getMonth() + 1) + "/" + (beforeMonthLastDay + realDay)), 
+            realDayObj.setDate(beforeMonthLastDay + realDay), realDayObj.setMonth(dateBeforeMonth.getMonth()), 
+            realDayObj.setYear(dateBeforeMonth.getFullYear())) : firstWday + lastDay > i ? ($td.text(realDay), 
+            $td.data("dateStr", date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + realDay), 
+            realDayObj.setDate(realDay), realDayObj.setMonth(date.getMonth()), realDayObj.setYear(date.getFullYear())) : ($td.text(realDay - lastDay), 
+            $td.addClass("day_another_month"), $td.data("dateStr", dateNextMonth.getFullYear() + "/" + (dateNextMonth.getMonth() + 1) + "/" + (realDay - lastDay)), 
+            realDayObj.setDate(realDay - lastDay), realDayObj.setMonth(dateNextMonth.getMonth()), 
+            realDayObj.setYear(dateNextMonth.getFullYear())), (i + firstDayDiff) % 7 == 0 ? $td.addClass("wday_sun") : (i + firstDayDiff) % 7 == 6 && $td.addClass("wday_sat"), 
+            realDay == date.getDate() && $td.addClass("active"), isCurrentMonth && realDay == todayDate.getDate() && $td.addClass("today");
+            var realDayObjMN = new Date(realDayObj.getTime());
+            realDayObjMN.setHours(23), realDayObjMN.setMinutes(59), realDayObjMN.setSeconds(59), 
+            null != minDate && minDate > realDayObjMN.getTime() || null != maxDate && maxDate < realDayObj.getTime() ? $td.addClass("out_of_range") : isFutureOnly && isPast ? $td.addClass("day_in_past") : ($td.click(function() {
+                $(this).hasClass("hover") && $(this).removeClass("hover"), $(this).addClass("active");
+                var $picker = getParentPickerObject($(this)), targetDate = new Date($(this).data("dateStr")), selectedDate = getPickedDate($picker);
+                draw($picker, {
+                    isAnim: !1,
+                    isOutputToInputObject: !0
+                }, targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), selectedDate.getHours(), selectedDate.getMinutes()), 
+                1 == $picker.data("dateOnly") && 0 == $picker.data("isInline") && $picker.data("closeOnSelected") && (ActivePickerId = -1, 
+                $picker.hide());
+            }), $td.hover(function() {
+                $(this).hasClass("active") || $(this).addClass("hover");
+            }, function() {
+                $(this).hasClass("hover") && $(this).removeClass("hover");
+            }));
+        }
+        if (1 == $picker.data("dateOnly")) $timelist.css("display", "none"); else {
+            $timelist.children().remove(), $calendar.innerHeight() > 0 && $timelist.css("height", $calendar.innerHeight() - 10 + "px"), 
+            realDayObj = new Date(date.getTime()), $timelist.css("height", $calendar.innerHeight() - 10 + "px");
+            for (var hour = minTime[0], min = minTime[1]; 100 * hour + min < 100 * maxTime[0] + maxTime[1]; ) {
+                var $o = $("<div>"), isPastTime = hour < todayDate.getHours() || hour == todayDate.getHours() && min < todayDate.getMinutes(), isPast = isCurrentDay && isPastTime;
+                $o.addClass("timelist_item"), $o.text(zpadding(hour) + ":" + zpadding(min)), $o.data("hour", hour), 
+                $o.data("min", min), $timelist.append($o), realDayObj.setHours(hour), realDayObj.setMinutes(min), 
+                null != minDate && minDate > realDayObj.getTime() || null != maxDate && maxDate < realDayObj.getTime() ? $o.addClass("out_of_range") : isFutureOnly && isPast ? $o.addClass("time_in_past") : ($o.click(function() {
+                    $(this).hasClass("hover") && $(this).removeClass("hover"), $(this).addClass("active");
+                    var $picker = getParentPickerObject($(this)), date = getPickedDate($picker), hour = $(this).data("hour"), min = $(this).data("min");
+                    draw($picker, {
+                        isAnim: !1,
+                        isOutputToInputObject: !0
+                    }, date.getFullYear(), date.getMonth(), date.getDate(), hour, min), 0 == $picker.data("isInline") && $picker.data("closeOnSelected") && (ActivePickerId = -1, 
+                    $picker.hide());
+                }), $o.hover(function() {
+                    $(this).hasClass("active") || $(this).addClass("hover");
+                }, function() {
+                    $(this).hasClass("hover") && $(this).removeClass("hover");
+                })), hour == date.getHours() && min == date.getMinutes() && ($o.addClass("active"), 
+                timelist_activeTimeCell_offsetTop = $o.offset().top), isFutureOnly && isPast ? $o.addClass("time_in_past") : ($o.click(function() {
+                    $(this).hasClass("hover") && $(this).removeClass("hover"), $(this).addClass("active");
+                    var $picker = getParentPickerObject($(this)), date = getPickedDate($picker), hour = $(this).data("hour"), min = $(this).data("min");
+                    draw($picker, {
+                        isAnim: !1,
+                        isOutputToInputObject: !0
+                    }, date.getFullYear(), date.getMonth(), date.getDate(), hour, min), 0 == $picker.data("isInline") && $picker.data("closeOnSelected") && (ActivePickerId = -1, 
+                    $picker.hide());
+                }), $o.hover(function() {
+                    $(this).hasClass("active") || $(this).addClass("hover");
+                }, function() {
+                    $(this).hasClass("hover") && $(this).removeClass("hover");
+                })), min += minuteInterval, min >= 60 && (min -= 60, hour++);
+            }
+            $timelist.scrollTop(1 == isScroll ? timelist_activeTimeCell_offsetTop - $timelist.offset().top : drawBefore_timeList_scrollTop);
+        }
+        1 == isAnim && ("calendar" == changePoint ? $calendar.fadeTo("fast", 1) : "timelist" == changePoint && $timelist.fadeTo("fast", 1)), 
+        1 == isOutputToInputObject && outputToInputObject($picker);
+    }, init = function($obj, opt) {
+        var $picker = $("<div>");
+        if ($picker.destroy = function() {
+            window.alert("destroy!");
+        }, $picker.addClass("datepicker"), $obj.append($picker), opt.current) {
+            var format = getDateFormat(opt.dateFormat, opt.locale, opt.dateOnly), date = parseDate(opt.current, format);
+            opt.current = date ? date : new Date();
+        } else opt.current = new Date();
+        null != opt.inputObjectId && $picker.data("inputObjectId", opt.inputObjectId), $picker.data("dateOnly", opt.dateOnly), 
+        $picker.data("pickerId", PickerObjects.length), $picker.data("dateFormat", opt.dateFormat), 
+        $picker.data("locale", opt.locale), $picker.data("firstDayOfWeek", opt.firstDayOfWeek), 
+        $picker.data("animation", opt.animation), $picker.data("closeOnSelected", opt.closeOnSelected), 
+        $picker.data("timelistScroll", opt.timelistScroll), $picker.data("calendarMouseScroll", opt.calendarMouseScroll), 
+        $picker.data("todayButton", opt.todayButton), $picker.data("futureOnly", opt.futureOnly), 
+        $picker.data("onShow", opt.onShow), $picker.data("onHide", opt.onHide), $picker.data("onInit", opt.onInit);
+        var minDate = Date.parse(opt.minDate);
+        isNaN(minDate) ? $picker.data("minDate", null) : $picker.data("minDate", minDate);
+        var maxDate = Date.parse(opt.maxDate);
+        isNaN(maxDate) ? $picker.data("maxDate", null) : $picker.data("maxDate", maxDate), 
+        $picker.data("state", 0), 5 <= opt.minuteInterval && opt.minuteInterval <= 30 ? $picker.data("minuteInterval", opt.minuteInterval) : $picker.data("minuteInterval", 30), 
+        opt.minTime = opt.minTime.split(":"), opt.maxTime = opt.maxTime.split(":"), opt.minTime[0] >= 0 && opt.minTime[0] < 24 || (opt.minTime[0] = "00"), 
+        opt.maxTime[0] >= 0 && opt.maxTime[0] < 24 || (opt.maxTime[0] = "23"), opt.minTime[1] >= 0 && opt.minTime[1] < 60 || (opt.minTime[1] = "00"), 
+        opt.maxTime[1] >= 0 && opt.maxTime[1] < 24 || (opt.maxTime[1] = "59"), opt.minTime[0] = parseInt(opt.minTime[0]), 
+        opt.minTime[1] = parseInt(opt.minTime[1]), opt.maxTime[0] = parseInt(opt.maxTime[0]), 
+        opt.maxTime[1] = parseInt(opt.maxTime[1]), $picker.data("minTime", opt.minTime), 
+        $picker.data("maxTime", opt.maxTime);
+        var $header = $("<div>");
+        $header.addClass("datepicker_header"), $picker.append($header);
+        var $inner = $("<div>");
+        $inner.addClass("datepicker_inner_container"), $picker.append($inner);
+        var $calendar = $("<div>");
+        $calendar.addClass("datepicker_calendar");
+        var $table = $("<table>");
+        $table.addClass("datepicker_table"), $calendar.append($table), $inner.append($calendar);
+        var $timelist = $("<div>");
+        $timelist.addClass("datepicker_timelist"), $inner.append($timelist), $picker.hover(function() {
+            ActivePickerId = $(this).data("pickerId");
+        }, function() {
+            ActivePickerId = -1;
+        }), opt.calendarMouseScroll && (window.sidebar ? $calendar.bind("DOMMouseScroll", function(e) {
+            var $picker = getParentPickerObject($(this)), delta = e.originalEvent.detail;
+            return delta > 0 ? nextMonth($picker) : beforeMonth($picker), !1;
+        }) : $calendar.bind("mousewheel", function(e) {
+            var $picker = getParentPickerObject($(this));
+            return e.originalEvent.wheelDelta / 120 > 0 ? beforeMonth($picker) : nextMonth($picker), 
+            !1;
+        })), PickerObjects.push($picker), draw_date($picker, {
+            isAnim: !0,
+            isOutputToInputObject: opt.autodateOnStart
+        }, opt.current);
+    }, getDefaults = function() {
+        return {
+            current: null,
+            dateFormat: "default",
+            locale: "en",
+            animation: !0,
+            minuteInterval: 30,
+            firstDayOfWeek: 0,
+            closeOnSelected: !1,
+            timelistScroll: !0,
+            calendarMouseScroll: !0,
+            todayButton: !0,
+            dateOnly: !1,
+            futureOnly: !1,
+            minDate: null,
+            maxDate: null,
+            autodateOnStart: !0,
+            minTime: "00:00",
+            maxTime: "23:59",
+            onShow: null,
+            onHide: null
+        };
+    };
+    $.fn.dtpicker = function(config) {
+        var defaults = (new Date(), getDefaults());
+        defaults.inputObjectId = void 0;
+        var options = $.extend(defaults, config);
+        return this.each(function() {
+            init($(this), options);
+        });
+    }, $.fn.appendDtpicker = function(config) {
+        var defaults = (new Date(), getDefaults());
+        defaults.inline = !1;
+        var options = $.extend(defaults, config);
+        return this.each(function() {
+            var input = this;
+            if (0 < $(PickerObjects[$(input).data("pickerId")]).length) return void console.log("dtpicker - Already exist appended picker");
+            var inputObjectId = InputObjects.length;
+            InputObjects.push(input), options.inputObjectId = inputObjectId;
+            null != $(input).val() && "" != $(input).val() && (options.current = $(input).val());
+            var $d = $("<div>");
+            0 == options.inline && $d.css("position", "absolute"), $d.insertAfter(input);
+            var pickerId = PickerObjects.length, $picker_parent = $($d).dtpicker(options), $picker = $picker_parent.children(".datepicker");
+            $(input).data("pickerId", pickerId), $(input).keyup(function() {
+                var $input = $(this), $picker = $(PickerObjects[$input.data("pickerId")]);
+                if (null != $input.val() && (null == $input.data("beforeVal") || null != $input.data("beforeVal") && $input.data("beforeVal") != $input.val())) {
+                    var format = getDateFormat($picker.data("dateFormat"), $picker.data("locale"), $picker.data("dateOnly")), date = parseDate($input.val(), format);
+                    date && draw_date($picker, {
+                        isAnim: !0,
+                        isOutputToInputObject: !1
+                    }, date);
+                }
+                $input.data("beforeVal", $input.val());
+            }), $(input).change(function() {
+                $(this).trigger("keyup");
+            }), 1 == options.inline ? $picker.data("isInline", !0) : ($picker.data("isInline", !1), 
+            $picker_parent.css({
+                zIndex: 100
+            }), $picker.css("width", "auto"), $picker.hide(), $(input).on("click, focus", function() {
+                console.log("onClick");
+                var $input = $(this), $picker = $(PickerObjects[$input.data("pickerId")]), handler = new PickerHandler($picker, $input), is_showed = handler.isShow();
+                if (!is_showed) {
+                    handler.show();
+                    var func = $picker.data("onShow");
+                    null != func && (console.log("dtpicker- Call the onShow handler"), func(handler));
+                }
+            }));
+            var handler = new PickerHandler($picker, $(input)), func = $picker.data("onInit");
+            null != func && (console.log("dtpicker- Call the onInit handler"), func(handler));
+        });
+    };
+    var methods = {
+        show: function() {
+            var $input = $(this), $picker = $(PickerObjects[$input.data("pickerId")]);
+            if (null != $picker) {
+                var handler = new PickerHandler($picker, $input);
+                handler.show();
+            }
+        },
+        hide: function() {
+            var $input = $(this), $picker = $(PickerObjects[$input.data("pickerId")]);
+            if (null != $picker) {
+                var handler = new PickerHandler($picker, $input);
+                handler.hide();
+            }
+        },
+        destroy: function() {
+            var $input = $(this), $picker = $(PickerObjects[$input.data("pickerId")]);
+            if (null != $picker) {
+                var handler = new PickerHandler($picker, $input);
+                handler.destroy();
+            }
+        }
+    };
+    $.fn.handleDtpicker = function(method) {
+        return methods[method] ? methods[method].apply(this, Array.prototype.slice.call(arguments, 1)) : "object" != typeof method && method ? void $.error("Method " + method + " does not exist on jQuery.handleDtpicker") : methods.init.apply(this, arguments);
+    }, $(function() {
+        $("body").click(function() {
+            for (var i = 0; i < PickerObjects.length; i++) {
+                var $picker = $(PickerObjects[i]);
+                if (ActivePickerId != i && null != $picker.data("inputObjectId") && 0 == $picker.data("isInline") && "none" != $picker.css("display")) {
+                    var $input = InputObjects[$picker.data("inputObjectId")], handler = new PickerHandler($picker, $input);
+                    handler.hide();
+                    var func = $picker.data("onHide");
+                    null != func && (console.log("dtpicker- Call the onHide handler"), func(handler));
+                }
+            }
+        });
+    });
+}(jQuery), angular.module("ui.bootstrap-slider", []).directive("slider", [ "$parse", "$timeout", function($parse, $timeout) {
     return {
         restrict: "AE",
         replace: !0,
@@ -3614,6 +4156,148 @@ var Conversations = function() {
 }();
 
 $(Conversations.init);
+
+var History = function() {
+    function restoreSession() {
+        var cookie;
+        try {
+            cookie = $.cookie("history_sources"), null !== cookie && (sources = JSON.parse(cookie), 
+            -1 == $.inArray("twitter", sources) && ($(".twitter-toggle").removeClass("on"), 
+            $(".twitter-toggle").addClass("off")), -1 == $.inArray("facebook", sources) && ($(".facebook-toggle").removeClass("on"), 
+            $(".facebook-toggle").addClass("off")), -1 == $.inArray("googleplus", sources) && ($(".google-toggle").removeClass("on"), 
+            $(".google-toggle").addClass("off")));
+        } catch (err) {}
+        try {
+            if (cookie = $.cookie("history_geo"), null !== cookie) {
+                var cookieData = JSON.parse(cookie);
+                distance = cookieData.distance, use_geo_near = cookieData.use_geo_near, use_geo_near && $("#distance-select").val(distance);
+            }
+        } catch (err) {}
+        try {
+            if (cookie = $.cookie("history_filters"), null !== cookie) filters = JSON.parse(cookie), 
+            $.each(filters, function(index, filter_id) {
+                var elem = $("#filter-" + filter_id);
+                -1 != elem.length && elem.attr("checked", !0);
+            }); else {
+                var checkbox = $(".main-topics input:first");
+                checkbox.attr("checked", !0), filters.push(checkbox.val());
+            }
+        } catch (err) {}
+    }
+    function updateStream() {
+        var query = $("#filter-form .search-bar").val(), after = $("#from_date").val(), before = $("#to_date").val();
+        if (!(before.length <= 0 || after.length <= 0)) {
+            var sourcesStr = sources.join(",");
+            sources.length <= 0 && (sourcesStr = "all");
+            var url = stream_server + "/streams?sources=" + sourcesStr + "&after=" + encodeURIComponent(after) + "&before=" + encodeURIComponent(before) + "&filters=" + filters.join(",") + "&subfilter=" + encodeURIComponent(query);
+            use_geo_near && "area" != distance && (url += "&near=" + near + "&distance=" + encodeURIComponent(distance)), 
+            $("#feed-stream section").remove(), $("#loading").show(), $("#results").hide(), 
+            $.get(url, function(data) {
+                $("#loading").hide(), $("#results").show().html((data.length >= 500 ? "500+" : data.length) + " results"), 
+                data.length <= 0 && alert("No results, please try a less specific query."), $.each(data, function(index, message) {
+                    if (use_geo_near && "area" == distance) {
+                        var found = !1;
+                        if (message.internal.location) for (var i = 0; i < geofencePolygons.length; i++) if (isPointInPoly(geofencePolygons[i], {
+                            x: message.internal.location.coords[0],
+                            y: message.internal.location.coords[1]
+                        })) {
+                            found = !0;
+                            break;
+                        }
+                        if (!found) return;
+                    }
+                    var section = $("<section>");
+                    section.addClass("entry"), section.addClass(message.interaction.type), section.attr("data-messageid", message._id.$id), 
+                    "twitter" == message.interaction.type && section.attr("data-twitterid", message.twitter.id);
+                    var img = $("<img>");
+                    img.attr("src", message.interaction.author.avatar), img.attr("alt", message.interaction.author.name), 
+                    img.addClass("profile-pic"), section.append(img);
+                    var timestamp = $("<time>").attr("datetime", message.interaction.created_at).attr("pubdate", "pubdate").html(moment(message.interaction.created_at).format("LLL"));
+                    section.append(timestamp);
+                    var link = $("<a>");
+                    "facebook" == message.interaction.type ? link.attr("href", message.interaction.author.link) : link.attr("href", message.interaction.link), 
+                    link.attr("target", "_blank"), link.html("twitter" == message.interaction.type ? "@" + message.interaction.author.username : message.interaction.author.name), 
+                    section.append(link);
+                    var paragraph = $("<p>");
+                    paragraph.html(message.interaction.content), section.append(paragraph);
+                    var actions = $("<ul>");
+                    if (actions.addClass("actions"), "twitter" == message.interaction.type && actions.append('<li class="follow"><a href="#">Follow</a></li>'), 
+                    message.internal.location && message.internal.location.state) {
+                        var location;
+                        location = message.internal.location.county && null !== message.internal.location.county ? message.internal.location.county + ", " + message.internal.location.state : message.internal.location.state, 
+                        actions.append('<li class="location"><a href="https://maps.google.com/maps?q=' + encodeURIComponent(location) + '">' + location + "</a></li>");
+                    }
+                    section.append(actions), section.find("img").error(function() {
+                        $(this).remove();
+                    }), $("#feed-stream").append(section);
+                }), attachButtonEvents();
+            });
+        }
+    }
+    function attachButtonEvents() {
+        $(".actions .follow a").unbind("click").click(function() {
+            var section = $(this).parent().parent().parent(), username = section.find("a").html().substr(1);
+            return $.post("/tweet/follow", {
+                username: username
+            }, function(data) {
+                alert(data.error ? "Could not follow user: " + data.error : "You are now following @" + username);
+            }), !1;
+        });
+    }
+    function isPointInPoly(poly, pt) {
+        for (var c = !1, i = -1, l = poly.length, j = l - 1; ++i < l; j = i) (poly[i].y <= pt.y && pt.y < poly[j].y || poly[j].y <= pt.y && pt.y < poly[i].y) && pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x && (c = !c);
+        return c;
+    }
+    function bindEvents() {
+        $("#to_date").change(function() {
+            $("#from_date").appendDtpicker({
+                maxDate: $("#to_date").val()
+            });
+        }), $("#from_date").change(function() {
+            $("#to_date").appendDtpicker({
+                minDate: $("#from_date").val()
+            });
+        }), $("#to_date").trigger("change"), $("#from_date").trigger("change"), null === near && (near = $("#distance-select").attr("data-location")), 
+        restoreSession(), $("#filter-form").submit(function() {
+            return updateStream(), !1;
+        }), $(".main-topics input").click(function() {
+            var filter_id = $(this).val();
+            if ($(this).is(":checked")) filters.push(filter_id); else {
+                var index = filters.indexOf(filter_id);
+                -1 != index && filters.splice(index, 1);
+            }
+            $.cookie("history_filters", JSON.stringify(filters), default_cookie_settings);
+        }), $("#distance-select").change(function() {
+            var val = $(this).val();
+            "all" == val ? use_geo_near = !1 : (distance = val, use_geo_near = !0), $.cookie("history_geo", JSON.stringify({
+                distance: distance,
+                use_geo_near: use_geo_near
+            }), default_cookie_settings);
+        }), $(".feed-controls a").click(function() {
+            var source = $(this).html().toLowerCase();
+            if (source = source.replace("+", "plus"), $(this).hasClass("off")) $(this).removeClass("off"), 
+            $(this).addClass("on"), sources.push(source); else {
+                $(this).removeClass("on"), $(this).addClass("off");
+                var index = sources.indexOf(source);
+                -1 != index && sources.splice(index, 1);
+            }
+            return $.cookie("history_sources", JSON.stringify(sources), default_cookie_settings), 
+            !1;
+        });
+    }
+    var hostname = window.location.host;
+    hostname.indexOf("local") && (hostname = "stage.electiondesk.us");
+    var distance, stream_server = "//" + hostname + "/data", use_geo_near = !1, sources = [ "twitter", "facebook", "googleplus" ], filters = [], near = null, default_cookie_settings = {
+        expires: 7
+    };
+    return {
+        init: function() {
+            $("body#history").length && bindEvents();
+        }
+    };
+}();
+
+$(History.init);
 
 var SettingsForm = function() {
     function bindEvents() {

@@ -70,25 +70,6 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
 		<input type="text" name="from_date" id="from_date" value="<?php echo date('Y'); ?>-01-01 12:00">
 		-
 		<input type="text" name="to_date" id="to_date" value="<?php echo date('Y-m-d', time()) ?> 12:00">
-
-		<script type="text/javascript">
-		$(function(){
-		 	$('#to_date').change(function() {
-			    $('#from_date').appendDtpicker({
-				    maxDate: $('#to_date').val() // when the end time changes, update the maxDate on the start field
-			    });
-			});
-	
-			$('#from_date').change(function() {
-			    $('#to_date').appendDtpicker({
-				    minDate: $('#from_date').val() // when the start time changes, update the minDate on the end field
-			    });
-			});
-
-			$('#to_date').trigger('change');
-			$('#from_date').trigger('change');
-		});
-		</script>
 	</section>
 
 	<section class="search-query">
