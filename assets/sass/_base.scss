@@ -100,6 +100,14 @@
     @include antialiase();
   }
 
+  h4{
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 24px;
+    font-weight: 300;
+    color: #959595;
+    @include antialiase();
+  }
+
   p, li, address{
     font-family: 'Titillium Web', sans-serif;
     font-size: 15px;
