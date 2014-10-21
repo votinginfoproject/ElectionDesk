@@ -7,7 +7,7 @@
   <?php
   else:
   ?>
-  <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | limitfilter:limitQuery:this.radiusQuery.val | contentfilter:contentQuery | orderByCreated | limitTo:250 as results" class="entry {{ interaction.interaction.type }}" ng-class="{ bookmarked: interaction.bookmarked }" ng-cloak>
+  <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | topicfilter:topicQuery | limitfilter:limitQuery:this.radiusQuery.val | contentfilter:contentQuery | orderByCreated | limitTo:100 as results" class="entry {{ interaction.interaction.type }}" ng-class="{ bookmarked: interaction.bookmarked }" ng-cloak>
   <?php
   endif;
   ?>
