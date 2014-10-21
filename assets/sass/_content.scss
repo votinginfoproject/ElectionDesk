@@ -308,3 +308,127 @@
   height: 600px;
   margin-bottom: 15px;
 }
+
+
+
+
+
+
+//History Page
+//============================
+
+
+section.main-topics{
+
+  ul{
+    overflow: hidden;
+    padding: 0px;
+    list-style-type: none;
+
+      li{
+        float: left;
+        margin-right: 15px;
+
+          input[type="checkbox"]{
+            display: none;
+          }
+
+          input[type="checkbox"]:checked + label{
+            background-color: #25aae1;
+            color: #fff;
+
+            &:before{
+              content: "\2713";
+              margin-right: 5px;
+            }
+          }
+
+          label{
+            padding: 6px 12px;
+            border-radius: 4px;
+            background-color: #ccc;
+          }
+      }
+  }
+}
+
+
+section.feed-controls{
+
+    ul{
+      overflow: hidden;
+      padding: 0px;
+      list-style-type: none;
+
+        li{
+          float: left;
+          margin-right: 15px;
+
+
+            a{
+              display: inline-block;
+              padding: 6px 12px;
+              border-radius: 4px;
+              background-color: #ccc;
+              color: #fff;
+
+
+                &.twitter-toggle.on{
+                  background-color: $twitterColor;
+                }
+
+                &.facebook-toggle.on{
+                  background-color: $facebookColor;
+                }
+
+                &.google-toggle.on{
+                  background-color: #d34836;
+                }
+
+                &:hover{
+                  text-decoration: none;
+                }
+
+            }
+        }
+    }
+
+
+}
+
+
+section.limit-distance{
+  max-width: 300px;
+}
+
+section.filter-date{
+  .form-group{
+    display: inline-block;
+    max-width: 300px;
+  }
+}
+
+section.search-query{
+  .form-group{
+    max-width: 610px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

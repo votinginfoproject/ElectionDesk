@@ -6,36 +6,44 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
 	<h3>Find historic posts</h3>
 	<p class="muted">Toggle topics:</p>
 	<section class="main-topics">
+		<ul>
 		<?php
 		$i = 1;
 		$count = count($filters);
 		foreach ($filters as $filter):
 		?>
-		<div class="checkbox<?php if (!$filter->is_running): echo ' inactive'; endif; ?>">
+		<li class="<?php if (!$filter->is_running): echo ' inactive'; endif; ?>">
+			
 			<input class="input-checkbox" type="checkbox" name="filters" id="filter-<?php echo $filter->id; ?>" value="<?php echo $filter->id; ?>"<?php if (!$filter->is_running): echo ' disabled="disabled"'; endif; ?>>
 			<label for="filter-<?php echo $filter->id; ?>"><?php echo $filter->title; ?></label>
 			<?php if ($i == $count) : ?>
-			<div style="clear: both"><div>
+			
+
+			
+
 			<?php endif; ?>
-		</div>
+		</li>
 		<?php
 		$i++;
 		endforeach;
 		?>
+		</ul>
 	</section>
 
 	<section class="trending-topics">
 		<section class="feed-controls">
 			<p>Toggle social media types:</p>
-			<a href="#" class="twitter-toggle on">Twitter</a>
-			<a href="#" class="facebook-toggle on">Facebook</a>
-			<a href="#" class="google-toggle on">Google+</a>
+			<ul>
+				<li><a href="#" class="twitter-toggle on">Twitter</a></li>
+				<li><a href="#" class="facebook-toggle on">Facebook</a></li>
+				<li><a href="#" class="google-toggle on">Google+</a></li>
+			</ul>
 		</section><!-- end feed-controls -->
 	</section><!-- end trending-topics -->
 
 	<section class="limit-distance"><!-- right column -->
 		<p class="muted">Limit messages by location</p>
-		<select id="distance-select" data-location="<?php echo $profile->user_lon . ',' . $profile->user_lat; ?>">
+		<select id="distance-select" class="form-control" data-location="<?php echo $profile->user_lon . ',' . $profile->user_lat; ?>">
 			<option value="all">Show all messages</option>
 			<?php
 			if (!is_null($profile->user_state)):
@@ -66,16 +74,23 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
 
 	<section class="filter-date">
 		<p class="muted">Please specify a date range:</p>
-
-		<input type="text" name="from_date" id="from_date" value="<?php echo date('Y'); ?>-01-01 12:00">
+		<div class="form-group">
+			<input type="text" name="from_date" id="from_date" class="form-control" value="<?php echo date('Y'); ?>-01-01 12:00">
+		</div>
 		-
-		<input type="text" name="to_date" id="to_date" value="<?php echo date('Y-m-d', time()) ?> 12:00">
+		<div class="form-group">
+			<input type="text" name="to_date" id="to_date" class="form-control" value="<?php echo date('Y-m-d', time()) ?> 12:00">
+		</div>
 	</section>
 
 	<section class="search-query">
 		<form class="search" id="filter-form">
-			<input type="text" class="search-bar" placeholder="Filter with AND/OR operators as well as parenthesis. Ex., ballot OR (vote AND &quot;turned away&quot;)">
-			<input type="submit" value="Search" class="submit">
+			
+			<div class="form-group">
+				<input type="text" class="search-bar form-control" placeholder="Filter with AND/OR operators as well as parenthesis. Ex., ballot OR (vote AND &quot;turned away&quot;)">
+			</div>
+
+			<input type="submit" value="Search" class="btn btn-primary">
 		</form>
 	</section>
 	
