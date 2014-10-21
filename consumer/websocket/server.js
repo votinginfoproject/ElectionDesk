@@ -11,7 +11,11 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
     socket.on('dump', function (data) {
-        buffer.forEach(function (item) {
+        console.log('Sending data dump');
+        var items = buffer.toArray();
+        items.reverse(); // We want newest first
+
+        items.forEach(function (item) {
             socket.emit('update', item);
         });
     });
