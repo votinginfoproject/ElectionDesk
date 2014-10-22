@@ -31,7 +31,7 @@ class FacebookConsumer extends IndividualConsumer {
 		                    'link' => 'http://facebook.com/profile.php?id=' . $status->from->id
 		                ),
 		                'type' => 'facebook',
-		                'created_at' => new \MongoDate(time() + rand(0, 60*4)), // Necessary when data is not live
+		                'created_at' => new \MongoDate(strtotime($status->created_time)),
 		                'content' =>  isset($status->message) ? $status->message : NULL,
 		                'id' => $status->id,
 		                'link' => isset($status->link) ? $status->link : NULL,

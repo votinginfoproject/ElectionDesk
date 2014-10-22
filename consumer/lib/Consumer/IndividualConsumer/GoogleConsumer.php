@@ -38,7 +38,7 @@ class GoogleConsumer extends IndividualConsumer {
 	                        'link' => $item->actor->url,
 	                    ),
 	                    'type' => 'googleplus',
-	                    'created_at' => new \MongoDate(time() + rand(0, 60*4)), // Necessary when data is not live
+	                    'created_at' => new \MongoDate(strtotime($item->published)),
 	                    'content' => $item->object->content,
 	                    'id' => $item->id,
 	                    'link' => $item->url

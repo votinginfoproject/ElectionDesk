@@ -42,11 +42,6 @@ class TwitterConsumer extends IndividualConsumer {
 				$requestsPerRun = ($limit / 15) * $intervalMinutes;
 				$activeFilters = Filter::where('active', 1)->count();
 				$requestsPerFilter = floor($requestsPerRun / $activeFilters);
-
-				// Internal max so the requests doesn't take to long time to run
-				if ($requestsPerFilter > 2) {
-					$requestsPerFilter = 2;
-				}
 			}
 
 			$response = json_decode($response->getContent());
@@ -64,7 +59,7 @@ class TwitterConsumer extends IndividualConsumer {
 		                    'link' => 'http://twitter.com/' . $status->user->screen_name
 		                ),
 		                'type' => 'twitter',
-		                'created_at' => new \MongoDate(time() + rand(0, 60*4)), // Necessary when data is not live
+		                'created_at' => new \MongoDate(strtotime($status->created_at)),
 		                'content' => $status->text,
 		                'id' => $status->id_str,
 		                'link' => 'http://twitter.com/' . $status->user->screen_name . '/status/' . $status->id_str
