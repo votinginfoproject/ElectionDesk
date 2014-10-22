@@ -4214,14 +4214,14 @@ var History = function() {
                     img.addClass("profile-pic"), section.append(img);
                     var timestamp = $("<time>").attr("datetime", message.interaction.created_at).attr("pubdate", "pubdate").html(moment(message.interaction.created_at).format("LLL"));
                     section.append(timestamp);
-                    var link = $("<a>");
+                    var link = $('<a class="username">');
                     "facebook" == message.interaction.type ? link.attr("href", message.interaction.author.link) : link.attr("href", message.interaction.link), 
                     link.attr("target", "_blank"), link.html("twitter" == message.interaction.type ? "@" + message.interaction.author.username : message.interaction.author.name), 
                     section.append(link);
                     var paragraph = $("<p>");
                     paragraph.html(message.interaction.content), section.append(paragraph);
                     var actions = $("<ul>");
-                    if (actions.addClass("actions"), "twitter" == message.interaction.type && actions.append('<li class="follow"><a href="#">Follow</a></li>'), 
+                    if (actions.addClass("actions"), "twitter" == message.interaction.type && actions.append('<li class="follow"><a href="#"><i class="fa fa-plus"></i>Follow</a></li>'), 
                     message.internal.location && message.internal.location.state) {
                         var location;
                         location = message.internal.location.county && null !== message.internal.location.county ? message.internal.location.county + ", " + message.internal.location.state : message.internal.location.state, 

@@ -417,6 +417,135 @@ section.search-query{
 
 
 
+#loading{
+  display: none;
+
+    .fa{
+      margin-right: 5px;
+    }
+} 
+
+
+#results{
+  margin: 15px 0;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: #bf1e2e;
+  -webkit-font-smoothing: antialiased;
+  text-shadow: rgba(0, 0, 0, 0.01) 0 0 1px;
+}
+
+section.entry{
+  margin-bottom: 20px;
+  padding: 10px 10px 10px 10px;
+  background-color: lighten(#eee, 3%);
+
+  &.twitter{
+    border-left: 10px solid $twitterColor;
+
+        img{
+          float: left;
+          margin-right: 10px;
+        }
+
+        time{
+          display: block;
+        }
+
+        p{
+          padding-left: 60px;
+        }
+
+        ul.actions{
+          margin: 0px;
+          overflow: hidden;
+          padding-left: 60px;
+          list-style-type: none;
+
+            li{
+              float: left;
+              margin-right: 10px;
+
+                a{
+                  display: inline-block;
+                  padding: 3px 6px;
+                  border-radius: 4px;
+                  color: #fff;
+                }
+
+              &.follow{
+
+                a{
+                  background-color: #5CB85C;
+
+                  &:hover{
+                    text-decoration: none;
+                    background-color: darken(#5CB85C, 10%);
+                  }
+
+                  .fa{
+                    margin-right: 5px;
+                  }
+                }
+              }
+
+              &.location{
+
+                a{
+                  background-color: #999;
+
+                  &:hover{
+                    text-decoration: none;
+                    background-color: darken(#999, 10%);
+                  }
+
+                  .fa{
+                    margin-right: 5px;
+                  }
+                }
+              }
+            }
+        }
+  }
+
+  &.facebook{
+    border-left: 10px solid $facebookColor;
+  }
+
+  &.googleplus{
+    border-left: 10px solid #d34836;
+
+      img{
+        float: left;
+        margin-right: 10px;
+      }
+
+      time{
+        display: block;
+        float: left;
+      }
+
+      a.username{
+        display: block;
+        clear: both;
+        margin: 5px 0;
+        font-family: 'Titillium Web', sans-serif;
+        font-size: 26px;
+        font-weight: 400;
+        -webkit-font-smoothing: antialiased;
+        text-shadow: rgba(0, 0, 0, 0.01) 0 0 1px;
+      }
+  }
+}
+
+
+#feed-stream{
+
+  padding-top: 50px;
+
+}
+
 
 
 

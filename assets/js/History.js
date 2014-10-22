@@ -159,7 +159,7 @@ var History = (function () {
 					.html(moment(message.interaction.created_at).format('LLL'));
 				section.append(timestamp);
 
-				var link = $('<a>');
+				var link = $('<a class="username">');
 				if (message.interaction.type == 'facebook') {
 					link.attr('href', message.interaction.author.link);
 				} else {
@@ -182,7 +182,7 @@ var History = (function () {
 				actions.addClass('actions');
 
 				if (message.interaction.type == 'twitter') {
-					actions.append('<li class="follow"><a href="#">Follow</a></li>');
+					actions.append('<li class="follow"><a href="#"><i class="fa fa-plus"></i>Follow</a></li>');
 				}
 
 				if (message.internal.location && message.internal.location.state) {
