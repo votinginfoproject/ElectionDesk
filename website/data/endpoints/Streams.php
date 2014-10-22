@@ -43,7 +43,7 @@ class Streams extends EndpointBase
 		$sources_exist = array();
 		foreach ($sources as $source)
 		{
-			$sources_exist[] = array($source => array('$exists' => 'true'));
+			$sources_exist[] = array('interaction.type' => $source);
 		}
 
 		// Filters
