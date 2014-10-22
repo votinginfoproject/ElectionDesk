@@ -33,6 +33,7 @@
           <input type="submit" class="btn btn-primary" value="Reply">
         </div>
       </form>
+      <div class="clearfix"></div>
     <?php
     endif;
     ?>
