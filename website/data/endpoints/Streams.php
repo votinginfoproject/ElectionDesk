@@ -124,6 +124,9 @@ class Streams extends EndpointBase
 				}
 			}
 
+			print_r($query);
+			exit;
+
 			$results = $db->interactions->find($query)->sort(array('interaction.created_at' => 1))->limit(500); // Hard limit to 500 entries at the time
 		}
 
@@ -134,8 +137,8 @@ class Streams extends EndpointBase
 		// Results returned via command is an array instead of a MongoCursor object and thus needs to use count(...) instead
 		if (is_object($results)) {
 			$results = iterator_to_array($results);
-
 		}
+
 		$resultsCount = count($results);
 		foreach ($results as $result) {
 			$this->convertDates($result);
