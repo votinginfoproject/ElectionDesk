@@ -4,7 +4,7 @@ use Consumer\Log;
 
 class GoogleConsumer extends IndividualConsumer {
 
-	private $maxPages = 10;
+	private $maxPages = 6;
 
 	public function consume($filter) {
 		parent::consume($filter);
@@ -58,6 +58,8 @@ class GoogleConsumer extends IndividualConsumer {
 	        } else {
 	            break;
 	        }
-	    }	
+	    }
+
+	    sleep(60);
 	}	
 }
