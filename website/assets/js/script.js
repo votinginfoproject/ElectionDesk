@@ -4443,7 +4443,7 @@ $(SettingsForm.init), angular.module("electiondeskStream", [ "btford.socket-io",
         if ($scope.streamIsActive) {
             var json = JSON.parse(data), unixTime = new Date().getTime() / 1e3;
             json.interaction.created_at.sec > unixTime && (json.interaction.created_at.sec = unixTime), 
-            console.log(json), json.bookmarked = "undefined" != typeof window.STREAM.bookmarks[json._id.$id] ? !0 : !1, 
+            json.bookmarked = "undefined" != typeof window.STREAM.bookmarks[json._id.$id] ? !0 : !1, 
             $scope.interactions.push(json);
         }
     }), $scope.$on("socket:hello", function() {

@@ -7,7 +7,17 @@
 			@extend %visuallyhidden;
 
 			&:checked + label {
-				background-color: $secondaryGrayColor;
+				background-color: #25aae1;
+        color: #fff;
+
+        	&:before{
+            content: "\2713";
+            margin-right: 5px;
+          }
+
+          &:hover{
+						background-color: lighten(#25aae1, 10%);
+					}
 			}
 		}
 
@@ -19,11 +29,19 @@
 				@extend %titillium-regular;
 				@include letterspacing(100);
 				font-size: 16px;
-				color: #FFF;
+				color: #777;
 
 				padding: 14px 28px;
 				cursor: pointer;
-				background-color: $primaryGrayColor;
+				background-color: #ccc;
+
+					&:hover{
+						background-color: darken(#ccc, 5%);
+					}
+
+					&:active{
+						box-shadow: none;
+					}
 			}
 		}
 	}
