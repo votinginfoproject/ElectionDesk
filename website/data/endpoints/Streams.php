@@ -123,10 +123,7 @@ class Streams extends EndpointBase
 					$query['internal.location.state'] = $location['state'];
 				}
 			}
-
-			print_r($query);
-			exit;
-
+			
 			$results = $db->interactions->find($query)->sort(array('interaction.created_at' => 1))->limit(500); // Hard limit to 500 entries at the time
 		}
 

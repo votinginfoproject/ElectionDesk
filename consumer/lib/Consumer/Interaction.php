@@ -71,8 +71,10 @@ class Interaction {
 		// Insert into database and broadcast to WebSocket server
 		self::ensureStreamConnected();
 
+		// Make sure that filter id is an integer
+		$interaction['internal']['filter_id'] = (int)$interaction['internal']['filter_id'];
+
 		try {
-			// Test
 			self::$db->interactions->insert($interaction, array('w' => true));
 			@fwrite(self::$client, json_encode($interaction) . "\n");
 		} catch (\MongoCursorException $e) {
