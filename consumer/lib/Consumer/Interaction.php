@@ -68,6 +68,11 @@ class Interaction {
 		// Logging
 		Log::debug($interaction['interaction']['type'] . ': ' . $interaction['interaction']['author']['name']);
 
+		// Skip messages that doesn't have content
+		if (!isset($interaction['interaction']['content']) || empty($interaction['interaction']['content'])) {
+			return;
+		}
+
 		// Insert into database and broadcast to WebSocket server
 		self::ensureStreamConnected();
 

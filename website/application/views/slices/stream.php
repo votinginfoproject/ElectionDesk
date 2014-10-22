@@ -35,10 +35,10 @@
         <img ng-src="https://graph.facebook.com/picture?id={{ interaction.facebook.from.id }}" alt="{{ interaction.facebook.from.name }}" class="profile-picture">
         <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
         <a ng-href="http://facebook.com/profile.php?id={{ interaction.facebook.from.id }}" target="_blank" class="target-link">{{ interaction.facebook.from.name }}</a>
-        <p ng-show="!show" class="summary">{{ (interaction.facebook.message.length > 0) ? interaction.facebook.message : interaction.facebook.story | limitTo:140 }}</p>
-        <p ng-show="show" class="full">{{ (interaction.facebook.message.length > 0) ? interaction.facebook.message : interaction.facebook.story }}</p>
+        <p ng-show="!show" class="summary">{{ interaction.interaction.content | limitTo:140 }}</p>
+        <p ng-show="show" class="full">{{ interaction.interaction.content }}</p>
 
-        <a href="" class="expand" ng-click="show = !show" ng-show="interaction.facebook.message.length > 140">{{ show ? 'Collapse' : 'Expand' }}</a>
+        <a href="" class="expand" ng-click="show = !show" ng-show="interaction.interaction.content > 140">{{ show ? 'Collapse' : 'Expand' }}</a>
         <ul class="actions">
           <li class="bookmark"><a href="" ng-click="bookmark(interaction)"><i class="fa fa-star"></i> Bookmark</a></li>
           <li class="location" ng-if="typeof(interaction.internal.location) !== 'undefined' && typeof(interaction.internal.location.state) != 'undefined' && interaction.internal.location.state.length"><a href="https://maps.google.com?ll={{ interaction.internal.location.coords[1] }},{{ interaction.internal.location.coords[0] }}"><i class="fa fa-map-marker"></i> {{ interaction.internal.location.state }}</a></li>
@@ -91,7 +91,7 @@
         <div class="clearfix"></div>
       </div>
       <!-- Default -->
-      <div ng-switch-default>{{ interaction.interaction.type }}</div>
+      <div ng-switch-default>Unknown interaction type: {{ interaction.interaction.type }}</div>
     </div>
   </li>
 	<li class="ng-repeat" ng-if="results.length == 0">
