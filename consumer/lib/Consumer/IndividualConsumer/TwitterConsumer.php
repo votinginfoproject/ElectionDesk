@@ -42,6 +42,11 @@ class TwitterConsumer extends IndividualConsumer {
 				$requestsPerRun = ($limit / 15) * $intervalMinutes;
 				$activeFilters = Filter::where('active', 1)->count();
 				$requestsPerFilter = floor($requestsPerRun / $activeFilters);
+
+				// Internal max so the requests doesn't take to long time to run
+				if ($requestsPerFilter > 2) {
+					$requestsPerFilter = 2;
+				}
 			}
 
 			$response = json_decode($response->getContent());
