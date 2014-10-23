@@ -8,23 +8,23 @@ window.STREAM = {
 <section id="topics">
 <ul>
   <li>
-    <input type="checkbox" id="topic_wait_time" ng-model="topicQuery[6]">
+    <input type="checkbox" id="topic_wait_time" ng-change="filterChanged()" ng-model="topicQuery[6]">
     <label class="btn btn-default" for="topic_wait_time">Wait Time</label>
   </li>
   <li>
-    <input type="checkbox" id="topic_polling_location" ng-model="topicQuery[7]">
+    <input type="checkbox" id="topic_polling_location" ng-change="filterChanged()" ng-model="topicQuery[7]">
     <label class="btn btn-default" for="topic_polling_location">Polling Location</label>
   </li>
   <li>
-    <input type="checkbox" id="topic_adm_issues" ng-model="topicQuery[8]">
+    <input type="checkbox" id="topic_adm_issues" ng-change="filterChanged()" ng-model="topicQuery[8]">
     <label class="btn btn-default" for="topic_adm_issues">Adm. Issues</label>
   </li>
   <li>
-    <input type="checkbox" id="topic_pr_issues" ng-model="topicQuery[9]">
+    <input type="checkbox" id="topic_pr_issues" ng-change="filterChanged()" ng-model="topicQuery[9]">
     <label class="btn btn-default" for="topic_pr_issues">PR Issues</label>
   </li>
   <li>
-    <input type="checkbox" id="topic_voter_id" ng-model="topicQuery[10]">
+    <input type="checkbox" id="topic_voter_id" ng-change="filterChanged()" ng-model="topicQuery[10]">
     <label class="btn btn-default" for="topic_voter_id">Voter id</label>
   </li>
 </ul>
@@ -35,23 +35,23 @@ window.STREAM = {
 
   <ul class="feed-buttons toggle">
     <li>
-      <input type="checkbox" id="feed_twitter" ng-model="sourceQuery.twitter">
+      <input type="checkbox" id="feed_twitter" ng-change="filterChanged()" ng-model="sourceQuery.twitter">
       <label for="feed_twitter"><i class="fa fa-twitter"></i></label>
     </li>
     <li>
-      <input type="checkbox" id="feed_facebook" ng-model="sourceQuery.facebook">
+      <input type="checkbox" id="feed_facebook" ng-change="filterChanged()" ng-model="sourceQuery.facebook">
       <label for="feed_facebook"><i class="fa fa-facebook"></i></label>
     </li>
     <li>
-      <input type="checkbox" id="feed_googleplus" ng-model="sourceQuery.googleplus">
+      <input type="checkbox" id="feed_googleplus" ng-change="filterChanged()" ng-model="sourceQuery.googleplus">
       <label for="feed_googleplus"><i class="fa fa-google-plus"></i></label>
     </li>
     <li>
-      <input type="checkbox" id="feed_wordpress" ng-model="sourceQuery.wordpress">
+      <input type="checkbox" id="feed_wordpress" ng-change="filterChanged()" ng-model="sourceQuery.wordpress">
       <label for="feed_wordpress"><i class="fa fa-wordpress"></i></label>
     </li>
     <li>
-      <input type="checkbox" id="feed_disqus" ng-model="sourceQuery.disqus">
+      <input type="checkbox" id="feed_disqus" ng-change="filterChanged()" ng-model="sourceQuery.disqus">
       <label for="feed_disqus"><i class="icon-disqus-social"></i></label>
     </li>
 </ul><!--/feed buttons-->
@@ -75,22 +75,22 @@ window.STREAM = {
 
 <ul class="limit-options">
   <li>
-    <input type="radio" name="limit" value="all" ng-model="limitQuery" id="limit_all_posts">
+    <input type="radio" name="limit" value="all" ng-change="filterChanged()" ng-model="limitQuery" id="limit_all_posts">
     <label for="limit_all_posts"><i class="circle"></i> All posts</label>
   </li>
 
   <li>
-    <input type="radio" name="limit" value="state" ng-model="limitQuery" id="limit_state" data-state="<?php echo $profile->user_state; ?>">
+    <input type="radio" name="limit" value="state" ng-change="filterChanged()" ng-model="limitQuery" id="limit_state" data-state="<?php echo $profile->user_state; ?>">
     <label for="limit_state"><i class="circle"></i> Within <?php echo (isset($states[$profile->user_state]) ? $states[$profile->user_state] : $profile->user_state); ?></label>
   </li>
   
   <li>
-    <input type="radio" name="limit" value="radius" ng-model="limitQuery" id="limit_radius" data-lat="<?php echo $profile->user_lat; ?>" data-lon="<?php echo $profile->user_lon; ?>">
+    <input type="radio" name="limit" value="radius" ng-change="filterChanged()" ng-model="limitQuery" id="limit_radius" data-lat="<?php echo $profile->user_lat; ?>" data-lon="<?php echo $profile->user_lon; ?>">
     <label for="limit_radius"><i class="circle"></i> Within radius</label>
   </li>
   
   <li>
-    <input type="radio" name="limit" value="custom" ng-model="limitQuery" id="limit_custom">
+    <input type="radio" name="limit" value="custom" ng-change="filterChanged()" ng-model="limitQuery" id="limit_custom">
     <label for="limit_custom">
       <i class="circle"></i> Within custom area
     </label>

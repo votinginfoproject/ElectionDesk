@@ -103,15 +103,26 @@ controller('StreamController', function ($scope, InteractionService, socket) {
 	// Filters
 	$scope.streamIsActive = true;
 
-	$scope.topicQuery = {
+	$scope.topicQuery = (localStorage.getItem('ed-topicQuery') !== null) ? JSON.parse(localStorage.getItem('ed-topicQuery')) : {
 		6: true,
 		7: true,
 		8: true,
 		9: true,
 		10: true
 	};
+	$scope.filterChanged = function () {
+		// Save current filter settings
+		localStorage.setItem('ed-topicQuery', JSON.stringify($scope.topicQuery));
+		localStorage.setItem('ed-sourceQuery', JSON.stringify($scope.sourceQuery));
+		localStorage.setItem('ed-limitQuery', $scope.limitQuery);
+		localStorage.setItem('ed-radiusQueryVal', ($scope.limitQuery == 'radius') ? $scope.radiusQuery.val : 20);
 
-	$scope.sourceQuery = {
+		if ($scope.limitQuery !== 'radius' && $scope.radiusQuery.val !== 20) {
+			$scope.radiusQuery.val = 20;
+		}
+	};
+
+	$scope.sourceQuery = (localStorage.getItem('ed-sourceQuery') !== null) ? JSON.parse(localStorage.getItem('ed-sourceQuery')) : {
 		'facebook': true,
 		'twitter': true,
 		'googleplus': true,
@@ -128,9 +139,9 @@ controller('StreamController', function ($scope, InteractionService, socket) {
 		}
 	};
 
-	$scope.limitQuery = 'all';
+	$scope.limitQuery = (localStorage.getItem('ed-limitQuery') !== null) ? localStorage.getItem('ed-limitQuery') : 'all';
 	$scope.radiusQuery = {};
-	$scope.radiusQuery.val = 20;
+	$scope.radiusQuery.val = (localStorage.getItem('ed-radiusQueryVal') !== null) ? parseInt(localStorage.getItem('ed-radiusQueryVal')) : 20;
 	$scope.radiusQuery.formatter = function(value) {
 		if (value === 1000) {
 			value = '1,000';
@@ -140,6 +151,7 @@ controller('StreamController', function ($scope, InteractionService, socket) {
 	};
 	$scope.radiusQuery.changed = function () {
 		$scope.limitQuery = 'radius';
+		$scope.filterChanged();
 	};
 
 	// Interactions from WebSocket server

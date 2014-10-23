@@ -4610,13 +4610,17 @@ $(SettingsForm.init), angular.module("electiondesk").factory("socket", function(
 }).controller("StreamController", function($scope, InteractionService, socket) {
     socket.forward([ "update", "hello" ], $scope), $scope.doneLoading = !1, $scope.bookmark = InteractionService.bookmark, 
     $scope.reply = InteractionService.reply, $scope.follow = InteractionService.follow, 
-    $scope.retweet = InteractionService.retweet, $scope.streamIsActive = !0, $scope.topicQuery = {
+    $scope.retweet = InteractionService.retweet, $scope.streamIsActive = !0, $scope.topicQuery = null !== localStorage.getItem("ed-topicQuery") ? JSON.parse(localStorage.getItem("ed-topicQuery")) : {
         6: !0,
         7: !0,
         8: !0,
         9: !0,
         10: !0
-    }, $scope.sourceQuery = {
+    }, $scope.filterChanged = function() {
+        localStorage.setItem("ed-topicQuery", JSON.stringify($scope.topicQuery)), localStorage.setItem("ed-sourceQuery", JSON.stringify($scope.sourceQuery)), 
+        localStorage.setItem("ed-limitQuery", $scope.limitQuery), localStorage.setItem("ed-radiusQueryVal", "radius" == $scope.limitQuery ? $scope.radiusQuery.val : 20), 
+        "radius" !== $scope.limitQuery && 20 !== $scope.radiusQuery.val && ($scope.radiusQuery.val = 20);
+    }, $scope.sourceQuery = null !== localStorage.getItem("ed-sourceQuery") ? JSON.parse(localStorage.getItem("ed-sourceQuery")) : {
         facebook: !0,
         twitter: !0,
         googleplus: !0,
@@ -4625,11 +4629,12 @@ $(SettingsForm.init), angular.module("electiondesk").factory("socket", function(
     }, $scope.togglePause = function() {
         var icon = $("#feed_paused_label").find("i");
         $scope.streamIsActive ? icon.removeClass("fa-play").addClass("fa-pause") : icon.removeClass("fa-pause").addClass("fa-play");
-    }, $scope.limitQuery = "all", $scope.radiusQuery = {}, $scope.radiusQuery.val = 20, 
+    }, $scope.limitQuery = null !== localStorage.getItem("ed-limitQuery") ? localStorage.getItem("ed-limitQuery") : "all", 
+    $scope.radiusQuery = {}, $scope.radiusQuery.val = null !== localStorage.getItem("ed-radiusQueryVal") ? parseInt(localStorage.getItem("ed-radiusQueryVal")) : 20, 
     $scope.radiusQuery.formatter = function(value) {
         return 1e3 === value && (value = "1,000"), value + " miles";
     }, $scope.radiusQuery.changed = function() {
-        $scope.limitQuery = "radius";
+        $scope.limitQuery = "radius", $scope.filterChanged();
     }, $scope.interactions = [], $scope.$on("socket:update", function(ev, data) {
         if ($scope.streamIsActive) {
             var json = JSON.parse(data), unixTime = new Date().getTime() / 1e3;
