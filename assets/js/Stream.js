@@ -342,4 +342,13 @@ filter('orderByCreated', function() {
 		if (reverse) filtered.reverse();
 		return filtered;
 	};
+}).
+filter('summarify', function() {
+	return function(val) {
+		if (val.length > 140) {
+			return val.substr(0, 140-3) + '...';
+		} else {
+			return val;
+		}
+	};
 });

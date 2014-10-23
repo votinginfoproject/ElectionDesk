@@ -1,4 +1,5 @@
 angular.module('electiondesk', [
+	'ngSanitize',
 	'btford.socket-io',
 	'timeRelative',
 	'ui.bootstrap',
