@@ -110,7 +110,7 @@
     ?>
   </li>
   <li class="ng-repeat" ng-if="!doneLoading" ng-cloak>
-    <h1><i class="fa fa-spinner fa-spin"></i> Loading...</h1>
+    <h1><i class="fa fa-spin fa-circle-o-notch"></i> Loading...</h1>
   </li>
 </ul>
 </section>
