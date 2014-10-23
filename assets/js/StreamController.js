@@ -9,53 +9,96 @@ factory('socket', function (socketFactory) {
 		ioSocket: io.connect('http://' + hostname + ':4242')
 	});
 }).
-controller('StreamController', function ($scope, $http, $modal, socket, notify) {
+factory('InteractionService', function($modal, $http, notify) {
+	return {
+		bookmark: function(interaction) {
+			var messageId = interaction._id.$id;
+			
+			if (interaction.bookmarked) {
+				$http({
+					method: 'POST',
+					url: '/trending/unbookmark',
+					data: $.param({ message: messageId }),
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				})
+				.success(function(data) {
+					if (data.error) {
+						if (data.error != 'You cannot remove a bookmark that is not bookmarked.') {
+							alert('Could not unbookmark message: ' + data.error);
+						}
+					} else {
+						interaction.bookmarked = false;
+					}
+				});
+			} else {
+				$http({
+					method: 'POST',
+					url: '/trending/bookmark',
+					data: $.param({ message: messageId }),
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				})
+				.success(function(data) {
+					if (data.error) {
+						alert('Could not bookmark message: ' + data.error);
+					} else {
+						interaction.bookmarked = true;
+					}
+				});
+			}
+		},
+		reply: function (interaction) {
+			var modalInstance = $modal.open({
+				templateUrl: 'replyModalContent.html',
+				controller: 'ReplyModalInstanceController',
+				resolve: {
+					interaction: function () {
+						return interaction;
+					}
+				}
+			});
+		},
+		follow: function (interaction) {
+			$http({
+				method  : 'POST',
+				url     : '/tweet/follow',
+				data    : $.param({ username: interaction.interaction.author.username }),
+				headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+			})
+			.success(function(data) {
+				if (data.error) {
+					notify({ message: 'Could not follow user: ' + data.error, classes: 'alert-danger' });
+				} else {
+					notify({ message: 'You are now following @' + interaction.interaction.author.username, classes: 'alert-success' });
+				}
+			});
+		},
+		retweet: function (interaction) {
+			$http({
+				method  : 'POST',
+				url     : '/tweet/retweet',
+				data    : $.param({ message_id: interaction.twitter.id_str || interaction.twitter.id }),
+				headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+			})
+			.success(function(data) {
+				if (data.error) {
+					notify({ message: 'Could not follow user: ' + data.error, classes: 'alert-danger' });
+				} else {
+					notify({ message: 'Retweet successful', classes: 'alert-success' });
+				}
+			});
+		}
+	};
+}).
+controller('StreamController', function ($scope, InteractionService, socket) {
 	socket.forward(['update', 'hello'], $scope);
 
-	// Modal
-	$scope.reply = function (interaction) {
-		var modalInstance = $modal.open({
-			templateUrl: 'replyModalContent.html',
-			controller: 'ReplyModalInstanceController',
-			resolve: {
-				interaction: function () {
-					return interaction;
-				}
-			}
-		});
-	};
+	$scope.doneLoading = false;
 
-	$scope.follow = function (interaction) {
-		$http({
-			method  : 'POST',
-			url     : '/tweet/follow',
-			data    : $.param({ username: interaction.interaction.author.username }),
-			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
-		})
-		.success(function(data) {
-			if (data.error) {
-				notify({ message: 'Could not follow user: ' + data.error, classes: 'alert-danger' });
-			} else {
-				notify({ message: 'You are now following @' + interaction.interaction.author.username, classes: 'alert-success' });
-			}
-		});
-	};
-
-	$scope.retweet = function (interaction) {
-		$http({
-			method  : 'POST',
-			url     : '/tweet/retweet',
-			data    : $.param({ message_id: interaction.twitter.id_str || interaction.twitter.id }),
-			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
-		})
-		.success(function(data) {
-			if (data.error) {
-				notify({ message: 'Could not follow user: ' + data.error, classes: 'alert-danger' });
-			} else {
-				notify({ message: 'Retweet successful', classes: 'alert-success' });
-			}
-		});
-	};
+	// Interaction actions
+	$scope.bookmark = InteractionService.bookmark;
+	$scope.reply = InteractionService.reply;
+	$scope.follow = InteractionService.follow;
+	$scope.retweet = InteractionService.retweet;
 
 	// Filters
 	$scope.streamIsActive = true;
@@ -99,43 +142,6 @@ controller('StreamController', function ($scope, $http, $modal, socket, notify) 
 		$scope.limitQuery = 'radius';
 	};
 
-	// Interaction actions
-	$scope.bookmark = function(interaction) {
-		var messageId = interaction._id.$id;
-		
-		if (interaction.bookmarked) {
-			$http({
-				method: 'POST',
-				url: '/trending/unbookmark',
-				data: $.param({ message: messageId }),
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-			})
-			.success(function(data) {
-				if (data.error) {
-					if (data.error != 'You cannot remove a bookmark that is not bookmarked.') {
-						alert('Could not unbookmark message: ' + data.error);
-					}
-				} else {
-					interaction.bookmarked = false;
-				}
-			});
-		} else {
-			$http({
-				method: 'POST',
-				url: '/trending/bookmark',
-				data: $.param({ message: messageId }),
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-			})
-			.success(function(data) {
-				if (data.error) {
-					alert('Could not bookmark message: ' + data.error);
-				} else {
-					interaction.bookmarked = true;
-				}
-			});
-		}
-	};
-
 	// Interactions from WebSocket server
 	$scope.interactions = [];
 
@@ -154,6 +160,10 @@ controller('StreamController', function ($scope, $http, $modal, socket, notify) 
 				json.bookmarked = true;
 			} else {
 				json.bookmarked = false;
+			}
+
+			if (!$scope.doneLoading) {
+				$scope.doneLoading = true;
 			}
 
 			$scope.interactions.push(json);

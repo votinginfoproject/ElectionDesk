@@ -3,7 +3,7 @@
   <?php
   if (stripos(current_url(), '/bookmarks') !== FALSE):
   ?>
-  <li ng-repeat="interaction in interactions | orderByCreated as results" class="entry {{ interaction.interaction.type }}" ng-class="{ bookmarked: interaction.bookmarked }" ng-cloak>
+  <li ng-repeat="interaction in interactions | orderByCreated | bookmarked as results" class="entry {{ interaction.interaction.type }}" ng-class="{ bookmarked: interaction.bookmarked }" ng-cloak>
   <?php
   else:
   ?>
@@ -93,8 +93,24 @@
       <div ng-switch-default>Unknown interaction type: {{ interaction.interaction.type }}</div>
     </div>
   </li>
-	<li class="ng-repeat" ng-if="results.length == 0">
-    No results
-	</li>
+	<li class="ng-repeat" ng-if="doneLoading && results.length == 0" ng-cloak>
+    <?php
+    if (stripos(current_url(), '/bookmarks') !== FALSE):
+    ?>
+    <h3><i class="fa fa-question-circle"></i> No bookmarks found</h3>
+    <p>You haven't bookmarked any interactions yet.</p>
+    <p>Create a new bookmark by clicking the "Bookmark" link for any interaction in the feed.</p>
+    <?php
+    else:
+    ?>
+  <h3><i class="fa fa-question-circle"></i> No results</h3>
+    <p>Please make your filters less restrictive.</p>
+    <?php
+    endif;
+    ?>
+  </li>
+  <li class="ng-repeat" ng-if="!doneLoading" ng-cloak>
+    <h1><i class="fa fa-spinner fa-spin"></i> Loading...</h1>
+  </li>
 </ul>
 </section>

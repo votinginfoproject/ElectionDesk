@@ -183,6 +183,10 @@
 				}
 			}
 
+			&.ng-repeat {
+				border-bottom: none;
+			}
+
 			img.profile-picture {
 				width: 48px;
 				height: 48px;
@@ -216,7 +220,7 @@
 				color: $primaryGrayColor;
 			}
 
-			p {
+			p.summary, p.full {
 				margin: 0;
 				font-family: Helvetica, Arial, sans-serif;
 				font-size: 14px;

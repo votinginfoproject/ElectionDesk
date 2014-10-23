@@ -4191,53 +4191,23 @@ var Areas = function() {
     };
 }();
 
-$(Areas.init), angular.module("electiondesk").factory("dataService", [ "$http", function($http) {
-    return {
-        getJson: function() {
-            return $http.get("/trending/bookmarksinteractions");
-        }
-    };
-} ]).value("modelService", []).controller("BookmarksController", function($scope, dataService, modelService) {
-    $scope.bookmark = function(interaction) {
-        var messageId = interaction._id.$id;
-        interaction.bookmarked ? $http({
-            method: "POST",
-            url: "/trending/unbookmark",
-            data: $.param({
-                message: messageId
-            }),
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        }).success(function(data) {
-            data.error ? "You cannot remove a bookmark that is not bookmarked." != data.error && alert("Could not unbookmark message: " + data.error) : interaction.bookmarked = !1;
-        }) : $http({
-            method: "POST",
-            url: "/trending/bookmark",
-            data: $.param({
-                message: messageId
-            }),
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        }).success(function(data) {
-            data.error ? alert("Could not bookmark message: " + data.error) : interaction.bookmarked = !0;
+$(Areas.init), angular.module("electiondesk").controller("BookmarksController", function($scope, $http, InteractionService) {
+    $scope.doneLoading = !1, $scope.bookmark = InteractionService.bookmark, $scope.reply = InteractionService.reply, 
+    $scope.follow = InteractionService.follow, $scope.retweet = InteractionService.retweet, 
+    $scope.interactions = [];
+    var loadBookmarks = function() {
+        $http.get("/trending/bookmarksinteractions").success(function(data) {
+            angular.forEach(data, function(item) {
+                item.bookmarked = !0;
+            }), $scope.interactions = data, $scope.doneLoading = !0;
         });
-    }, $scope.interactions = modelService, dataService.getJson().then(function(res) {
-        angular.forEach(res.data, function(item) {
-            item.bookmarked = !0;
-        }), angular.copy(res.data, modelService);
-    }, function() {
-        alert("Could not load bookmarks");
-    });
-}).filter("orderByCreated", function() {
-    return function(items, reverse) {
-        var filtered = [];
-        return angular.forEach(items, function(item) {
-            filtered.push(item);
-        }), filtered.sort(function(a, b) {
-            return a.interaction.created_at.sec < b.interaction.created_at.sec ? 1 : -1;
-        }), reverse && filtered.reverse(), filtered;
+    };
+    loadBookmarks();
+}).filter("bookmarked", function() {
+    return function(items) {
+        return items.filter(function(element) {
+            return element.bookmarked;
+        });
     };
 });
 
@@ -4557,56 +4527,90 @@ $(SettingsForm.init), angular.module("electiondesk").factory("socket", function(
     return hostname.indexOf("local") && (hostname = "stage.electiondesk.us"), socketFactory({
         ioSocket: io.connect("http://" + hostname + ":4242")
     });
-}).controller("StreamController", function($scope, $http, $modal, socket, notify) {
-    socket.forward([ "update", "hello" ], $scope), $scope.reply = function(interaction) {
-        $modal.open({
-            templateUrl: "replyModalContent.html",
-            controller: "ReplyModalInstanceController",
-            resolve: {
-                interaction: function() {
-                    return interaction;
+}).factory("InteractionService", function($modal, $http, notify) {
+    return {
+        bookmark: function(interaction) {
+            var messageId = interaction._id.$id;
+            interaction.bookmarked ? $http({
+                method: "POST",
+                url: "/trending/unbookmark",
+                data: $.param({
+                    message: messageId
+                }),
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
                 }
-            }
-        });
-    }, $scope.follow = function(interaction) {
-        $http({
-            method: "POST",
-            url: "/tweet/follow",
-            data: $.param({
-                username: interaction.interaction.author.username
-            }),
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        }).success(function(data) {
-            notify(data.error ? {
-                message: "Could not follow user: " + data.error,
-                classes: "alert-danger"
-            } : {
-                message: "You are now following @" + interaction.interaction.author.username,
-                classes: "alert-success"
+            }).success(function(data) {
+                data.error ? "You cannot remove a bookmark that is not bookmarked." != data.error && alert("Could not unbookmark message: " + data.error) : interaction.bookmarked = !1;
+            }) : $http({
+                method: "POST",
+                url: "/trending/bookmark",
+                data: $.param({
+                    message: messageId
+                }),
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).success(function(data) {
+                data.error ? alert("Could not bookmark message: " + data.error) : interaction.bookmarked = !0;
             });
-        });
-    }, $scope.retweet = function(interaction) {
-        $http({
-            method: "POST",
-            url: "/tweet/retweet",
-            data: $.param({
-                message_id: interaction.twitter.id_str || interaction.twitter.id
-            }),
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        }).success(function(data) {
-            notify(data.error ? {
-                message: "Could not follow user: " + data.error,
-                classes: "alert-danger"
-            } : {
-                message: "Retweet successful",
-                classes: "alert-success"
+        },
+        reply: function(interaction) {
+            $modal.open({
+                templateUrl: "replyModalContent.html",
+                controller: "ReplyModalInstanceController",
+                resolve: {
+                    interaction: function() {
+                        return interaction;
+                    }
+                }
             });
-        });
-    }, $scope.streamIsActive = !0, $scope.topicQuery = {
+        },
+        follow: function(interaction) {
+            $http({
+                method: "POST",
+                url: "/tweet/follow",
+                data: $.param({
+                    username: interaction.interaction.author.username
+                }),
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).success(function(data) {
+                notify(data.error ? {
+                    message: "Could not follow user: " + data.error,
+                    classes: "alert-danger"
+                } : {
+                    message: "You are now following @" + interaction.interaction.author.username,
+                    classes: "alert-success"
+                });
+            });
+        },
+        retweet: function(interaction) {
+            $http({
+                method: "POST",
+                url: "/tweet/retweet",
+                data: $.param({
+                    message_id: interaction.twitter.id_str || interaction.twitter.id
+                }),
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).success(function(data) {
+                notify(data.error ? {
+                    message: "Could not follow user: " + data.error,
+                    classes: "alert-danger"
+                } : {
+                    message: "Retweet successful",
+                    classes: "alert-success"
+                });
+            });
+        }
+    };
+}).controller("StreamController", function($scope, InteractionService, socket) {
+    socket.forward([ "update", "hello" ], $scope), $scope.doneLoading = !1, $scope.bookmark = InteractionService.bookmark, 
+    $scope.reply = InteractionService.reply, $scope.follow = InteractionService.follow, 
+    $scope.retweet = InteractionService.retweet, $scope.streamIsActive = !0, $scope.topicQuery = {
         6: !0,
         7: !0,
         8: !0,
@@ -4626,37 +4630,12 @@ $(SettingsForm.init), angular.module("electiondesk").factory("socket", function(
         return 1e3 === value && (value = "1,000"), value + " miles";
     }, $scope.radiusQuery.changed = function() {
         $scope.limitQuery = "radius";
-    }, $scope.bookmark = function(interaction) {
-        var messageId = interaction._id.$id;
-        interaction.bookmarked ? $http({
-            method: "POST",
-            url: "/trending/unbookmark",
-            data: $.param({
-                message: messageId
-            }),
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        }).success(function(data) {
-            data.error ? "You cannot remove a bookmark that is not bookmarked." != data.error && alert("Could not unbookmark message: " + data.error) : interaction.bookmarked = !1;
-        }) : $http({
-            method: "POST",
-            url: "/trending/bookmark",
-            data: $.param({
-                message: messageId
-            }),
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        }).success(function(data) {
-            data.error ? alert("Could not bookmark message: " + data.error) : interaction.bookmarked = !0;
-        });
     }, $scope.interactions = [], $scope.$on("socket:update", function(ev, data) {
         if ($scope.streamIsActive) {
             var json = JSON.parse(data), unixTime = new Date().getTime() / 1e3;
             json.interaction.created_at.sec > unixTime && (json.interaction.created_at.sec = unixTime), 
             json.bookmarked = "undefined" != typeof window.STREAM.bookmarks[json._id.$id] ? !0 : !1, 
-            $scope.interactions.push(json);
+            $scope.doneLoading || ($scope.doneLoading = !0), $scope.interactions.push(json);
         }
     }), $scope.$on("socket:hello", function() {
         socket.emit("dump");
