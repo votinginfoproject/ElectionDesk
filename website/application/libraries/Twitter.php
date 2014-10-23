@@ -141,6 +141,10 @@ class Twitter {
         $verifier = $this->input->get('oauth_verifier');
 
         // Request access token
+        $this->refreshTokens();
+    }
+
+    public function refreshTokens() {
         if ($token && $verifier) {
             $accessToken = Twitter::oAuthAccessToken($token, $verifier);
 

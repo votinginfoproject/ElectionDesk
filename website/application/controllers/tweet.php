@@ -65,6 +65,7 @@ class Tweet extends CI_Controller {
 
         if ($this->input->post('account_id')) {
             $this->select_primary($this->input->post('account_id'));
+            $this->twitter->refreshTokens();
         }
 		
         // if (!$this->input->post('message_id')) {
