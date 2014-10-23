@@ -2,9 +2,7 @@
   <div class="modal-top"></div>
   <div class="modal-body">
     <p class="from">Reply from</p>
-
     <select name="accounts" id="accountswitcher" class="form-control" ng-model="twitterAccountSelected" ng-options="account.id as account.name for account in twitterAccounts">
-      <option value="">Select account</option>
     </select>
 
     <p class="to">Reply to <span class="username">@{{ interaction.interaction.author.username }}</span></p>
