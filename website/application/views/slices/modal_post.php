@@ -20,7 +20,6 @@
               ?>
                 <p class="from">Post from</p>
                 <select name="accounts" id="accountswitcher" class="form-control" ng-model="twitterAccountSelected" ng-options="account.id as account.name for account in twitterAccounts">
-                  <option value="">Select account</option>
                 </select>
 
                 <form ng-submit="processTwitterForm()">

@@ -166,9 +166,25 @@ controller('StreamController', function ($scope, $http, $modal, socket, notify) 
 	});
 }).
 controller('ReplyModalInstanceController', function ($scope, $modalInstance, $http, interaction) {
+	$scope.twitterAccounts = [];
+	$scope.twitterAccountSelected = null;
 	$scope.interaction = interaction;
 	$scope.errorMessage = '';
 	$scope.twitterMessage = '@' + interaction.interaction.author.username + ' ';
+
+	$scope.loadTwitterAccounts = function() {
+		$http.get('/post/twitter').
+			success(function (data) {
+				$scope.twitterAccounts = data.accounts;
+				for (var i = $scope.twitterAccounts.length - 1; i >= 0; i--) {
+					if ($scope.twitterAccounts[i].is_primary == 1) {
+						$scope.twitterAccountSelected = $scope.twitterAccounts[i].id;
+						break;
+					}
+				}
+			});
+	};
+	$scope.loadTwitterAccounts();
 
 	$scope.processForm = function() {
 		$scope.errorMessage = '';
@@ -176,7 +192,8 @@ controller('ReplyModalInstanceController', function ($scope, $modalInstance, $ht
 		var parameters = {
 			message_id: $scope.interaction._id.$id,
 			tweet_id: $scope.interaction.twitter.id_str,
-			message: $scope.twitterMessage
+			message: $scope.twitterMessage,
+			account_id: $scope.twitterAccountSelected
 		};
 
 		$http({
