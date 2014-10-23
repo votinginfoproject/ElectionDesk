@@ -19,9 +19,9 @@
               else:
               ?>
                 <p class="from">Post from</p>
-                <select name="accounts" id="accountswitcher" class="form-control" ng-model="twitterAccountSelected" ng-options="account.id as account.name for account in twitterAccounts">
+                <select name="accounts" id="accountswitcher" class="form-control" ng-model="twitterAccountSelected" ng-options="account.id as account.name for account in twitterAccounts track by account.id">
                 </select>
-              
+
                 <form ng-submit="processTwitterForm()">
                   <p class="alert alert-danger" ng-show="(twitterErrorMessage.length > 0)">{{ twitterErrorMessage }}</p>
 
