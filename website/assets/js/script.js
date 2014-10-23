@@ -4302,7 +4302,8 @@ $(History.init), angular.module("electiondesk").controller("PostController", fun
     $scope.twitterPostContent = "", $scope.processTwitterForm = function() {
         $scope.twitterErrorMessage = "";
         var parameters = {
-            message: $scope.twitterPostContent
+            message: $scope.twitterPostContent,
+            account_id: $scope.twitterAccountSelected
         };
         $http({
             method: "POST",

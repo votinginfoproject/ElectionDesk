@@ -10,7 +10,8 @@ controller('PostController', function ($scope, $http) {
 		$scope.twitterErrorMessage = '';
 
 		var parameters = {
-			message: $scope.twitterPostContent
+			message: $scope.twitterPostContent,
+			account_id: $scope.twitterAccountSelected
 		};
 
 		$http({

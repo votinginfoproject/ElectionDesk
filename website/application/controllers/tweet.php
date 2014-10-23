@@ -62,6 +62,10 @@ class Tweet extends CI_Controller {
             echo json_encode(array('error' => 'No message supplied'));
             return;
         }
+
+        if ($this->input->post('account_id')) {
+            $this->select_primary($this->input->post('account_id'));
+        }
 		
         // if (!$this->input->post('message_id')) {
             // echo json_encode(array('error' => 'No message_id supplied'));
@@ -91,6 +95,18 @@ class Tweet extends CI_Controller {
             }
 
             echo json_encode(array('status' => 'OK'));
+        }
+    }
+
+    private function select_primary($accountId) {
+        $this->load->model('user_accounts_model');
+        $user_id = $this->tank_auth->get_user_id();
+
+        $account = $this->user_accounts_model->get_by_id_for_user($accountId, $user_id);
+
+        if ($account) {
+            $this->user_accounts_model->update_by_user_id($user_id, array('is_primary' => 0), $account->type);
+            $this->user_accounts_model->update($account->id, array('is_primary' => 1));
         }
     }
 
