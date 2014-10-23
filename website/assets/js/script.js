@@ -1,4 +1,45 @@
-if (angular.module("cgNotify", []).factory("notify", [ "$timeout", "$http", "$compile", "$templateCache", "$rootScope", function($timeout, $http, $compile, $templateCache, $rootScope) {
+if (angular.module("linkify", []), angular.module("linkify").filter("linkify", function() {
+    "use strict";
+    function linkify(_str, type) {
+        if (_str) {
+            var _text = _str.replace(/(?:https?\:\/\/|www\.)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi, function(url) {
+                var wrap = document.createElement("div"), anch = document.createElement("a");
+                return anch.href = url, anch.target = "_blank", anch.innerHTML = url, wrap.appendChild(anch), 
+                wrap.innerHTML;
+            });
+            return _text ? ("twitter" === type && (_text = _text.replace(/(|\s)*@([a-zA-Z0-9àáâãäåçèéêëìíîïðòóôõöùúûüýÿñ_-]+)/g, '$1<a href="https://twitter.com/$2" target="_blank">@$2</a>'), 
+            _text = _text.replace(/(^|\s)*#([a-zA-Z0-9àáâãäåçèéêëìíîïðòóôõöùúûüýÿñ_-]+)/g, '$1<a href="https://twitter.com/search?q=%23$2" target="_blank">#$2</a>')), 
+            "github" === type && (_text = _text.replace(/(|\s)*@(\w+)/g, '$1<a href="https://github.com/$2" target="_blank">@$2</a>')), 
+            _text) : "";
+        }
+    }
+    return function(text, type) {
+        return linkify(text, type);
+    };
+}).factory("linkify", [ "$filter", function($filter) {
+    "use strict";
+    function _linkifyAsType(type) {
+        return function(str) {
+            return $filter("linkify")(str, type);
+        };
+    }
+    return {
+        twitter: _linkifyAsType("twitter"),
+        github: _linkifyAsType("github"),
+        normal: _linkifyAsType()
+    };
+} ]).directive("linkify", [ "$filter", "$timeout", "linkify", function($filter, $timeout, linkify) {
+    "use strict";
+    return {
+        restrict: "A",
+        link: function(scope, element, attrs) {
+            var type = attrs.linkify || "normal";
+            $timeout(function() {
+                element.html(linkify[type](element.html()));
+            });
+        }
+    };
+} ]), angular.module("cgNotify", []).factory("notify", [ "$timeout", "$http", "$compile", "$templateCache", "$rootScope", function($timeout, $http, $compile, $templateCache, $rootScope) {
     var startTop = 10, verticalSpacing = 15, duration = 1e4, defaultTemplateUrl = "angular-notify.html", position = "center", container = document.body, messageElements = [], notify = function(args) {
         "object" != typeof args && (args = {
             message: args
@@ -3960,7 +4001,7 @@ angular.module("ui.bootstrap.transition", []).factory("$transition", [ "$q", "$t
     a.put("template/typeahead/typeahead-match.html", '<a tabindex="-1" bind-html-unsafe="match.label | typeaheadHighlight:query"></a>');
 } ]), angular.module("template/typeahead/typeahead-popup.html", []).run([ "$templateCache", function(a) {
     a.put("template/typeahead/typeahead-popup.html", '<ul class="dropdown-menu" ng-show="isOpen()" ng-style="{top: position.top+\'px\', left: position.left+\'px\'}" style="display: block;" role="listbox" aria-hidden="{{!isOpen()}}">\n    <li ng-repeat="match in matches track by $index" ng-class="{active: isActive($index) }" ng-mouseenter="selectActive($index)" ng-click="selectMatch($index)" role="option" id="{{match.id}}">\n        <div typeahead-match index="$index" match="match" query="query" template-url="templateUrl"></div>\n    </li>\n</ul>\n');
-} ]), angular.module("electiondesk", [ "btford.socket-io", "timeRelative", "ui.bootstrap", "ui.bootstrap-slider", "cgNotify" ]);
+} ]), angular.module("electiondesk", [ "btford.socket-io", "timeRelative", "ui.bootstrap", "ui.bootstrap-slider", "cgNotify", "linkify" ]);
 
 var Areas = function() {
     function initialize() {

@@ -73,6 +73,9 @@ class Interaction {
 			return;
 		}
 
+		// Strip any HTML tags in the content
+		$interaction['interaction']['content'] = strip_tags($interaction['interaction']['content']);
+
 		// Insert into database and broadcast to WebSocket server
 		self::ensureStreamConnected();
 

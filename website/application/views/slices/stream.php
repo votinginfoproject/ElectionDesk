@@ -18,7 +18,7 @@
         <i class="fa fa-retweet is-retweet" ng-show="{{ interaction.twitter.retweet }}"></i>
         <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
         <a ng-href="{{ interaction.interaction.link }}" target="_blank" class="target-link">@{{ interaction.interaction.author.username }}</a>
-        <p class="summary">{{ interaction.interaction.content }}</p>
+        <p class="summary" linkify="twitter">{{ interaction.interaction.content }}</p>
         
         <ul class="actions">
           <li class="follow"><a href="" ng-click="follow(interaction)"><i class="fa fa-twitter"></i> Follow</a></li>
@@ -34,8 +34,8 @@
         <img ng-src="https://graph.facebook.com/picture?id={{ interaction.facebook.from.id }}" alt="{{ interaction.facebook.from.name }}" class="profile-picture">
         <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
         <a ng-href="http://facebook.com/profile.php?id={{ interaction.facebook.from.id }}" target="_blank" class="target-link">{{ interaction.facebook.from.name }}</a>
-        <p ng-show="!show" class="summary">{{ interaction.interaction.content | limitTo:140 }}</p>
-        <p ng-show="show" class="full">{{ interaction.interaction.content }}</p>
+        <p ng-show="!show" class="summary" linkify>{{ interaction.interaction.content | limitTo:140 }}</p>
+        <p ng-show="show" class="full" linkify>{{ interaction.interaction.content }}</p>
 
         <a href="" class="expand" ng-click="show = !show" ng-show="interaction.interaction.content > 140">{{ show ? 'Collapse' : 'Expand' }}</a>
         <ul class="actions">
@@ -49,8 +49,8 @@
         <img ng-src="{{ interaction.interaction.author.avatar }}" alt="{{ interaction.interaction.author.name }}" class="profile-picture">
         <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
         <a ng-href="{{ interaction.interaction.link }}" target="_blank" class="target-link">{{ interaction.interaction.author.name }}</a>
-        <p ng-show="!show" class="summary">{{ interaction.interaction.content | limitTo:140 }}</p>
-        <p ng-show="show" class="full">{{ interaction.interaction.content }}</p>
+        <p ng-show="!show" class="summary" linkify>{{ interaction.interaction.content | limitTo:140 }}</p>
+        <p ng-show="show" class="full" linkify>{{ interaction.interaction.content }}</p>
 
         <a href="" class="expand" ng-click="show = !show" ng-show="interaction.interaction.content.length > 140">{{ show ? 'Collapse' : 'Expand' }}</a>
         <ul class="actions">
@@ -64,8 +64,8 @@
         <a href="http://disqus.com" target="_blank"><img src="/assets/img/disqus.png" alt="{{ interaction.interaction.author.name }}" class="profile-picture"></a>
         <a ng-href="{{ interaction.interaction.link }}" target="_blank"><time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time></a>
         <a ng-href="https://disqus.com/home/user/{{ interaction.interaction.author.username }}" target="_blank" class="target-link">{{ interaction.interaction.author.name }}</a>
-        <p ng-show="!show" class="summary">{{ interaction.interaction.content | limitTo:140 }}</p>
-        <p ng-show="show" class="full">{{ interaction.interaction.content }}</p>
+        <p ng-show="!show" class="summary" linkify>{{ interaction.interaction.content | limitTo:140 }}</p>
+        <p ng-show="show" class="full" linkify>{{ interaction.interaction.content }}</p>
 
         <a href="" class="expand" ng-click="show = !show" ng-show="interaction.interaction.content.length > 140">{{ show ? 'Collapse' : 'Expand' }}</a>
         <ul class="actions">
@@ -79,8 +79,8 @@
         <img ng-src="{{ interaction.interaction.author.avatar }}" alt="{{ interaction.interaction.author.name }}" class="profile-picture">
         <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
         <a ng-href="{{ interaction.interaction.link }}" target="_blank" class="target-link">{{ interaction.interaction.author.name }}</a>
-        <p ng-show="!show" class="summary">{{ interaction.interaction.content | limitTo:140 }}</p>
-        <p ng-show="show" class="full">{{ interaction.interaction.content }}</p>
+        <p ng-show="!show" class="summary" linkify>{{ interaction.interaction.content | limitTo:140 }}</p>
+        <p ng-show="show" class="full" linkify>{{ interaction.interaction.content }}</p>
 
         <a href="" class="expand" ng-click="show = !show" ng-show="interaction.interaction.content.length > 140">{{ show ? 'Collapse' : 'Expand' }}</a>
         <ul class="actions">

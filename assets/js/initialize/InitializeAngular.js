@@ -3,5 +3,6 @@ angular.module('electiondesk', [
 	'timeRelative',
 	'ui.bootstrap',
 	'ui.bootstrap-slider',
-	'cgNotify'
+	'cgNotify',
+	'linkify'
 ]);
