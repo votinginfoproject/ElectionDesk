@@ -4508,7 +4508,7 @@ $(SettingsForm.init), angular.module("electiondesk").factory("socket", function(
 }).controller("ReplyModalInstanceController", function($scope, $modalInstance, $http, interaction) {
     $scope.twitterAccounts = [], $scope.twitterAccountSelected = null, $scope.interaction = interaction, 
     $scope.errorMessage = "", $scope.twitterMessage = "@" + interaction.interaction.author.username + " ", 
-    $scope.loadTwitterAccounts = function() {
+    console.log(interaction.twitter), $scope.loadTwitterAccounts = function() {
         $http.get("/post/twitter").success(function(data) {
             $scope.twitterAccounts = data.accounts;
             for (var i = $scope.twitterAccounts.length - 1; i >= 0; i--) if (1 == $scope.twitterAccounts[i].is_primary) {
