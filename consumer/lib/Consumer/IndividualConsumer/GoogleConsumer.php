@@ -3,6 +3,13 @@
 use Consumer\Log;
 
 class GoogleConsumer extends IndividualConsumer {
+	/*
+	 API Limits
+	 50,000 requests per day
+	 Which is 2,080 requests per hour
+	 We have 5 active filters, so we have 416 requests per hour per filter
+	 Each filter can have up to 6 pages, so each filter can run 69 times per hour
+	*/
 
 	private $maxPages = 6;
 
@@ -60,6 +67,6 @@ class GoogleConsumer extends IndividualConsumer {
 	        }
 	    }
 
-	    sleep(60);
+	    sleep(50); // Slow things down so we don't hit API limits
 	}	
 }
