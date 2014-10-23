@@ -1,6 +1,4 @@
-angular.module('electiondeskBookmarks', [
-	'timeRelative'
-]).
+angular.module('electiondesk').
 factory('dataService', ['$http', function ($http) {
     return {
         getJson: function () {

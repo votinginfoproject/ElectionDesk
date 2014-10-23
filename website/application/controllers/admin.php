@@ -16,6 +16,7 @@ class Admin extends CI_Controller {
 		
 		$this->stencil->layout('admin_layout');
 		$this->stencil->slice('head');
+        $this->stencil->slice('modal_post');
 		
     }
 	

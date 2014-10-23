@@ -53,6 +53,12 @@ header {
 				display: inline-block;
 				margin-right: 38px;
 
+				@extend %titillium-regular;
+				@include letterspacing(100);
+				font-size: 16px;
+				line-height: 18px;
+				color: $primaryColor;
+
 				// Button hover
 				&.btn.active, &.btn a:hover {
 					color: #FFF;
@@ -71,18 +77,11 @@ header {
 					border: none !important;
 					padding: 16px 41px;
 					margin-right: 21px;
-
-					a {
-						color: #FFF;
-					}
+					color: #FFF;
 				}
 
 				// Regular menu item
 				a {
-					@extend %titillium-regular;
-					@include letterspacing(100);
-					font-size: 16px;
-					line-height: 18px;
 					color: $primaryColor;
 				}
 			}

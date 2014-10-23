@@ -1,4 +1,4 @@
-<div ng-app="electiondeskBookmarks" ng-controller="BookmarksController">
+<div ng-controller="BookmarksController">
 <?php
 echo $stream;
 ?>

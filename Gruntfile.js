@@ -42,6 +42,7 @@ module.exports = function(grunt) {
         files: {
           '<%= pkg.env.js_folder %>/script.js': [
             '<%= pkg.env.src_folder %>/js/vendor/*.js',
+            '<%= pkg.env.src_folder %>/js/initialize/*.js',
             '<%= pkg.env.src_folder %>/js/*.js'
           ]
         }

@@ -22,6 +22,7 @@ class Trending extends CI_Controller {
 
         $this->stencil->layout('default_layout');
         $this->stencil->slice('head');
+        $this->stencil->slice('modal_post');
         $this->stencil->slice('modal_reply');
     }
 

@@ -3960,7 +3960,7 @@ angular.module("ui.bootstrap.transition", []).factory("$transition", [ "$q", "$t
     a.put("template/typeahead/typeahead-match.html", '<a tabindex="-1" bind-html-unsafe="match.label | typeaheadHighlight:query"></a>');
 } ]), angular.module("template/typeahead/typeahead-popup.html", []).run([ "$templateCache", function(a) {
     a.put("template/typeahead/typeahead-popup.html", '<ul class="dropdown-menu" ng-show="isOpen()" ng-style="{top: position.top+\'px\', left: position.left+\'px\'}" style="display: block;" role="listbox" aria-hidden="{{!isOpen()}}">\n    <li ng-repeat="match in matches track by $index" ng-class="{active: isActive($index) }" ng-mouseenter="selectActive($index)" ng-click="selectMatch($index)" role="option" id="{{match.id}}">\n        <div typeahead-match index="$index" match="match" query="query" template-url="templateUrl"></div>\n    </li>\n</ul>\n');
-} ]);
+} ]), angular.module("electiondesk", [ "btford.socket-io", "timeRelative", "ui.bootstrap", "ui.bootstrap-slider", "cgNotify" ]);
 
 var Areas = function() {
     function initialize() {
@@ -4035,7 +4035,7 @@ var Areas = function() {
     };
 }();
 
-$(Areas.init), angular.module("electiondeskBookmarks", [ "timeRelative" ]).factory("dataService", [ "$http", function($http) {
+$(Areas.init), angular.module("electiondesk").factory("dataService", [ "$http", function($http) {
     return {
         getJson: function() {
             return $http.get("/trending/bookmarksinteractions");
@@ -4297,7 +4297,62 @@ var History = function() {
     };
 }();
 
-$(History.init);
+$(History.init), angular.module("electiondesk").controller("PostController", function($scope, $http) {
+    $scope.twitterAccounts = [], $scope.twitterAccountSelected = null, $scope.twitterErrorMessage = "", 
+    $scope.twitterPostContent = "", $scope.processTwitterForm = function() {
+        $scope.twitterErrorMessage = "";
+        var parameters = {
+            message: $scope.twitterPostContent
+        };
+        $http({
+            method: "POST",
+            url: "/tweet/post",
+            data: $.param(parameters),
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).success(function(data) {
+            data.error ? $scope.twitterErrorMessage = data.error : ($scope.twitterPostContent = "", 
+            $("#postModal").modal("hide"));
+        });
+    }, $scope.loadTwitterAccounts = function() {
+        $http.get("/post/twitter").success(function(data) {
+            $scope.twitterAccounts = data.accounts;
+            for (var i = $scope.twitterAccounts.length - 1; i >= 0; i--) if (1 == $scope.twitterAccounts[i].is_primary) {
+                $scope.twitterAccountSelected = $scope.twitterAccounts[i];
+                break;
+            }
+        });
+    }, $scope.facebookPages = [], $scope.facebookPageSelected = null, $scope.facebookErrorMessage = "", 
+    $scope.facebookPostContent = "", $scope.processFacebookForm = function() {
+        $scope.facebookErrorMessage = "";
+        var parameters = {
+            pages: $scope.facebookPageSelected,
+            message: $scope.facebookPostContent
+        };
+        $http({
+            method: "POST",
+            url: "/post/facebook",
+            data: $.param(parameters),
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).success(function(data) {
+            data.error ? $scope.facebookErrorMessage = data.error : ($scope.facebookPostContent = "", 
+            $("#postModal").modal("hide"));
+        });
+    }, $scope.loadFacebookAccounts = function() {
+        $http.get("/post/facebook").success(function(data) {
+            $scope.facebookPages = data.pages;
+        });
+    };
+}).directive("modalShown", function() {
+    return function($scope, $element) {
+        $element.bind("show.bs.modal", function() {
+            $scope.loadTwitterAccounts(), $scope.loadFacebookAccounts();
+        });
+    };
+});
 
 var SettingsForm = function() {
     function bindEvents() {
@@ -4340,7 +4395,7 @@ var SettingsForm = function() {
     };
 }();
 
-$(SettingsForm.init), angular.module("electiondeskStream", [ "btford.socket-io", "timeRelative", "ui.bootstrap", "ui.bootstrap-slider", "cgNotify" ]).factory("socket", function(socketFactory) {
+$(SettingsForm.init), angular.module("electiondesk").factory("socket", function(socketFactory) {
     var hostname = window.location.host;
     return hostname.indexOf("local") && (hostname = "stage.electiondesk.us"), socketFactory({
         ioSocket: io.connect("http://" + hostname + ":4242")

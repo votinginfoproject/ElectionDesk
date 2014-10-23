@@ -4,11 +4,15 @@
 	<?php echo $head; ?>
 </head>
 <?php if (empty($body_id)) $body_id = NULL; ?>
-<body id="<?php echo $body_id; ?>">
+<body id="<?php echo $body_id; ?>" ng-app="electiondesk">
 
 <?php
 if (isset($modal_reply)) {
   echo $modal_reply;
+}
+
+if (isset($modal_post)) {
+  echo $modal_post;
 }
 ?>
 
@@ -25,7 +29,7 @@ if (isset($modal_reply)) {
           <li<?php echo (uri_string() == 'conversations') ? ' class="active"' : '' ?>><a href="/conversations">Conversations</a></li>
           <li<?php echo (uri_string() == 'settings') ? ' class="active"' : '' ?>><a href="/settings">Settings</a></li>
           <li><a href="/auth/logout">Logout</a></li>
-          <li class="btn btn-primary"><a href="/post">Post</a></li>
+          <li class="btn btn-primary" data-toggle="modal" data-target="#postModal">Post</li>
           <?php
           else:
           ?>

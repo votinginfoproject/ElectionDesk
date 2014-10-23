@@ -156,7 +156,7 @@
       padding-right: 35px;
     }
 
-    .form-control{
+    .settings-general .form-control{
       height: 46px;
       border-right: none;
       box-shadow: none;
@@ -539,25 +539,16 @@ section.entry{
   }
 }
 
-
 #feed-stream{
-
   padding-top: 50px;
-
 }
 
+#postModal {
+  .tab-content {
+    padding-top: 20px;
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  textarea {
+    margin-top: 20px;
+  }
+}

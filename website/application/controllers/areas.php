@@ -12,6 +12,7 @@ class Areas extends CI_Controller {
         }
 
         $this->stencil->slice('head');
+        $this->stencil->slice('modal_post');
 
         $this->load->model('user_polygons_model');
 	}

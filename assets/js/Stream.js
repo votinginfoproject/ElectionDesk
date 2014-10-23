@@ -1,10 +1,4 @@
-angular.module('electiondeskStream', [
-	'btford.socket-io',
-	'timeRelative',
-	'ui.bootstrap',
-	'ui.bootstrap-slider',
-	'cgNotify'
-]).
+angular.module('electiondesk').
 factory('socket', function (socketFactory) {
 	var hostname = window.location.host;
 	if (hostname.indexOf('local')) {

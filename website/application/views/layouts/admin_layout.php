@@ -4,7 +4,7 @@
 	<?php echo $head; ?>
 </head>
 <?php if (empty($body_id)) $body_id = NULL; ?>
-<body id="<?php echo $body_id; ?>">
+<body id="<?php echo $body_id; ?>" ng-app="electiondesk">
 
 <div class="wrapper">
   <header>

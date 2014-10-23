@@ -12,6 +12,7 @@ class Settings extends CI_Controller {
         }
 
         $this->stencil->slice('head');
+        $this->stencil->slice('modal_post');
 	}
   
 	function index()
