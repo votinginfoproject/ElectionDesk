@@ -42,6 +42,12 @@ class DatasiftConsumer extends Consumer implements \DataSift_IStreamConsumerEven
      */
     public function onInteraction($consumer, $interaction, $hash)
     {
+        // Disable Facebook interactions from DataSift, since they
+        // don't have enough information attached
+        if ($interaction['interaction']['type'] == 'facebook') {
+            return;
+        }
+
         Log::info('Type: '.$interaction['interaction']['type']);
 
         // Convert all created_at columns to the MongoDate type
