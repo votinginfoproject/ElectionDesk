@@ -141,21 +141,21 @@ class Twitter {
         $verifier = $this->input->get('oauth_verifier');
 
         // Request access token
-        $this->refreshTokens();
-    }
-
-    public function refreshTokens() {
         if ($token && $verifier) {
             $accessToken = Twitter::oAuthAccessToken($token, $verifier);
 
             $this->set_db_accesstoken($accessToken);
         } else {
-            $arrKeys = $this->get_db_accesstoken();
+            $this->refreshTokens();
+        }
+    }
+
+    public function refreshTokens() {
+        $arrKeys = $this->get_db_accesstoken();
                 
-            if (is_array($arrKeys) && array_key_exists('oauth_token', $arrKeys)) {
-                $this->setOAuthToken($arrKeys['oauth_token']);
-                $this->setOAuthTokenSecret($arrKeys['oauth_token_secret']);
-            }
+        if (is_array($arrKeys) && array_key_exists('oauth_token', $arrKeys)) {
+            $this->setOAuthToken($arrKeys['oauth_token']);
+            $this->setOAuthTokenSecret($arrKeys['oauth_token_secret']);
         }
     }
     
