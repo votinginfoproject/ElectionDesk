@@ -98,7 +98,7 @@ var geofencePolygons = <?php echo $polygons_object; ?>;
 		
 	<section id="feed-stream" class="feed"><!-- left column -->
 		<div id="loading">
-			<h3>Searching</h3>
+			<h3><i class="fa fa-refresh fa-spin"></i>Searching</h3>
 		</div>
 		<div id="results"></div>
 	</section><!-- end response -->
