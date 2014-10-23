@@ -4436,7 +4436,7 @@ $(SettingsForm.init), angular.module("electiondesk").factory("socket", function(
             method: "POST",
             url: "/tweet/retweet",
             data: $.param({
-                message_id: interaction.twitter.id_str
+                message_id: interaction.twitter.id_str || interaction.twitter.id
             }),
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -4520,7 +4520,7 @@ $(SettingsForm.init), angular.module("electiondesk").factory("socket", function(
         $scope.errorMessage = "";
         var parameters = {
             message_id: $scope.interaction._id.$id,
-            tweet_id: $scope.interaction.twitter.id_str,
+            tweet_id: $scope.interaction.twitter.id_str || $scope.interaction.twitter.id,
             message: $scope.twitterMessage,
             account_id: $scope.twitterAccountSelected
         };

@@ -45,7 +45,7 @@ controller('StreamController', function ($scope, $http, $modal, socket, notify) 
 		$http({
 			method  : 'POST',
 			url     : '/tweet/retweet',
-			data    : $.param({ message_id: interaction.twitter.id_str }),
+			data    : $.param({ message_id: interaction.twitter.id_str || interaction.twitter.id }),
 			headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
 		})
 		.success(function(data) {
@@ -193,7 +193,7 @@ controller('ReplyModalInstanceController', function ($scope, $modalInstance, $ht
 
 		var parameters = {
 			message_id: $scope.interaction._id.$id,
-			tweet_id: $scope.interaction.twitter.id_str,
+			tweet_id: $scope.interaction.twitter.id_str || $scope.interaction.twitter.id,
 			message: $scope.twitterMessage,
 			account_id: $scope.twitterAccountSelected
 		};
