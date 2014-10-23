@@ -172,8 +172,6 @@ controller('ReplyModalInstanceController', function ($scope, $modalInstance, $ht
 	$scope.errorMessage = '';
 	$scope.twitterMessage = '@' + interaction.interaction.author.username + ' ';
 
-	console.log(interaction.twitter);
-
 	$scope.loadTwitterAccounts = function() {
 		$http.get('/post/twitter').
 			success(function (data) {
