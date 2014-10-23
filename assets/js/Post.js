@@ -36,7 +36,7 @@ controller('PostController', function ($scope, $http) {
 				$scope.twitterAccounts = data.accounts;
 				for (var i = $scope.twitterAccounts.length - 1; i >= 0; i--) {
 					if ($scope.twitterAccounts[i].is_primary == 1) {
-						$scope.twitterAccountSelected = $scope.twitterAccounts[i];
+						$scope.twitterAccountSelected = $scope.twitterAccounts[i].id;
 						break;
 					}
 				}

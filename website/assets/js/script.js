@@ -4320,7 +4320,7 @@ $(History.init), angular.module("electiondesk").controller("PostController", fun
         $http.get("/post/twitter").success(function(data) {
             $scope.twitterAccounts = data.accounts;
             for (var i = $scope.twitterAccounts.length - 1; i >= 0; i--) if (1 == $scope.twitterAccounts[i].is_primary) {
-                $scope.twitterAccountSelected = $scope.twitterAccounts[i];
+                $scope.twitterAccountSelected = $scope.twitterAccounts[i].id;
                 break;
             }
         });
