@@ -19,6 +19,7 @@ class Conversations extends CI_Controller {
         
 		$this->stencil->layout('default_layout');
 		$this->stencil->slice('head');
+        $this->stencil->slice('modal_post');
 		$this->stencil->title('Conversations');
 	}
 	
@@ -31,14 +32,6 @@ class Conversations extends CI_Controller {
 		$this->load->helper('relative_time_helper');
 
 		// Initialize database
-		try {
-		    $m = new \Mongo('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
-			$db = $m->selectDB(MONGODB_DATABASE);
-		} catch (MongoConnectionException $e) {
-		    echo json_encode(array('error' => 'Database connection failed, please try again later'));
-			exit;
-		}
-
 		$user_id = $this->tank_auth->get_user_id();
 
         if (!$this->twitter->is_logged_in()) {
@@ -52,14 +45,16 @@ class Conversations extends CI_Controller {
 		$replies = $this->message_replies_model->get_by_user_id($user_id);
 		foreach ($replies as $reply) {
 			// Query database
-			$message = $db->interactions->findOne(array('_id' => new MongoId($reply->reply_to)));
+			$data = file_get_contents($this->config->item('stream_server') . '/message?id='.$reply->reply_to);
+            $message = json_decode($data, true);
 
-			// Skip invalid messages
-			if (!$message) {
-				continue;
-			}
+            // Skip invalid messages
+            if (!$message || isset($message['error'])) {
+            	continue;
+            }
+
 			// Tweet by a Twitter user
-			$time = $message['interaction']['created_at']->sec;
+			$time = $message['interaction']['created_at']['sec'];
 			$conversations_data[$message['interaction']['author']['username']]['list'][] = array(
 				'id' => $message['_id'],
 				'message' => $message['interaction']['content'],
@@ -88,11 +83,16 @@ class Conversations extends CI_Controller {
 			$params['since_id'] = $latest_message->message_id;
 		}
 
-        $mentions = $this->twitter->fetch_mentions($params);
-        if (array_key_exists('errors', $mentions)) {
-        	echo json_encode(array('error' => 'Twitter rate limit exceeded. Please try again in a few minutes.'));
+		try {
+	        $mentions = $this->twitter->fetch_mentions($params);
+	        if (array_key_exists('errors', $mentions)) {
+	        	echo json_encode(array('error' => 'Twitter rate limit exceeded. Please try again in a few minutes.'));
+	        	return;
+	        }
+	    } catch (Exception $e) {
+	    	echo json_encode(array('error' => 'Twitter rate limit exceeded. Please try again in a few minutes.'));
         	return;
-        }
+	    }
 
         foreach ($mentions as $mention) {
         	$sender = $mention['user']['screen_name'];
@@ -185,7 +185,6 @@ class Conversations extends CI_Controller {
 		$data['body_id'] = 'conversations';
 
 		//$data['body_id'] = 'conversations-single';
-		$this->stencil->js(array('scripts', 'conversations'));
 		$this->stencil->paint('conversations_view', $data); // All conversations
 	}
 }

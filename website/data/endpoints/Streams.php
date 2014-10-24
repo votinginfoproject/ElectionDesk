@@ -27,7 +27,7 @@ class Streams extends EndpointBase
 
 		// Initialize database
 		try {
-			$m = new \Mongo('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
+			$m = new \MongoClient('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
 			$db = $m->selectDB(MONGODB_DATABASE);
 		} catch (MongoConnectionException $e) {
 		    echo json_encode(array('error' => 'Database connection failed, please try again later'));
@@ -43,7 +43,7 @@ class Streams extends EndpointBase
 		$sources_exist = array();
 		foreach ($sources as $source)
 		{
-			$sources_exist[] = array($source => array('$exists' => 'true'));
+			$sources_exist[] = array('interaction.type' => $source);
 		}
 
 		// Filters
@@ -123,7 +123,7 @@ class Streams extends EndpointBase
 					$query['internal.location.state'] = $location['state'];
 				}
 			}
-
+			
 			$results = $db->interactions->find($query)->sort(array('interaction.created_at' => 1))->limit(500); // Hard limit to 500 entries at the time
 		}
 
@@ -134,8 +134,8 @@ class Streams extends EndpointBase
 		// Results returned via command is an array instead of a MongoCursor object and thus needs to use count(...) instead
 		if (is_object($results)) {
 			$results = iterator_to_array($results);
-
 		}
+
 		$resultsCount = count($results);
 		foreach ($results as $result) {
 			$this->convertDates($result);

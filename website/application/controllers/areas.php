@@ -12,6 +12,7 @@ class Areas extends CI_Controller {
         }
 
         $this->stencil->slice('head');
+        $this->stencil->slice('modal_post');
 
         $this->load->model('user_polygons_model');
 	}
@@ -64,7 +65,7 @@ class Areas extends CI_Controller {
 		$polygons = array(array());
 
 		foreach ($points as $point) {
-			$polygons[0][] = array('x' => $point->e, 'y' => $point->d);
+			$polygons[0][] = array('y' => $point->lat, 'x' => $point->lng);
 		}
 
 		$this->user_polygons_model->save(array(

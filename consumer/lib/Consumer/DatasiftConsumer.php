@@ -1,25 +1,17 @@
-<?php
-namespace Consumer;
+<?php namespace Consumer;
 
-class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEventHandler
-{
-    private $user;
+class DatasiftConsumer extends Consumer implements \DataSift_IStreamConsumerEventHandler {
     private $filter;
-
-    public function __construct($user)
-    {
-        $this->user = $user;
-    }
 
     public function consume($filter)
     {
         // Save the filter
         $this->filter = $filter;
 
-        $definition = new DataSift_Definition($this->user, $filter->csdl);
+        $definition = new \DataSift_Definition(new \DataSift_User(DATASIFT_USERNAME, DATASIFT_API_KEY), $filter->csdl);
 
         // Create the consumer
-        $consumer = $definition->getConsumer(DataSift_StreamConsumer::TYPE_HTTP, $this);
+        $consumer = $definition->getConsumer(\DataSift_StreamConsumer::TYPE_HTTP, $this);
 
         // And start consuming (this will block)
         $consumer->consume();
@@ -34,7 +26,7 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
      */
     public function onConnect($consumer)
     {
-        echo 'Connected'.PHP_EOL;
+        Log::info('Connected');
     }
 
     /**
@@ -50,21 +42,28 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
      */
     public function onInteraction($consumer, $interaction, $hash)
     {
-        echo 'Type: '.$interaction['interaction']['type']."\n";
-        echo 'Content: '.$interaction['interaction']['content']."\n--\n";
+        // Disable Facebook interactions from DataSift, since they
+        // don't have enough information attached
+        if ($interaction['interaction']['type'] == 'facebook') {
+            return;
+        }
+
+        Log::info('Type: '.$interaction['interaction']['type']);
 
         // Convert all created_at columns to the MongoDate type
         $this->convertDates($interaction);
 
         $interaction['internal'] = array(
-            'filter_id' => $this->filterId
+            'filter_id' => $this->filter->id
         );
 
         // Twitter specific operations
         if ($interaction['interaction']['type'] == 'twitter') {
             // If we have a tweet location
-            if (array_key_exists('geo', $interaction['twitter'])) {        
-                $location = $this->reverse_geocode(
+            if (array_key_exists('geo', $interaction['twitter'])) {
+                Log::info('Got location via tweet location');
+
+                $location = $this->reverseGeocode(
                     $interaction['twitter']['geo']['latitude'],
                     $interaction['twitter']['geo']['longitude']
                 );
@@ -82,7 +81,9 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
 
             // Else get lat/lon from users bio location if available
             } elseif (array_key_exists('user', $interaction['twitter']) &&
-                array_key_exists('location', $interaction['twitter']['user'])) {                
+                array_key_exists('location', $interaction['twitter']['user'])) {
+                Log::info('Got location via user');
+
                 $location = $this->geocode($interaction['twitter']['user']['location']);
 
                 if (!is_null($location)) {
@@ -98,13 +99,6 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
                     );
                 }
             }
-        }
-
-        // Skip non-american messages, if location is available
-        if (array_key_exists('location', $interaction['internal']) &&
-            array_key_exists('country', $interaction['internal']['location']) &&
-            $interaction['internal']['location']['country'] != 'US') {
-            return;
         }
 
         // Insert interaction into the collection
@@ -164,7 +158,7 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
     {
         switch ($type) {
             default:
-                echo 'STATUS: '.$type.PHP_EOL;
+                Log::info('STATUS: '.$type);
                 break;
         }
     }
@@ -179,7 +173,7 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
      */
     public function onWarning($consumer, $message)
     {
-        echo 'WARNING: '.$message.PHP_EOL;
+        Log::info('WARNING: '.$message);
     }
 
     /**
@@ -192,7 +186,7 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
      */
     public function onError($consumer, $message)
     {
-        echo 'ERROR: '.$message.PHP_EOL;
+        Log::info('ERROR: '.$message);
     }
 
     /**
@@ -204,7 +198,7 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
      */
     public function onDisconnect($consumer)
     {
-        echo 'Disconnected'.PHP_EOL;
+        Log::info('Disconnected');
     }
 
     /**
@@ -217,6 +211,6 @@ class DatasiftConsumer extends Consumer implements DataSift_IStreamConsumerEvent
      */
     public function onStopped($consumer, $reason)
     {
-        echo PHP_EOL.'Stopped: '.$reason.PHP_EOL.PHP_EOL;
+        Log::info('Stopped: '.$reason);
     }
 }

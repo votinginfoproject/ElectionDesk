@@ -1,11 +1,17 @@
-<?php
-namespace Consumer\IndividualConsumer;
+<?php namespace Consumer\IndividualConsumer;
 
 use Consumer\Log;
 
-class GoogleConsumer extends IndividualConsumer
-{
-	private $maxPages = 10;
+class GoogleConsumer extends IndividualConsumer {
+	/*
+	 API Limits
+	 50,000 requests per day
+	 Which is 2,080 requests per hour
+	 We have 5 active filters, so we have 416 requests per hour per filter
+	 Each filter can have up to 6 pages, so each filter can run 69 times per hour
+	*/
+
+	private $maxPages = 6;
 
 	public function consume($filter) {
 		parent::consume($filter);
@@ -39,7 +45,7 @@ class GoogleConsumer extends IndividualConsumer
 	                        'link' => $item->actor->url,
 	                    ),
 	                    'type' => 'googleplus',
-	                    'created_at' => new \MongoDate(time() + rand(0, 60*4)), // Necessary when data is not live
+	                    'created_at' => new \MongoDate(strtotime($item->published)),
 	                    'content' => $item->object->content,
 	                    'id' => $item->id,
 	                    'link' => $item->url
@@ -59,6 +65,8 @@ class GoogleConsumer extends IndividualConsumer
 	        } else {
 	            break;
 	        }
-	    }	
+	    }
+
+	    sleep(50); // Slow things down so we don't hit API limits
 	}	
 }

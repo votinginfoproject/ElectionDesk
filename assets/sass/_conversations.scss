@@ -1,0 +1,121 @@
+#conversations {
+	padding: 0;
+	margin: 0;
+}
+
+#conversations main .container > p, #conversations-single main .container > p {
+  font-size: 18px;
+  font-weight: 600;
+  color: #959595;
+
+  &.from{
+    display: inline;
+  }
+
+  &.to{
+    margin-top: 15px;
+  }
+
+  &.character-count{
+    text-align: right;
+  }
+}
+
+.conversations-container {
+	margin-top: 25px;
+}
+
+.convo {
+	border-bottom: 1px solid #ccc;
+
+	&.unread {
+		background-color: #25AAE1;
+	}
+
+	a {
+		display: block;
+		color: #300F00;
+		text-decoration: none;
+		min-height: 45px;
+		padding: 12px 0 12px 9px;
+
+		&:hover {
+			background: #f1f1f1;
+		}
+	}
+
+	img {
+		width: 48px;
+		height: 48px;
+		border-radius: 4px;
+		float: left;
+		margin-bottom: 25px;
+		margin-right: 10px;
+	}
+
+	p {
+		margin: 0;
+		font-family: Helvetica, Arial, sans-serif;
+		font-size: 14px;
+		line-height: 19px;
+		letter-spacing: -0.01em;
+		color: #292f33;
+
+		&.time-stamp {
+			float: right;
+			font-size: 13px;
+			color: #ccc;
+		}
+	}
+
+	h4 {
+		color: #25aae1;
+		font-weight: bold;
+		font-size: 14px;
+	}
+}
+
+.content {
+	padding: 0;
+}
+
+.convo p.message {
+	width: 724px;
+	display: block;
+}
+
+#conversations form.reply {
+	display: none;
+}
+#conversations-single {
+	.convo {
+		padding: 12px 0 12px 9px;
+	}
+}
+#conversations-single form.reply {
+	background: #ebebeb;
+	padding: 20px;
+
+	
+	textarea.form-control{
+      min-height: 200px;
+    }
+}
+body#settings #loading {
+	padding: 20px 0px;
+	display: none;
+}
+#no-conversations {
+	padding: 20px;
+	display: none;
+}
+#no-conversations h3, #no-conversations p {
+	margin: 8px 8px 8px 0;
+	padding: 0 0 0 20px;
+}
+#conversations-list > div {
+	display: none;
+}
+.go-back, #saving-reply-indicator {
+	display: none;
+}

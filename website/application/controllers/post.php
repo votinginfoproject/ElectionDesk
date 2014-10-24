@@ -8,6 +8,7 @@ class Post extends CI_Controller {
 
 		$this->stencil->layout('plain_layout');
 		$this->stencil->slice('head');
+        $this->stencil->slice('modal_post');
 		$this->stencil->css('plain');
 		
         if (!$this->tank_auth->is_logged_in())
@@ -28,25 +29,22 @@ class Post extends CI_Controller {
         //$this->twitter->debug();
     }
 	
-	public function index() {
-		$this->twitter();
-	}
-	
 	public function twitter() {
-		$this->stencil->title('Post to Twitter');
-		$this->stencil->js(array('post'));
-
-        $this->load->model('user_accounts_model');
-        $data['accounts'] = $this->user_accounts_model->get_by_user_id($this->tank_auth->get_user_id(), 'TWITTER');
+		$accounts = $this->user_accounts_model->get_by_user_id($this->tank_auth->get_user_id(), 'TWITTER');
 		
-		$this->stencil->paint('post_twitter_view', $data);
+		array_map(function ($account) {
+			$account->name = '@' . $account->name;
+			unset($account->access_token);
+		}, $accounts);
+
+		echo json_encode(array('accounts' => $accounts));
 	}
 	
 	function facebook() {
-		$this->stencil->title('Post to Your Facebook Pages');
-
-        $this->load->model('user_accounts_model');
-        $data['accounts'] = $this->user_accounts_model->get_by_user_id($this->tank_auth->get_user_id(), 'FACEBOOK');
+		$data['accounts'] = $this->user_accounts_model->get_by_user_id($this->tank_auth->get_user_id(), 'FACEBOOK');
+		array_map(function ($account) {
+			unset($account->access_token);
+		}, $data['accounts']);
 		
 		$this->form_validation->set_rules('pages', 'Pages', 'required');
 		$this->form_validation->set_rules('message', 'Message', 'required|trim|strip_tags|xss_clean|max_length[2000]');
@@ -94,14 +92,14 @@ class Post extends CI_Controller {
 									'name' => $page->name,
 									'access_token' => $page->access_token
 									);
-					$dropdown[$page->id] = $page->name;
+					$dropdown[] = array('id' => $page->id, 'name' => $page->name);
 				}
 			}
 			
 			$this->session->set_userdata('pages', $pages);
 			$data['pages'] = $dropdown;
 			
-			$this->stencil->paint('post_facebook_view', $data);
+			echo json_encode($data);
 		} else {
 			$this->load->model('user_profiles_model');
 			$this->user_profiles_model->count_facebook_post($this->tank_auth->get_user_id());
@@ -122,12 +120,11 @@ class Post extends CI_Controller {
 			try {
 				$this->facebook->api('/'.$page_id.'/feed', 'POST', $attachment);
 				
-				$this->session->set_flashdata('message', '<div class="success-message flash-message">Your Facebook message was successfully posted to '.$pages[$page_id]['name'].'!</div>');
-				redirect('post/facebook', 'location');
+				echo json_encode(array('success' => true, 'message' => 'Your Facebook message was successfully posted to '.$pages[$page_id]['name'].'!'));
 				
 			} catch (Exception $e) {
-				$this->session->set_flashdata('message', '<div class="error-message flash-message">Sorry there was an error: '.$e->getMessage().'</div>');
-				redirect('post/facebook', 'location');
+
+				echo json_encode(array('success' => false, 'message' => 'Sorry there was an error: '.$e->getMessage()));
 			}
 		}	
 	}

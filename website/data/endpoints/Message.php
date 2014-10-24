@@ -18,7 +18,7 @@ class Message extends EndpointBase
 
 		// Initialize database
 		try {
-			$m = new \Mongo('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
+			$m = new \MongoClient('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
 			$db = $m->selectDB(MONGODB_DATABASE);
 		} catch (MongoConnectionException $e) {
 		    echo json_encode(array('error' => 'Database connection failed, please try again later'));
@@ -31,8 +31,7 @@ class Message extends EndpointBase
 		// Output JSON data
 		if (is_null($result)) {
 		    echo json_encode(array('error' => 'Message doesn\'t exist'));
-		} else {		
-			$this->convertDates($result);
+		} else {
 			echo json_encode($result);
 		}
 	}

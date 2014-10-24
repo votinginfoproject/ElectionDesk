@@ -1,0 +1,554 @@
+//Login, Register and Password Pages
+//==================================
+
+.login-heading{
+  margin-bottom: 75px;
+  text-align: center;
+}
+
+.signin h2,
+.register h2{
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.btn{
+  padding: 12px 30px;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  @include antialiase(); 
+}
+
+ .btn-login{
+    background-color: #25aae1;
+
+    &:hover{
+      background-color: darken(#25aae1, 10%);
+    }
+  }
+
+  .btn-register{
+    margin-bottom: 20px;
+    background-color: #bf1e2e;
+
+    &:hover{
+      background-color: darken(#bf1e2e, 10%);
+    }
+  }
+
+.signin{
+  padding-right: 35px;
+  border-right: 1px solid #ccc;
+}
+
+.register{
+  padding-left: 35px;
+    
+    p{
+      max-width: 400px;
+    }
+}
+
+#settings .register p {
+  max-width: 100%;
+}
+
+.account-form{
+
+    .form-wrapper-left{
+      float: right;
+    }
+
+    label{
+      display: block;
+    }
+
+    .form-control{
+      width: 250px;
+      height: 50px;
+      border-left: none;
+      box-shadow: none;
+      transition: none;
+
+        &:focus{
+          border-color: #ccc;
+        } 
+    }
+
+    .input-group-addon{
+      width: 50px;
+      background-color: #fff;
+
+        .fa{
+          font-size: 18px;
+        }
+
+        .fa-user{
+          color: #25aae1;
+        }
+
+        .fa-lock, .fa-key{
+          color: #bf1e2e;
+        }
+    }
+}
+
+
+//Help Page
+//===========================
+
+
+.help-desk-text{
+  h2{
+    margin-top: 0px;
+  }
+}
+
+#recaptcha_widget_div{
+  margin-bottom: 20px;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  background-color: #fff;
+
+    .recaptchatable{
+      border: none!important;
+    }
+
+    input{
+      display: block;
+      width: 100%;
+      height: 34px;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.42857;
+      color: #555;
+      background-color: #FFF;
+      background-image: none;
+      border: 1px solid #CCC!important;
+      border-radius: 4px;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+      transition: border-color ease-in-out 0.15s,box-shadow ease-in-out 0.15s;
+    }
+}
+
+
+
+.help-desk-form{
+  padding-top: 15px;
+  padding-bottom: 15px; 
+  background-color: #F7F7F9;
+}
+
+.webinar-video{
+  max-width: 900px;
+  margin: auto;
+}
+
+
+//Settings Page
+//===========================
+
+
+#settings{
+
+    .address{
+      padding-right: 35px;
+    }
+
+    .settings-general .form-control{
+      height: 46px;
+      border-right: none;
+      box-shadow: none;
+      transition: none;
+
+      &:focus{
+        border-color: #ccc;
+      } 
+    }
+
+    .accounts{
+      padding-left: 35px;
+      border-left: 1px solid #ccc;
+    }
+
+    .btn-del-account{
+      margin-left: 20px;
+      width: 35px;
+      height: 35px;
+      line-height: 35px;
+      padding: 0px;
+
+    }
+
+    .sm-account{
+
+        .fa{
+          margin-right: 7px;
+          font-size: 26px;
+
+          &.fa-twitter{
+            color: $twitterColor;
+          }
+
+          &.fa-facebook{
+            color: $facebookColor;
+          }
+
+          &.fa-google-plus{
+            color: #d34836;
+          }
+
+          &.fa-trash{
+            margin-right: 0px;
+            font-size: 16px;
+          }
+        }
+    }
+
+
+
+
+
+}
+
+
+
+//Modal Styles
+//===========================
+
+.modal-top{
+  margin-top: -5px;
+  height: 10px;
+  background-color: #25aae1;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.modal-bottom{
+  margin-bottom: -5px;
+  height: 20px;
+  background-color: #bf1e2e;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.modal-body {
+
+    p{
+      font-size: 18px;
+      font-weight: 600;
+      color: #959595;
+
+      &.from{
+        display: inline;
+      }
+
+      &.to{
+        margin-top: 15px;
+      }
+
+      &.character-count{
+        text-align: right;
+      }
+    }
+
+    textarea.form-control{
+      min-height: 150px;
+    }
+
+    .btn {
+      float: right;
+      margin-top: 12px;
+    }
+
+    .button-wrapper{
+      text-align: right;
+    }
+}
+
+#accountswitcher, .accountswitcher{
+  display: inline;
+  margin-left: 10px;
+  width: auto;
+  box-shadow: none;
+  transition: none;
+
+  &:focus{
+    border-color: #ccc;
+  } 
+}
+
+
+//Admin Styles
+//===========================
+
+
+.btn-enable{
+  padding: 6px 12px;
+}
+
+.table > tbody > tr > td{
+  vertical-align: middle;
+}
+
+
+
+.feed-buttons{
+  padding-left: 0px;
+  list-style-type: none;
+
+    li{
+      float: left;
+    }
+}
+
+#map-canvas {
+  width: 100%;
+  height: 600px;
+  margin-bottom: 15px;
+}
+
+
+
+
+
+
+//History Page
+//============================
+
+
+section.main-topics{
+
+  ul{
+    overflow: hidden;
+    padding: 0px;
+    list-style-type: none;
+
+      li{
+        float: left;
+        margin-right: 15px;
+
+          input[type="checkbox"]{
+            display: none;
+          }
+
+          input[type="checkbox"]:checked + label{
+            background-color: #25aae1;
+            color: #fff;
+
+            &:before{
+              content: "\2713";
+              margin-right: 5px;
+            }
+          }
+
+          label{
+            padding: 6px 12px;
+            border-radius: 4px;
+            background-color: #ccc;
+          }
+      }
+  }
+}
+
+
+section.feed-controls{
+
+    ul{
+      overflow: hidden;
+      padding: 0px;
+      list-style-type: none;
+
+        li{
+          float: left;
+          margin-right: 15px;
+
+
+            a{
+              display: inline-block;
+              padding: 6px 12px;
+              border-radius: 4px;
+              background-color: #ccc;
+              color: #fff;
+
+
+                &.twitter-toggle.on{
+                  background-color: $twitterColor;
+                }
+
+                &.facebook-toggle.on{
+                  background-color: $facebookColor;
+                }
+
+                &.google-toggle.on{
+                  background-color: #d34836;
+                }
+
+                &:hover{
+                  text-decoration: none;
+                }
+
+            }
+        }
+    }
+
+
+}
+
+
+section.limit-distance{
+  max-width: 300px;
+}
+
+section.filter-date{
+  .form-group{
+    display: inline-block;
+    max-width: 300px;
+  }
+}
+
+section.search-query{
+  .form-group{
+    max-width: 610px;
+  }
+}
+
+
+
+
+#loading{
+  display: none;
+
+    .fa{
+      margin-right: 5px;
+    }
+} 
+
+
+#results{
+  margin: 15px 0;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: #bf1e2e;
+  -webkit-font-smoothing: antialiased;
+  text-shadow: rgba(0, 0, 0, 0.01) 0 0 1px;
+}
+
+section.entry{
+  margin-bottom: 20px;
+  padding: 10px 10px 10px 10px;
+  background-color: lighten(#eee, 3%);
+
+  &.twitter{
+    border-left: 10px solid $twitterColor;
+
+        img{
+          float: left;
+          margin-right: 10px;
+        }
+
+        time{
+          display: block;
+        }
+
+        p{
+          padding-left: 60px;
+        }
+
+        ul.actions{
+          margin: 0px;
+          overflow: hidden;
+          padding-left: 60px;
+          list-style-type: none;
+
+            li{
+              float: left;
+              margin-right: 10px;
+
+                a{
+                  display: inline-block;
+                  padding: 3px 6px;
+                  border-radius: 4px;
+                  color: #fff;
+                }
+
+              &.follow{
+
+                a{
+                  background-color: #5CB85C;
+
+                  &:hover{
+                    text-decoration: none;
+                    background-color: darken(#5CB85C, 10%);
+                  }
+
+                  .fa{
+                    margin-right: 5px;
+                  }
+                }
+              }
+
+              &.location{
+
+                a{
+                  background-color: #999;
+
+                  &:hover{
+                    text-decoration: none;
+                    background-color: darken(#999, 10%);
+                  }
+
+                  .fa{
+                    margin-right: 5px;
+                  }
+                }
+              }
+            }
+        }
+  }
+
+  &.facebook{
+    border-left: 10px solid $facebookColor;
+  }
+
+  &.googleplus{
+    border-left: 10px solid #d34836;
+
+      img{
+        float: left;
+        margin-right: 10px;
+      }
+
+      time{
+        display: block;
+        float: left;
+      }
+
+      a.username{
+        display: block;
+        clear: both;
+        margin: 5px 0;
+        font-family: 'Titillium Web', sans-serif;
+        font-size: 26px;
+        font-weight: 400;
+        -webkit-font-smoothing: antialiased;
+        text-shadow: rgba(0, 0, 0, 0.01) 0 0 1px;
+      }
+  }
+}
+
+#feed-stream{
+  padding-top: 50px;
+}
+
+#postModal {
+  .tab-content {
+    padding-top: 20px;
+  }
+
+  textarea {
+    margin-top: 20px;
+  }
+}

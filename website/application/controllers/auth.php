@@ -8,8 +8,9 @@ class Auth extends CI_Controller
 		$this->load->library('security');
 		$this->lang->load('tank_auth');
 
-		$this->stencil->layout('unregistered_layout');
+		$this->stencil->layout('default_layout');
 		$this->stencil->slice('head');
+        $this->stencil->slice('modal_post');
 	}
 
 	function index()
@@ -75,6 +76,7 @@ class Auth extends CI_Controller
 
 				} else {
 					$errors = $this->tank_auth->get_error_message();
+
 					if (isset($errors['banned'])) {								// banned user
 						$this->_show_message($errors['banned']);
 

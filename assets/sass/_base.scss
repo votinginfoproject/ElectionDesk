@@ -1,0 +1,145 @@
+
+// Body styles and typography
+// Responsive Breakpoints
+// Colors
+// Helper classes
+// (Bootstrap base font size = 14px)
+ 
+// Responsive breakpoints
+
+    $xs: "only screen and (max-width: 767px)";
+    $not-xs: "only screen and (min-width: 768px)";
+    $xs-sm: "only screen and (max-width: 991px)";
+    $xs-md: "only screen and (max-width: 1199px)";
+
+    $sm: "only screen and (min-width: 768px) and (max-width: 991px)";
+    $sm-md: "only screen and (min-width: 768px) and (max-width: 1199px)";
+
+    $md: "only screen and (min-width: 992px) and (max-width: 1199px)";
+    $md-lg: "only screen and (min-width: 992px)";
+
+    $lg: "only screen and (min-width: 1200px)";
+
+// Fonts
+
+  %titillium-regular {
+    font-family: 'Titillium Web', sans-serif;
+    font-weight: 400;
+  }
+  %titillium-semibold {
+    font-family: 'Titillium Web', sans-serif;
+    font-weight: 600;
+  }
+
+
+ 
+// Colors
+
+    $twitterColor: #00aced;
+    $facebookColor: #3b5998;
+    $instagramColor: #517fa4;
+    $youtubeColor: #bb0000;
+
+    $primaryColor: #25aae1;
+    $secondaryColor: #bf1e2e;
+
+    $primaryGrayColor: #CCC;
+    $secondaryGrayColor: #959595;
+
+
+/*
+ * Typography
+ */
+
+  @mixin antialiase(){
+    -webkit-font-smoothing: antialiased;
+    text-shadow: rgba(0,0,0,.01) 0 0 1px;
+  }
+
+  // Converts px font size to em (DO NOT incluse the unit)
+  @mixin font-size($font-size, $base-size: 14){
+    font-size: ($font-size/$base-size) + 0em;
+  }
+
+  @mixin letterspacing($val) {
+    letter-spacing: ( $val / 1000 ) * 1em;
+  }
+
+  %visuallyhidden {
+    margin: -1px;
+    padding: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip: rect(0, 0, 0, 0);
+    position: absolute;
+  }
+
+  h1{
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 42px;
+    font-weight: 300;
+    color: #959595;
+    @include antialiase();
+  }
+
+  h2{
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: #959595;
+    @include antialiase();
+  }
+
+   h3{
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 30px;
+    font-weight: 300;
+    color: #959595;
+    @include antialiase();
+  }
+
+  h4{
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 24px;
+    font-weight: 300;
+    color: #959595;
+    @include antialiase();
+  }
+
+  p, li, address{
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #777;
+    @include antialiase();
+  }
+
+  p.tagline{
+    font-size: 14px;
+    font-weight: 300;
+    font-style: italic;
+    color: #959595;
+  }
+
+
+//Globals
+
+.btn:focus{
+  outline: none!important;
+}
+
+.btn {
+  border: none !important;
+}
+
+
+
+
+
+
+
+
+
+

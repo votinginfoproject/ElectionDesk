@@ -5,10 +5,18 @@ website/application/cache/*
 website/application/cache/!index.html
 website/vendor
 
+# Vagramt
+.vagrant*
+
 # Mac OS X
 .DS_Store
 
 # General
 /config.php
-/.sass-cache
-/node_modules
+
+# Grunt/SASS/Node
+.sass-cache
+.grunt
+node_modules
+.lock-wscript
+

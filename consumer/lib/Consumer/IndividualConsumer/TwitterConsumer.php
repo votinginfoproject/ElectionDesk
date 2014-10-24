@@ -1,11 +1,10 @@
-<?php
-namespace Consumer\IndividualConsumer;
+<?php namespace Consumer\IndividualConsumer;
 
 use Consumer\Log;
 use Consumer\Model\Filter;
 
-class TwitterConsumer extends IndividualConsumer
-{
+class TwitterConsumer extends IndividualConsumer {
+
 	private $maxPages = 20;
 
 	public function consume($filter) {
@@ -65,7 +64,7 @@ class TwitterConsumer extends IndividualConsumer
 		                    'link' => 'http://twitter.com/' . $status->user->screen_name
 		                ),
 		                'type' => 'twitter',
-		                'created_at' => new \MongoDate(time() + rand(0, 60*4)), // Necessary when data is not live
+		                'created_at' => new \MongoDate(strtotime($status->created_at)),
 		                'content' => $status->text,
 		                'id' => $status->id_str,
 		                'link' => 'http://twitter.com/' . $status->user->screen_name . '/status/' . $status->id_str
@@ -78,7 +77,7 @@ class TwitterConsumer extends IndividualConsumer
 
 	            // If we have a tweet location
 	            if (!is_null($status->geo)) {        
-	                $location = $this->reverse_geocode(
+	                $location = $this->reverseGeocode(
 	                	$status->geo->coordinates[0],
 	                	$status->geo->coordinates[1]
 	                );

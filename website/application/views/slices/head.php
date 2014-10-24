@@ -1,47 +1,17 @@
-<!-- Begin Meta -->
-	
-	<meta charset="utf-8">
-	<title><?php echo $title; ?> <?php if (!empty($title)) echo '|'; ?> Election Desk | Voting Information Project</title>
-	<meta name="viewport" content="width=960, maximum-scale=1.0" />
-	<?php echo $meta; ?>
-	<?php echo apple_mobile('black-translucent'); ?>
-	<?php echo chrome_frame(); ?>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ElectionDesk</title>
 
-<!-- End Meta -->
+<link href="//fonts.googleapis.com/css?family=Titillium+Web:300,400,600,400italic" rel="stylesheet" type="text/css">
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
+<link href="/assets/css/style.css" rel="stylesheet">
 
-
-
-<!-- Begin Icons -->
-	<?php echo favicons(array('16' => 'assets/img/favicon.png')); ?>
-<!-- End Icons -->
-
-
-
-<!-- Begin CSS -->
-	
-	<link rel="stylesheet" href="<?php echo site_url('assets/css/style.css'); ?>">
-	<link rel="stylesheet" href="<?php echo site_url('assets/css/colorbox.css'); ?>">
-	<?php echo $css; ?>
-
-<!-- End CSS -->
-
-
-
-
-
-<!-- Begin JS -->
-
-	<?php echo shiv(); ?>
-	<?php echo jquery('1.7.2'); ?>
-	<script src="<?php echo site_url('assets/js/scripts.js'); ?>"></script>
-	<script src="<?php echo site_url('assets/js/colorbox.js'); ?>"></script>
-	<script language="javascript">
-	$(function() {
-		$(".iframe").colorbox({ iframe: true, width: 650, height: 425 });
-	});
-	</script>
-	<?php echo $js; ?>
-<!-- End JS -->
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
 
 <!-- Begin Tracking -->
 	<script>
@@ -56,3 +26,5 @@
 	  })();
 	</script>
 <!-- End Tracking -->
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2KRRwjsTYoH9yEHNO3o_Yn2GVFKLpxTU&sensor=false"></script>

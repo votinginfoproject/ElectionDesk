@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Stream</title>
+
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+  body {
+    padding: 10px;
+  }
+
+  .actions {
+    list-style-type: none;
+    padding: 0;
+  }
+  .actions li {
+    display: inline-block;
+    margin-right: 8px;
+  }
+
+  section {
+    margin-bottom: 30px;
+  }
+
+  time {
+    display: block;
+  }
+
+  img {
+    margin-right: 10px;
+  }
+
+  .checkbox {
+    display: inline-block;
+    width: 50px;
+    margin: 0 !important;
+  }
+
+  .form-control {
+    margin-top: 5px;
+  }
+  </style>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-rc.0/angular.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
+  <script src="http://electiondesk.local:4242/socket.io/socket.io.js"></script>
+  <script src="/assets/js/script.js"></script>
+</head>
+<body>
+  <div ng-app="electiondeskStream" ng-controller="StreamController">
+    <strong>Interaction type:</strong>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="sourceQuery.twitter" checked>
+        <i class="fa fa-twitter"></i>
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="sourceQuery.facebook" checked>
+        <i class="fa fa-facebook"></i>
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="sourceQuery.wordpress" checked>
+        <i class="fa fa-wordpress"></i>
+      </label>
+    </div>
+
+    <input type="text" ng-model="contentQuery" class="form-control" placeholder="Search">
+    <hr>
+
+    <ul class="list-unstyled">
+      <li ng-repeat="interaction in interactions | sourcefilter:sourceQuery | contentfilter:contentQuery | orderByCreated | limitTo:50">
+        <section class="entry {{ interaction.interaction.type }}" data-messageid="{{ interaction._id.$id }}">
+          <div ng-switch="interaction.interaction.type">
+            <!-- Twitter -->
+            <div ng-switch-when="twitter">
+              <i class="fa fa-twitter text-info"></i>
+              <img class="pull-left" ng-src="{{ interaction.twitter.user.profile_image_url_https }}" alt="{{ interaction.twitter.user.name }}" class="profile-pic">
+              <a ng-href="{{ interaction.interaction.link }}" target="_blank">@{{ interaction.interaction.author.username }}</a>
+              <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
+              <blockquote><p>{{ interaction.twitter.text }}</p></blockquote>
+              <ul class="actions">
+                <li class="follow"><a href="#"><i class="fa fa-plus"></i> Follow</a></li>
+                <li class="reply"><a href="#"><i class="fa fa-reply"></i> Reply</a></li>
+                <li class="retweet"><a href="#"><i class="fa fa-retweet"></i> Retweet</a></li>
+                <li class="bookmark"><a href="#"><i class="fa fa-bookmark"></i> Bookmark</a></li>
+              </ul>
+            </div>
+            <!-- Facebook -->
+            <div ng-switch-when="facebook">
+              <i class="fa fa-facebook text-primary"></i>
+              <img class="pull-left" ng-src="https://graph.facebook.com/picture?id={{ interaction.facebook.from.id }}" alt="{{ interaction.facebook.from.name }}" class="profile-pic">
+              <a ng-href="http://facebook.com/profile.php?id={{ interaction.facebook.from.id }}" target="_blank">{{ interaction.facebook.from.name }}</a>
+              <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
+              <blockquote><p>{{ (interaction.facebook.message.length > 0) ? interaction.facebook.mesage : interaction.facebook.story }}</p></blockquote>
+              <ul class="actions">
+                <li class="bookmark"><a href="#"><i class="fa fa-bookmark"></i> Bookmark</a></li>
+              </ul>
+            </div>
+            <!-- Wordpress -->
+            <div ng-switch-when="wordpress">
+              <i class="fa fa-wordpress text-info"></i>
+              <img class="pull-left" ng-src="{{ interaction.interaction.author.avatar }}" alt="{{ interaction.interaction.author.name }}" class="profile-pic">
+              <a ng-href="{{ interaction.interaction.link }}" target="_blank">@{{ interaction.interaction.author.name }}</a>
+              <time class="relative" datetime="{{ (interaction.interaction.created_at.sec * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}"></time>
+              <blockquote><p>{{ interaction.interaction.content }}</p></blockquote>
+              <ul class="actions">
+                <li class="bookmark"><a href="#"><i class="fa fa-bookmark"></i> Bookmark</a></li>
+              </ul>
+            </div>
+            <div ng-switch-default>Default</div>
+          </div>
+        </section>
+      </li>
+    </ul>
+  </div>
+</body>
+</html>

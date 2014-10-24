@@ -62,6 +62,11 @@ class Tweet extends CI_Controller {
             echo json_encode(array('error' => 'No message supplied'));
             return;
         }
+
+        if ($this->input->post('account_id')) {
+            $this->select_primary($this->input->post('account_id'));
+            $this->twitter->refreshTokens();
+        }
 		
         // if (!$this->input->post('message_id')) {
             // echo json_encode(array('error' => 'No message_id supplied'));
@@ -94,6 +99,18 @@ class Tweet extends CI_Controller {
         }
     }
 
+    private function select_primary($accountId) {
+        $this->load->model('user_accounts_model');
+        $user_id = $this->tank_auth->get_user_id();
+
+        $account = $this->user_accounts_model->get_by_id_for_user($accountId, $user_id);
+
+        if ($account) {
+            $this->user_accounts_model->update_by_user_id($user_id, array('is_primary' => 0), $account->type);
+            $this->user_accounts_model->update($account->id, array('is_primary' => 1));
+        }
+    }
+
     public function follow()
     {
         $this->output->set_header('Content-type: application/json');
@@ -108,10 +125,14 @@ class Tweet extends CI_Controller {
             return;
         }
 
-        if (!$this->twitter->follow($this->input->post('username'))) {
-            echo json_encode(array('error' => 'You are not connected with Twitter'));
-        } else {
-            echo json_encode(array('status' => 'OK'));
+        try {
+            if (!$this->twitter->follow($this->input->post('username'))) {
+                echo json_encode(array('error' => 'You are not connected with Twitter'));
+            } else {
+                echo json_encode(array('status' => 'OK'));
+            }
+        } catch (Exception $e) {
+           echo json_encode(array('error' => $e->getMessage())); 
         }
     }
 
@@ -132,10 +153,14 @@ class Tweet extends CI_Controller {
             return;
         }
 
-        if (!$this->twitter->retweet($this->input->post('message_id'))) {
-            echo json_encode(array('error' => 'You are not connected with Twitter'));
-        } else {
-            echo json_encode(array('status' => 'OK'));
+        try {
+            if (!$this->twitter->retweet($this->input->post('message_id'))) {
+                echo json_encode(array('error' => 'You are not connected with Twitter'));
+            } else {
+                echo json_encode(array('status' => 'OK'));
+            }
+        } catch (Exception $e) {
+           echo json_encode(array('error' => $e->getMessage())); 
         }
     }
 }

@@ -30,7 +30,7 @@
 class Twitter {
 
     // internal constant to enable/disable debugging
-    const DEBUG = true;
+    const DEBUG = false;
 
     // url for the twitter-api
     const API_URL = 'https://api.twitter.com/1.1';
@@ -146,12 +146,16 @@ class Twitter {
 
             $this->set_db_accesstoken($accessToken);
         } else {
-            $arrKeys = $this->get_db_accesstoken();
+            $this->refreshTokens();
+        }
+    }
+
+    public function refreshTokens() {
+        $arrKeys = $this->get_db_accesstoken();
                 
-            if (is_array($arrKeys) && array_key_exists('oauth_token', $arrKeys)) {
-                $this->setOAuthToken($arrKeys['oauth_token']);
-                $this->setOAuthTokenSecret($arrKeys['oauth_token_secret']);
-            }
+        if (is_array($arrKeys) && array_key_exists('oauth_token', $arrKeys)) {
+            $this->setOAuthToken($arrKeys['oauth_token']);
+            $this->setOAuthTokenSecret($arrKeys['oauth_token_secret']);
         }
     }
     
@@ -1388,6 +1392,7 @@ class Twitter {
     public function retweet($tweet_id) {
         
         $url = 'statuses/retweet/' . $tweet_id;
+        
         
         $arrResult = $this->doCall($url, array(), true, 'POST');
         

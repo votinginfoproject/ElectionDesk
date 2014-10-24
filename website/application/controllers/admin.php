@@ -16,6 +16,7 @@ class Admin extends CI_Controller {
 		
 		$this->stencil->layout('admin_layout');
 		$this->stencil->slice('head');
+        $this->stencil->slice('modal_post');
 		
     }
 	
@@ -54,7 +55,7 @@ class Admin extends CI_Controller {
 		$data['facebook_stream_total'] = NULL;
 		
 			try {
-				$m = new \Mongo('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
+				$m = new \MongoClient('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
 				$db = $m->selectDB(MONGODB_DATABASE);
 			} catch (MongoConnectionException $e) {
 				echo json_encode(array('error' => 'Database connection failed, please try again later'));
@@ -72,7 +73,6 @@ class Admin extends CI_Controller {
 		$this->load->model('auth/users');
 		$this->load->model('user_profiles_model');
 		$this->load->model('user_accounts_model');
-		$this->load->model('tickets_model');
 		
 		$user_id = $this->tank_auth->get_user_id();
 		
@@ -98,11 +98,7 @@ class Admin extends CI_Controller {
 		$data['twitter_connects'] = $this->user_accounts_model->count_connections('TWITTER');
 		
 		//count all user
-		$data['total_users'] = $this->users->count_all();
-		
-		//total tickets submitted
-		$data['tickets_total'] = $this->tickets_model->count_all();
-		
+		$data['total_users'] = $this->users->count_all();		
 		
 		$data['body_id'] = 'data';
 		$this->stencil->title('Data Analysis');
@@ -175,4 +171,3 @@ class Admin extends CI_Controller {
 
 /* End of file admin.php */
 /* Location: ./application/controllers/admin.php */
-

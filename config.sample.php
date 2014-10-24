@@ -1,8 +1,7 @@
 <?php
 // Set default timezone
-if (function_exists('date_default_timezone_set'))
-{
-     date_default_timezone_set('America/New_York');
+if (function_exists('date_default_timezone_set')) {
+	date_default_timezone_set('America/New_York');
 }
 
 // Check for CLI request from production server
@@ -15,13 +14,23 @@ if (
 ) {
 	define('ENVIRONMENT', 'production'); // Default EC2 hostnames start with "ip-"
 } else {
-	$efine('ENVIRONMENT', 'development');
+	define('ENVIRONMENT', 'development');
 }
 
 if (ENVIRONMENT == 'production') {
-	define('USE_DATASIFT', TRUE);
+	// Consumers
+	// Valid values: twitter, facebook, google, datasift, gnip
+	define('CONSUMERS', 'twitter,facebook,google,gnip');
+
+	// Geocoding
 	define('GEOCODING_SERVICE', 'GEOCODIO'); // Can be GEOCODIO or GOOGLE
 	define('GEOCODIO_API_KEY', '');
+
+	// Gnip
+	define('GNIP_PUBLISHERS', 'automattic,disqus');
+	define('GNIP_ACCOUNT', ''); // https://api.gnip.com/accounts/XXX/
+	define('GNIP_USERNAME', '');
+	define('GNIP_PASSWORD', '');
 
 	// DataSift
 	define('DATASIFT_USERNAME', '');
@@ -29,6 +38,8 @@ if (ENVIRONMENT == 'production') {
 
 	// Google API
 	define('GOOGLE_API_KEY', '');
+	define('GOOGLE_CLIENT_ID', '');
+	define('GOOGLE_CLIENT_SECRET', '');
 
 	// Twitter API
 	define('TWITTER_CONSUMER_KEY', '');
@@ -51,10 +62,25 @@ if (ENVIRONMENT == 'production') {
 	// ReCAPTCHA
 	define('RECAPTCHA_PUBLIC', '');
 	define('RECAPTCHA_PRIVATE', '');
+
+	// WebSocket
+	define('WEBSOCKET_SERVER', 'electiondesk.us');
+	define('WEBSOCKET_SOURCE_PORT', 4244);
+	define('WEBSOCKET_DEST_PORT', 4242);
 } else {
-	define('USE_DATASIFT', FALSE);
+	// Consumers
+	// Valid values: twitter, facebook, google, datasift, gnip
+	define('CONSUMERS', 'twitter,facebook,google');
+
+	// Geocoding
 	define('GEOCODING_SERVICE', 'GEOCODIO'); // Can be GEOCODIO or GOOGLE
 	define('GEOCODIO_API_KEY', '');
+
+	// Gnip
+	define('GNIP_PUBLISHERS', 'automattic,disqus');
+	define('GNIP_ACCOUNT', ''); // https://api.gnip.com/accounts/XXX/
+	define('GNIP_USERNAME', '');
+	define('GNIP_PASSWORD', '');
 
 	// DataSift
 	define('DATASIFT_USERNAME', '');
@@ -62,6 +88,8 @@ if (ENVIRONMENT == 'production') {
 
 	// Google API
 	define('GOOGLE_API_KEY', '');
+	define('GOOGLE_CLIENT_ID', '');
+	define('GOOGLE_CLIENT_SECRET', '');
 
 	// Twitter API
 	define('TWITTER_CONSUMER_KEY', '');
@@ -84,4 +112,9 @@ if (ENVIRONMENT == 'production') {
 	// ReCAPTCHA
 	define('RECAPTCHA_PUBLIC', '');
 	define('RECAPTCHA_PRIVATE', '');
+
+	// WebSocket
+	define('WEBSOCKET_SERVER', 'electiondesk.local');
+	define('WEBSOCKET_SOURCE_PORT', 4244);
+	define('WEBSOCKET_DEST_PORT', 4242);
 }

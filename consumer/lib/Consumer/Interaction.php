@@ -1,16 +1,31 @@
-<?php
-namespace Consumer;
+<?php namespace Consumer;
 
-class Interaction
-{
+class Interaction {
+	
 	private static $db = NULL;
+
+	private static $client = null;
+
+    /**
+     * Connect to websocket server listener
+     */
+    private static function ensureStreamConnected() {
+        if (self::$client) {
+            return;
+        }
+        self::$client = @stream_socket_client('tcp://' . WEBSOCKET_SERVER  . ':' . WEBSOCKET_SOURCE_PORT, $errno, $errorMessage, 5);
+
+        if (self::$client === false) {
+            self::$client = null;
+        }
+    }
 
 	private static function boot()
 	{
 		// Initialize database
 		try
 		{
-		    $m = new \Mongo('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
+		    $m = new \MongoClient('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
 		    self::$db = $m->selectDB(MONGODB_DATABASE);
 		}
 		catch (MongoConnectionException $e)
@@ -40,13 +55,10 @@ class Interaction
 	            'internal.location.county' => 1
 	        ));
 
-	        // For searching for county
-	        self::$db->interactions->ensureIndex(array(
-	            'internal.location.county' => 1
-	        ));
-	    } catch (Exception $e) {
-	    	// Ignore
-	    }
+        // For searching for county
+        self::$db->interactions->ensureIndex(array(
+            'internal.location.county' => 1
+        ));
 	}
 
 	public static function insert($interaction)
@@ -58,10 +70,23 @@ class Interaction
 		// Logging
 		Log::debug($interaction['interaction']['type'] . ': ' . $interaction['interaction']['author']['name']);
 
-		// Insert into database
+		// Skip messages that doesn't have content
+		if (!isset($interaction['interaction']['content']) || empty($interaction['interaction']['content'])) {
+			return;
+		}
+
+		// Strip any HTML tags in the content
+		$interaction['interaction']['content'] = strip_tags($interaction['interaction']['content']);
+
+		// Insert into database and broadcast to WebSocket server
+		self::ensureStreamConnected();
+
+		// Make sure that filter id is an integer
+		$interaction['internal']['filter_id'] = (int)$interaction['internal']['filter_id'];
+
 		try {
-			// Test
 			self::$db->interactions->insert($interaction, array('w' => true));
+			@fwrite(self::$client, json_encode($interaction) . "\n");
 		} catch (\MongoCursorException $e) {
 			if ($e->getCode() != 11000) { // "Duplicate key" errors are ignored
 				Log::error($e->getMessage());

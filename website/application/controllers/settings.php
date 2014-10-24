@@ -12,13 +12,12 @@ class Settings extends CI_Controller {
         }
 
         $this->stencil->slice('head');
+        $this->stencil->slice('modal_post');
 	}
   
 	function index()
 	{
 		$data['body_id'] = 'settings';
-		$this->stencil->js('https://maps.googleapis.com/maps/api/js?sensor=false');
-		$this->stencil->js('settings');
 
 		$this->load->model('user_profiles_model');
 		$this->load->model('user_accounts_model');
@@ -135,7 +134,7 @@ class Settings extends CI_Controller {
 		}
 		else
 		{
-			$this->stencil->layout('unregistered_layout');
+			$this->stencil->layout('default_layout');
 			$this->stencil->title('Getting started');
 
 			// Did the user fill out their location yet?

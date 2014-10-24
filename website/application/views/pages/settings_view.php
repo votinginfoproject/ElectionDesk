@@ -1,50 +1,73 @@
 <div class="content">
-<section class="register settings-general">
-	<div class="left-col">
+<section class="settings-general">
+	<div class="address col-md-6">
+		<div class="form-wrapper-left">
 		<?php if (!empty($success_message)) : ?>
-		<div class="success-message" id="address-success"><?php echo $success_message; ?></div>
+		<div class="alert alert-success"><?php echo $success_message; ?></div>
 		<?php endif; ?>
-		<div class="error-message" id="address-errors"></div>
 		
 		<?php echo form_open('settings', array('id' => 'location-form')); ?>
-		<label for="address">Address:</label>
-		<input type="text" id="address" name="address" value="<?php echo is_null($user->user_location) ? '' : $user->user_location; ?>" placeholder="enter a street address" />
-		<a href="#"><img src="<?php echo site_url('assets/img/locateme.png'); ?>" alt="Locate me" title="Locate me" /></a>
+
+		<div class="form-group">
+			<label for="address">Address:</label>
+			
+			<div class="input-group">
+				<input type="text" id="address" name="address" class="form-control" value="<?php echo is_null($user->user_location) ? '' : $user->user_location; ?>" placeholder="enter a street address" />
+				<span class="input-group-btn">
+					<a href="#" class="btn btn-locate btn-warning"><i class="fa fa-location-arrow"></i></a>
+				</span>
+			</div>
+		</div>
+		
 		<input type="hidden" name="lat" id="lat" value="" />
 		<input type="hidden" name="long" id="long" value="" />
 		<input type="hidden" name="county" id="county" value="" />
 		<input type="hidden" name="state" id="state" value="" />
+
 		<p>If you have multiple offices, please select the one most central to your election jurisdiction or state.</p>
-		<input type="submit" value="Save" />
-		<div id="loading">
-			<h3>Saving location</h3>
-		</div>
+		<button type="submit" class="btn btn-primary"><i class="fa fa-spinner fa-spin" id="loading"></i> Save</button>
 		<?php echo form_close(); ?>
-		<div class="clear"></div>
-	</div>
-	<div class="right-col">
-		<?php
-		foreach ($accounts as $account) {
-		?>
-			<div id="<?php echo strtolower($account->type); ?>" class="account-disconnect">
-				<p class="connected-<?php echo strtolower($account->type); ?>">
-					<?php if ($account->type == 'TWITTER') echo '@'; ?><?php echo $account->name; ?>
-					<?php echo anchor('settings/delete_account?id=' . $account->id, 'Remove'); ?>
-				</p>
-			</div>
-		<?php
-		}
-		?>
-		<div id="twitter">
-			<?php echo anchor('settings/twitter', 'Add Twitter account', array('class' => 'twitter-connect')); ?>
-		</div>
+	
+		</div><!--form wrapper-->
+	</div><!--/left column-->
 
-		<div id="facebook">
-			<?php echo anchor($this->facebook->getLoginUrl($this->config->item('facebook_login_parameters')), 'Add Facebook account', array('class' => 'facebook-connect')); ?>
-		</div>
 
-		<div id="google-plus">
-			<?php echo anchor('settings/google', 'Add Google+ account', array('class' => 'google-connect')); ?>
+
+	<div class="col-md-6 accounts">
+		<?php
+		if (count($accounts) > 0):
+		?>
+			<h2>Connected accounts</h2>
+			<?php
+			foreach ($accounts as $account):
+			?>
+				<h4 class="sm-account">
+					<?php
+						switch ($account->type) {
+					  case "TWITTER":
+					    $logo = '<i class="fa fa-twitter"></i>@';
+					    break;
+					  case "FACEBOOK":
+					    $logo = '<i class="fa fa-facebook"></i>';
+					    break;
+					  case "GOOGLE":
+					    $logo = '<i class="fa fa-google-plus"></i>';
+					    break;
+					}?>
+
+				 	<?php echo $logo . $account->name; ?><?php echo anchor('settings/delete_account?id=' . $account->id, '<i class="fa fa-trash"></i>', array('class' => 'btn btn-danger btn-del-account')); ?> </h4>
+			<?php
+			endforeach;
+			?>
+		<?php
+		endif;
+		?>
+
+		<h2>Add account</h2>
+		<div class="col-md-6">
+			<?php echo anchor('settings/twitter', '<i class="fa fa-twitter"></i> Add Twitter account', array('class' => 'btn btn-block btn-info')); ?>
+			<?php echo anchor($this->facebook->getLoginUrl($this->config->item('facebook_login_parameters')), '<i class="fa fa-facebook"></i> Add Facebook account', array('class' => 'btn btn-block btn-primary')); ?>
+			<?php echo anchor('settings/google', '<i class="fa fa-google-plus"></i> Add Google+ account', array('class' => 'btn btn-block btn-danger')); ?>
 		</div>
 	</div>	
 	<div class="clear"></div>

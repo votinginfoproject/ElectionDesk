@@ -1,10 +1,9 @@
-<?php
-namespace Consumer\IndividualConsumer;
+<?php namespace Consumer\IndividualConsumer;
 
 use Consumer\Log;
 
-class FacebookConsumer extends IndividualConsumer
-{
+class FacebookConsumer extends IndividualConsumer {
+	
 	public function consume($filter) {
 		parent::consume($filter);
 
@@ -20,29 +19,31 @@ class FacebookConsumer extends IndividualConsumer
 
 		foreach ($response->data as $status)
 		{
-	        $interaction = array(
-	            'interaction' => array(
-	                'schema' => array('version' => 3),
-	                'author' => array(
-	                    'username' => $status->from->id,
-	                    'name' => $status->from->name,
-	                    'id' => $status->from->id,
-	                    'avatar' => 'https://graph.facebook.com/picture?id=' . $status->from->id,
-	                    'link' => 'http://facebook.com/profile.php?id=' . $status->from->id
-	                ),
-	                'type' => 'facebook',
-	                'created_at' => new \MongoDate(time() + rand(0, 60*4)), // Necessary when data is not live
-	                'content' =>  isset($status->message) ? $status->message : NULL,
-	                'id' => $status->id,
-	                'link' => isset($status->link) ? $status->link : NULL,
-	            ),
-	            'facebook' => $status,
-	            'internal' => array(
-	                'filter_id' => (int)$filter->id
-	            )
-	        );
+			if (!empty($status->message)) {
+		        $interaction = array(
+		            'interaction' => array(
+		                'schema' => array('version' => 3),
+		                'author' => array(
+		                    'username' => $status->from->id,
+		                    'name' => $status->from->name,
+		                    'id' => $status->from->id,
+		                    'avatar' => 'https://graph.facebook.com/picture?id=' . $status->from->id,
+		                    'link' => 'http://facebook.com/profile.php?id=' . $status->from->id
+		                ),
+		                'type' => 'facebook',
+		                'created_at' => new \MongoDate(strtotime($status->created_time)),
+		                'content' =>  isset($status->message) ? $status->message : NULL,
+		                'id' => $status->id,
+		                'link' => isset($status->link) ? $status->link : NULL,
+		            ),
+		            'facebook' => $status,
+		            'internal' => array(
+		                'filter_id' => (int)$filter->id
+		            )
+		        );
 
-	        \Consumer\Interaction::insert($interaction);
+		        \Consumer\Interaction::insert($interaction);
+		    }
 		}
 	}	
 }
