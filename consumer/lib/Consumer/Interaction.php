@@ -87,7 +87,9 @@ class Interaction {
 
 		try {
 			self::$db->interactions->insert($interaction, array('w' => true));
-			@fwrite(self::$client, json_encode($interaction) . "\n");
+			if (@fwrite(self::$client, json_encode($interaction) . "\n") === false) {
+				Log::info('Could not write to client');
+			}
 		} catch (\MongoCursorException $e) {
 			if ($e->getCode() != 11000) { // "Duplicate key" errors are ignored
 				Log::error($e->getMessage());
