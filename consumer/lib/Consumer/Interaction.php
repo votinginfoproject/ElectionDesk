@@ -16,6 +16,7 @@ class Interaction {
         self::$client = @stream_socket_client('tcp://' . WEBSOCKET_SERVER  . ':' . WEBSOCKET_SOURCE_PORT, $errno, $errorMessage, 5);
 
         if (self::$client === false) {
+        	Log::info('Error! ' . $errno . ': ' . $errorMessage);
             self::$client = null;
         }
     }
