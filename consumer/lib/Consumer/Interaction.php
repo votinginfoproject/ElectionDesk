@@ -71,14 +71,14 @@ class Interaction {
 			self::boot();
 		}
 		
-		// Logging
-		Log::debug('Adding ' . $interaction['interaction']['type'] . ': ' . $interaction['interaction']['author']['name']);
-
 		// Skip messages that doesn't have content
 		if (!isset($interaction['interaction']['content']) || empty($interaction['interaction']['content'])) {
 			Log::debug('Skipping due to no content ' . $interaction['interaction']['type'] . ': ' . $interaction['interaction']['author']['name']);
 			return;
 		}
+
+		// Logging
+		Log::debug('Adding ' . $interaction['interaction']['type'] . ': ' . $interaction['interaction']['author']['name']);
 
 		// Strip any HTML tags in the content
 		$interaction['interaction']['content'] = strip_tags($interaction['interaction']['content']);
