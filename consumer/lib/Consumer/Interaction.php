@@ -56,10 +56,13 @@ class Interaction {
 	            'internal.location.county' => 1
 	        ));
 
-        // For searching for county
-        self::$db->interactions->ensureIndex(array(
-            'internal.location.county' => 1
-        ));
+	        // For searching for county
+	        self::$db->interactions->ensureIndex(array(
+	            'internal.location.county' => 1
+	        ));
+	    } catch (Exception $e) {
+	    	// Ignore any issues creating indexes
+	    }
 	}
 
 	public static function insert($interaction)
