@@ -108,6 +108,6 @@ class Interaction {
 
 		Log::info('Removing #' . $interaction_id);
 
-        self::$db->interactions->remove(array('interaction.id' => $interaction_id), true);
+        self::$db->interactions->remove(array('interaction.id' => $interaction_id));
 	}
 }

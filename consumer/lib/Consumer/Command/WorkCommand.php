@@ -28,6 +28,24 @@ class WorkCommand extends Command {
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        register_shutdown_function(function () {
+            $errfile = 'unknown file';
+            $errstr  = 'shutdown';
+            $errno   = E_CORE_ERROR;
+            $errline = 0;
+
+            $error = error_get_last();
+
+            if ($error !== NULL) {
+                $errno   = $error["type"];
+                $errfile = $error["file"];
+                $errline = $error["line"];
+                $errstr  = $error["message"];
+
+                Log::info(print_r($error, true));
+            }
+        });
+
     	$consumer = \Consumer\Consumer::resolve($input->getArgument('consumer'));
 
         $consumerName = get_class($consumer);
