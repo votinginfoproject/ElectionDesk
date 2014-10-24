@@ -4524,7 +4524,8 @@ var SettingsForm = function() {
 
 $(SettingsForm.init), angular.module("electiondesk").factory("socket", function(socketFactory) {
     var hostname = window.location.host;
-    return hostname.indexOf("local") && (hostname = "stage.electiondesk.us"), socketFactory({
+    return -1 !== hostname.indexOf("local") && (hostname = "stage.electiondesk.us"), 
+    socketFactory({
         ioSocket: io.connect("http://" + hostname + ":4242")
     });
 }).factory("InteractionService", function($modal, $http, notify) {
