@@ -1,7 +1,7 @@
 angular.module('electiondesk').
 factory('socket', function (socketFactory) {
 	var hostname = window.location.host;
-	if (hostname.indexOf('local')) {
+	if (hostname.indexOf('local') !== -1) {
 		hostname = 'stage.electiondesk.us';
 	}
 

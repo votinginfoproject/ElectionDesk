@@ -4412,7 +4412,7 @@ var History = function() {
         });
     }
     var hostname = window.location.host;
-    hostname.indexOf("local") && (hostname = "stage.electiondesk.us");
+    -1 !== hostname.indexOf("local") && (hostname = "stage.electiondesk.us");
     var distance, stream_server = "//" + hostname + "/data", use_geo_near = !1, sources = [ "twitter", "facebook", "googleplus" ], filters = [], near = null, default_cookie_settings = {
         expires: 7
     };
