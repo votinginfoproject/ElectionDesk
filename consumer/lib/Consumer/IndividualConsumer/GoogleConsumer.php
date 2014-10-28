@@ -59,6 +59,6 @@ class GoogleConsumer extends IndividualConsumer {
 	        }
 	    }
 
-	    sleep(50); // Slow things down so we don't hit API limits
+	    sleep(rand(40, 60)); // Slow things down so we don't hit API limits
 	}	
 }
