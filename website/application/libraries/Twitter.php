@@ -171,7 +171,7 @@ class Twitter {
      * @param bool[optional] $force Force the authentication.
      * @param string[optional] $screen_name Prefill the username input box of the OAuth login.
      */
-    public function oAuthAuthenticate($token, $force = false, $screen_name = false)
+    public function oAuthAuthenticate($token, $force = true, $screen_name = false)
     {
         $url = self::SECURE_API_URL . '/oauth/authenticate?oauth_token=' . $token;
         if ($force) {
