@@ -1097,6 +1097,7 @@ class Twitter {
                 $tries++;
                 $tokens = null;
             }
+            sleep(1);
         } while ($tokens == null && $tries < 5);
 
         if (!$tokens) {
