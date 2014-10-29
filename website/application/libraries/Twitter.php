@@ -458,8 +458,6 @@ class Twitter {
         $response = curl_exec($this->curl);
         $headers = curl_getinfo($this->curl);
 
-        syslog(LOG_WARNING, print_r($parameters, true) . print_r($response, true) . print_r($headers, true));
-
         // fetch errors
         $errorNumber = curl_errno($this->curl);
         $errorMessage = curl_error($this->curl);
@@ -1096,6 +1094,7 @@ class Twitter {
             $tokens = Twitter::oAuthRequestToken();
         } catch (Exception $e) {
             // Refresh page
+            syslog(LOG_WARNING, 'Invalid oAuth credentials, refreshing page');
             header('location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
             exitl
         }
