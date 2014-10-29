@@ -27,6 +27,10 @@ window.STREAM = {
     <input type="checkbox" id="topic_voter_id" ng-change="filterChanged()" ng-model="topicQuery[10]">
     <label class="btn btn-default" for="topic_voter_id">Voter id</label>
   </li>
+  <li>
+    <input type="checkbox" id="topic_voter_id" ng-change="filterChanged()" ng-model="topicQuery[11]">
+    <label class="btn btn-default" for="topic_voter_id">Absentee Voting</label>
+  </li>
 </ul>
 </section>
 

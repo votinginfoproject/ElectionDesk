@@ -108,7 +108,8 @@ controller('StreamController', function ($scope, InteractionService, socket) {
 		7: true,
 		8: true,
 		9: true,
-		10: true
+		10: true,
+		11: true
 	};
 	$scope.filterChanged = function () {
 		// Save current filter settings
