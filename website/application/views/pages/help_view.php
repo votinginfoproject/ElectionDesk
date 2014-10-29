@@ -103,7 +103,7 @@
 	<h2>Watch the Webinar</h2>
 	<div class="webinar-video">
 		<div class="embed-responsive embed-responsive-16by9">
-			<iframe class="embed-responsive-item" src="https://player.vimeo.com/video/52235046?badge=0"  webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+			<iframe src="//player.vimeo.com/video/110388380" width="500" height="263" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 		</div>
 	</div>
 </section>
