@@ -1096,7 +1096,7 @@ class Twitter {
             // Refresh page
             syslog(LOG_WARNING, 'Invalid oAuth credentials, refreshing page');
             header('location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-            exitl
+            exit;
         }
 
         // Redirect to twitter
