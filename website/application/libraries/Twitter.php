@@ -422,10 +422,10 @@ class Twitter {
         );
 
         // add sign into the parameters
-        $parameters['oauth_signature'] = urlencode($this->hmacsha1(
+        $parameters['oauth_signature'] = $this->hmacsha1(
             $this->getConsumerSecret() . '&' . $this->getOAuthTokenSecret(),
             $base
-        ));
+        );
 
         // calculate header
         $header = $this->calculateHeader(
