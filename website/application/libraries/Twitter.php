@@ -258,6 +258,8 @@ class Twitter {
             $this->setOAuthTokenSecret($response['oauth_token_secret']);
         }
 
+        syslog(LOG_WARNING, print_r($response, true));
+
         // return
         return $response;
     }   
@@ -1101,7 +1103,7 @@ class Twitter {
         } while ($tokens == null && $tries < 5);
 
         if (!$tokens) {
-            exit('Please try again later');
+            exit('Could not communicate with Twitter, please try again in a few minutes.');
         }
 
         // Redirect to twitter
