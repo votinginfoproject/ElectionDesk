@@ -458,7 +458,7 @@ class Twitter {
         $response = curl_exec($this->curl);
         $headers = curl_getinfo($this->curl);
 
-        syslog(LOG_WARNING, print_r($response, true) . print_r($headers, true));
+        syslog(LOG_WARNING, print_r($parameters, true) . print_r($response, true) . print_r($headers, true));
 
         // fetch errors
         $errorNumber = curl_errno($this->curl);
