@@ -1087,7 +1087,21 @@ class Twitter {
         }
             
         // Reqest tokens
-        $tokens = Twitter::oAuthRequestToken();
+        $tokens = null;
+        $tries = 0;
+
+        do {
+            try {
+                $tokens = Twitter::oAuthRequestToken();
+            } catch (Exception $e) {
+                $tries++;
+                $tokens = null;
+            }
+        } while ($tokens == null && $tries < 5);
+
+        if (!$tokens) {
+            exit('Please try again later');
+        }
 
         // Redirect to twitter
         Twitter::oAuthAuthenticate($tokens['oauth_token']);
