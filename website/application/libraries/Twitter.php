@@ -258,8 +258,6 @@ class Twitter {
             $this->setOAuthTokenSecret($response['oauth_token_secret']);
         }
 
-        syslog(LOG_WARNING, print_r($response, true));
-
         // return
         return $response;
     }   
@@ -459,6 +457,8 @@ class Twitter {
         // execute
         $response = curl_exec($this->curl);
         $headers = curl_getinfo($this->curl);
+
+        syslog(LOG_WARNING, print_r($response, true) . print_r($headers, true));
 
         // fetch errors
         $errorNumber = curl_errno($this->curl);
