@@ -1092,18 +1092,12 @@ class Twitter {
         $tokens = null;
         $tries = 0;
 
-        do {
-            try {
-                $tokens = Twitter::oAuthRequestToken();
-            } catch (Exception $e) {
-                $tries++;
-                $tokens = null;
-            }
-            sleep(1);
-        } while ($tokens == null && $tries < 5);
-
-        if (!$tokens) {
-            exit('Could not communicate with Twitter, please try again in a few minutes.');
+        try {
+            $tokens = Twitter::oAuthRequestToken();
+        } catch (Exception $e) {
+            // Refresh page
+            header('location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+            exitl
         }
 
         // Redirect to twitter
