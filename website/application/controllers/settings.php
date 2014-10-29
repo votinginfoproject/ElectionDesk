@@ -17,6 +17,12 @@ class Settings extends CI_Controller {
   
 	function index()
 	{
+		// Refresh page after authenticating with Twitter
+		if (isset($_GET['oauth_token'])) {
+			redirect('settings', 'location');
+			return;
+		}
+
 		$data['body_id'] = 'settings';
 
 		$this->load->model('user_profiles_model');
