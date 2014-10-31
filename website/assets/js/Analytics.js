@@ -97,7 +97,7 @@ var Analytics = (function () {
 		for (var interactionType in counts) {
 			var count = counts[interactionType];
 
-			var iconName = (interactionType == 'disqus' ? 'icon-disqus-social' : 'fa fa-' + interactionType);
+			var iconName = (interactionType == 'disqus' ? 'icon-disqus-social' : 'fa fa-' + interactionType.replace('plus', '-plus'));
 
 			var icon = $('<i>').addClass('' + iconName + ' fa-4x text-primary');
 			var title = $('<h1>').html(count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));

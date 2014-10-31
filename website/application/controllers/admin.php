@@ -75,7 +75,7 @@ class Admin extends CI_Controller {
 		$interactionTypesTime = [];
 		foreach ($interactionTypesCount as $interactionType => $count) {
 			$results = $db->interactions->aggregate([
-				[ '$match' => [ 'interaction.type' => $interactionType, 'interaction.created_at' => ['$gte' => new MongoDate(strtotime(date('Y') . '-01-01')) ] ] ],
+				[ '$match' => [ 'interaction.type' => $interactionType, 'interaction.created_at' => ['$gte' => new MongoDate(strtotime('-14 days')) ] ] ],
 				[ '$group' => [ '_id' => ['$dayOfYear' => '$interaction.created_at' ], 'total' => [ '$sum' => 1 ] ] ],
 				[ '$sort' => [ '_id' => 1 ] ]
 			]);
