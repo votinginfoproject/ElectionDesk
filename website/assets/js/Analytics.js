@@ -2,7 +2,7 @@ var Analytics = (function () {
 
 	function renderConsumingChart() {
 		var margin = {top: 20, right: 80, bottom: 30, left: 50},
-		    width = 940 - margin.left - margin.right,
+		    width = $('main > .container').width() - margin.left - margin.right,
 		    height = 500 - margin.top - margin.bottom;
 
 		var parseDate = d3.time.format("%Y-%m-%d").parse;
