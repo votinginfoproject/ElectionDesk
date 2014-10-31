@@ -13,8 +13,8 @@
 
       <nav>
         <ul>
-          <li<?php echo (uri_string() == 'admin') ? ' class="active"' : '' ?>><a href="/">Home</a></li>
-          <li<?php echo (uri_string() == 'admin/users') ? ' class="active"' : '' ?>><a href="/admin/users">Users</a></li>
+          <li><a href="/">Home</a></li>
+          <li<?php echo (uri_string() == 'admin/users' || uri_string() == 'admin') ? ' class="active"' : '' ?>><a href="/admin/users">Users</a></li>
           <li<?php echo (uri_string() == 'admin/data') ? ' class="active"' : '' ?>><a href="/admin/data">Data</a></li>
         </ul>
       </nav>
@@ -52,7 +52,8 @@
 
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script src="/assets/js/script.js"></script>
+<script src="http://d3js.org/d3.v3.js"></script>
+<script src="/assets/js/Analytics.js"></script>
 
 </body>
 </html>

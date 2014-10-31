@@ -49,27 +49,66 @@ class Admin extends CI_Controller {
 		
 		$this->stencil->paint('admin/user_management_view', $data);
 	}
+
+	function consumingstats() {
+		try {
+			$m = new \MongoClient('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
+			$db = $m->selectDB(MONGODB_DATABASE);
+		} catch (MongoConnectionException $e) {
+			echo json_encode(array('error' => 'Database connection failed, please try again later'));
+			exit;
+		}
+
+		// Number of interactions for each interaction type
+		$results = $db->interactions->aggregate([
+			[ '$group' => [ '_id' => '$interaction.type', 'total' => [ '$sum' => 1 ] ] ],
+			[ '$sort' => [ 'total' => -1 ] ]
+		]);
+		$interactionTypesCount = [];
+		foreach ($results['result'] as $result) {
+			if (!empty($result['_id'])) {
+				$interactionTypesCount[$result['_id']] = $result['total'];
+			}
+		}
+
+		// Number of interactions for each interaction type, over time
+		$interactionTypesTime = [];
+		foreach ($interactionTypesCount as $interactionType => $count) {
+			$results = $db->interactions->aggregate([
+				[ '$match' => [ 'interaction.type' => $interactionType, 'interaction.created_at' => ['$gte' => new MongoDate(strtotime(date('Y') . '-01-01')) ] ] ],
+				[ '$group' => [ '_id' => ['$dayOfYear' => '$interaction.created_at' ], 'total' => [ '$sum' => 1 ] ] ],
+				[ '$sort' => [ '_id' => 1 ] ]
+			]);
+
+			foreach ($results['result'] as $result) {
+				if (!empty($result['_id'])) {
+					$date = DateTime::createFromFormat('z Y', strval($result['_id']) . ' ' . date('Y'));
+
+					// Prepopulate values
+					if (!isset($interactionTypesTime[$date->format('Y-m-d')])) {
+						$interactionTypesTime[$date->format('Y-m-d')] = [
+							'date' => $date->format('Y-m-d')
+						];
+
+						foreach ($interactionTypesCount as $key => $value) {
+							$interactionTypesTime[$date->format('Y-m-d')][$key] = 0;
+						}
+					}
+
+					$interactionTypesTime[$date->format('Y-m-d')][$interactionType] = $result['total'];
+				}
+			}
+		}
+		ksort($interactionTypesTime);
+
+		echo json_encode([
+			'interaction_types' => array_keys($interactionTypesCount),
+			'counts' => $interactionTypesCount,
+			'timeseries' => array_values($interactionTypesTime)
+		]);
+	}
 	
 	function data() {
-		$data['twitter_stream_total'] = NULL;
-		$data['facebook_stream_total'] = NULL;
-		
-			try {
-				$m = new \MongoClient('mongodb://' . MONGODB_USERNAME . ':' . MONGODB_PASSWORD . '@' . MONGODB_HOST . '/' . MONGODB_DATABASE);
-				$db = $m->selectDB(MONGODB_DATABASE);
-			} catch (MongoConnectionException $e) {
-				echo json_encode(array('error' => 'Database connection failed, please try again later'));
-				exit;
-			}
-
-			
-			$data['twitter_stream_total'] = $db->interactions->find(array('interaction.type' => 'twitter'))->count();
-			$data['facebook_stream_total'] = $db->interactions->find(array('interaction.type' => 'facebook'))->count();
-			$data['google_stream_total'] = $db->interactions->find(array('interaction.type' => 'googleplus'))->count();
-	
-	
-	
-	
 		$this->load->model('auth/users');
 		$this->load->model('user_profiles_model');
 		$this->load->model('user_accounts_model');
@@ -78,11 +117,13 @@ class Admin extends CI_Controller {
 		
 		//get login counts
 		$result = $this->users->get_login_counts();
-		$data['login_counts'] = $result;
+		$data['login_counts'] = [];
 		$total_logins = 0;
 		foreach ($result as $login) {
 			$total_logins = $total_logins + $login->login_number;
+			$data['login_counts'][$login->email] = $login->login_number;
 		}
+		arsort($data['login_counts']);
 		$data['total_logins'] = $total_logins;
 		
 		
@@ -98,7 +139,8 @@ class Admin extends CI_Controller {
 		$data['twitter_connects'] = $this->user_accounts_model->count_connections('TWITTER');
 		
 		//count all user
-		$data['total_users'] = $this->users->count_all();		
+		$data['total_users'] = $this->users->count_all();
+		$data['approved_users'] = $this->users->count_unbanned();
 		
 		$data['body_id'] = 'data';
 		$this->stencil->title('Data Analysis');

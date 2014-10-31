@@ -431,6 +431,11 @@ class Users extends CI_Model
 		$this->db->select('id');
 		return $this->db->get($this->table_name)->num_rows();
 	}
+
+	function count_unbanned() {
+		$this->db->select('id')->where('banned', 0);
+		return $this->db->get($this->table_name)->num_rows();
+	}
 }
 
 /* End of file users.php */
