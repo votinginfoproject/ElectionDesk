@@ -94,22 +94,38 @@ var Analytics = (function () {
 	}
 
 	function renderCounts(counts) {
+		var sum = 0;
+		var columnSpan = Math.floor(12 / (Object.keys(counts).length + 1));
+
 		for (var interactionType in counts) {
 			var count = counts[interactionType];
+			sum += count;
 
-			var iconName = (interactionType == 'disqus' ? 'icon-disqus-social' : 'fa fa-' + interactionType.replace('plus', '-plus'));
+			var iconClass = (interactionType == 'disqus' ? 'icon-disqus-social' : 'fa fa-' + interactionType.replace('plus', '-plus'));
 
-			var icon = $('<i>').addClass('' + iconName + ' fa-4x text-primary');
+			var icon = $('<i>').addClass(iconClass + ' fa-4x text-primary');
 			var title = $('<h1>').html(count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
 			var statBox = $('<div>')
-				.addClass('col-md-' + Math.floor(12 / Object.keys(counts).length) + ' well text-center')
+				.addClass('col-md-' + columnSpan + ' well text-center')
 				.append(icon)
 				.append(title)
 				.append(ucfirst(interactionType));
 
 			$('#consumingStats').append(statBox);
 		}
+
+		// Add sum
+		var icon = $('<i>').addClass('fa fa-tachometer fa-4x text-primary');
+		var title = $('<h1>').html(sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+
+		var statBox = $('<div>')
+			.addClass('col-md-' + columnSpan + ' well text-center')
+			.append(icon)
+			.append(title)
+			.append('Total');
+
+		$('#consumingStats').append(statBox);
 	}
 
 	function ucfirst(value){
