@@ -5,7 +5,7 @@
 
 <link href="//fonts.googleapis.com/css?family=Titillium+Web:300,400,600,400italic" rel="stylesheet" type="text/css">
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
-<link href="/assets/css/style.css?v=2" rel="stylesheet">
+<link href="/assets/css/style.css?v=3" rel="stylesheet">
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
